@@ -1,0 +1,914 @@
+<!--
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+Chart Of Accounts Modal
+Version : 2.3.0
+==========================================================
+-->
+
+
+<!-- ==========================================================
+     ADD / EDIT CHART OF ACCOUNT
+=========================================================== -->
+
+<div
+    class="modal fade"
+    id="coa-modal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div
+        class="modal-dialog modal-xl modal-dialog-centered">
+
+        <div class="modal-content">
+
+
+            <!-- ==================================================
+                 MODAL HEADER
+            =================================================== -->
+
+            <div class="modal-header coa-modal-drag-handle">
+
+                <div>
+
+                    <h5
+                        class="modal-title"
+                        id="coa-modal-title">
+
+                        Add Chart Of Account
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Create or update Chart Of Account.
+
+                    </small>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================
+                 MODAL BODY
+            =================================================== -->
+
+            <div class="modal-body">
+
+                <form id="coa-form">
+
+                    <!-- Hidden ID -->
+
+                    <input
+                        type="hidden"
+                        id="coa-id">
+
+
+                    <div class="row g-3">
+
+
+                        <!-- ==================================================
+                             PARENT ACCOUNT
+                        =================================================== -->
+
+                        <div class="col-12">
+
+                            <label
+                                for="coa-parent"
+                                class="form-label">
+
+                                Parent Account
+
+                            </label>
+
+                            <select
+                                id="coa-parent"
+                                class="form-select">
+
+                                <option value="">
+
+                                    -- None --
+
+                                </option>
+
+                            </select>
+
+                            <div
+                                id="parent-information"
+                                class="mt-2">
+
+                                <div class="row g-2">
+
+                                    <div class="col-md-4">
+
+                                        <small
+                                            class="text-muted">
+
+                                            Parent
+
+                                        </small>
+
+                                        <div
+                                            id="parent-name"
+                                            class="fw-semibold">
+
+                                            -
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <small
+                                            class="text-muted">
+
+                                            Level
+
+                                        </small>
+
+                                        <div
+                                            id="parent-level"
+                                            class="fw-semibold">
+
+                                            -
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <small
+                                            class="text-muted">
+
+                                            Total Child
+
+                                        </small>
+
+                                        <div
+                                            id="parent-child-count"
+                                            class="fw-semibold">
+
+                                            -
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACCOUNT CODE
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="coa-code"
+                                class="form-label">
+
+                                Account Code
+
+                                <span class="text-danger">
+
+                                    *
+
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="coa-code"
+                                class="form-control"
+                                maxlength="20"
+                                autocomplete="off"
+                                required>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACCOUNT NAME
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="coa-name"
+                                class="form-label">
+
+                                Account Name
+
+                                <span class="text-danger">
+
+                                    *
+
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="coa-name"
+                                class="form-control"
+                                maxlength="200"
+                                autocomplete="off"
+                                required>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACCOUNT CLASS
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="coa-type"
+                                class="form-label">
+
+                                Account Class
+
+                                <span class="text-danger">
+
+                                    *
+
+                                </span>
+
+                            </label>
+
+                            <select
+                                id="coa-type"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+
+                                    -- Select Account Class --
+
+                                </option>
+
+                                <option value="Asset">
+
+                                    Asset
+
+                                </option>
+
+                                <option value="Liability">
+
+                                    Liability
+
+                                </option>
+
+                                <option value="Equity">
+
+                                    Equity
+
+                                </option>
+
+                                <option value="Revenue">
+
+                                    Revenue
+
+                                </option>
+
+                                <option value="Expense">
+
+                                    Expense
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACCOUNT TYPE
+                             SYSTEM GENERATED FROM ACCOUNT CLASS
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="coa-account-type"
+                                class="form-label">
+
+                                Account Type
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="coa-account-type"
+                                class="form-control"
+                                value=""
+                                placeholder="Auto generated"
+                                readonly>
+
+                            <small class="text-muted">
+
+                                Automatically determined from Account Class.
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             NORMAL BALANCE
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                class="form-label">
+
+                                Normal Balance
+
+                                <span class="text-danger">
+
+                                    *
+
+                                </span>
+
+                            </label>
+
+                            <div
+                                class="d-flex align-items-center gap-4 pt-2">
+
+
+                                <div class="form-check">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="normal-balance"
+                                        id="normal-debit"
+                                        value="Debit"
+                                        checked>
+
+                                    <label
+                                        class="form-check-label"
+                                        for="normal-debit">
+
+                                        DEBIT
+
+                                    </label>
+
+                                </div>
+
+
+                                <div class="form-check">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="normal-balance"
+                                        id="normal-credit"
+                                        value="Credit">
+
+                                    <label
+                                        class="form-check-label"
+                                        for="normal-credit">
+
+                                        CREDIT
+
+                                    </label>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             POSTING TYPE
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="coa-posting-type"
+                                class="form-label">
+
+                                Posting Type
+
+                            </label>
+
+                            <select
+                                id="coa-posting-type"
+                                class="form-select">
+
+                                <option value="Manual">
+
+                                    Manual
+
+                                </option>
+
+                                <option value="Automatic">
+
+                                    Automatic
+
+                                </option>
+
+                                <option
+                                    value="Manual & Auto"
+                                    selected>
+
+                                    Manual &amp; Auto
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             CURRENCY
+                        =================================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="currency"
+                                class="form-label">
+
+                                Currency
+
+                            </label>
+
+                            <select
+                                id="currency"
+                                class="form-select">
+
+                                <option
+                                    value="IDR"
+                                    selected>
+
+                                    IDR - Indonesian Rupiah
+
+                                </option>
+
+                                <option value="USD">
+
+                                    USD - US Dollar
+
+                                </option>
+
+                                <option value="SGD">
+
+                                    SGD - Singapore Dollar
+
+                                </option>
+
+                                <option value="EUR">
+
+                                    EUR - Euro
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             ACCOUNT SETTINGS
+                        =================================================== -->
+
+                        <div class="col-12">
+
+                            <div class="card">
+
+                                <div class="card-header">
+
+                                    <strong>
+
+                                        Account Settings
+
+                                    </strong>
+
+                                </div>
+
+                                <div class="card-body">
+
+                                    <div class="row g-3">
+
+
+                                        <!-- ==================================
+                                             HEADER ACCOUNT
+                                        =================================== -->
+
+                                        <div class="col-md-4">
+
+                                            <div
+                                                class="form-check form-switch">
+
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id="is-header">
+
+                                                <label
+                                                    class="form-check-label"
+                                                    for="is-header">
+
+                                                    Header Account
+
+                                                </label>
+
+                                            </div>
+
+                                            <small
+                                                class="text-muted">
+
+                                                Parent account only.
+
+                                            </small>
+
+                                        </div>
+
+
+                                        <!-- ==================================
+                                             ALLOW TRANSACTION
+                                        =================================== -->
+
+                                        <div class="col-md-4">
+
+                                            <div
+                                                class="form-check form-switch">
+
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id="allow-transaction"
+                                                    checked>
+
+                                                <label
+                                                    class="form-check-label"
+                                                    for="allow-transaction">
+
+                                                    Allow Transaction
+
+                                                </label>
+
+                                            </div>
+
+                                            <small
+                                                class="text-muted">
+
+                                                Allow this account to be
+                                                used in transactions.
+
+                                            </small>
+
+                                        </div>
+
+
+                                        <!-- ==================================
+                                             STATUS
+                                        =================================== -->
+
+                                        <div class="col-md-4">
+
+                                            <div
+                                                class="form-check form-switch">
+
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id="status"
+                                                    checked>
+
+                                                <label
+                                                    class="form-check-label"
+                                                    for="status">
+
+                                                    Active
+
+                                                </label>
+
+                                            </div>
+
+                                            <small
+                                                class="text-muted">
+
+                                                Account status.
+
+                                            </small>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             DESCRIPTION
+                        =================================================== -->
+
+                        <div class="col-12">
+
+                            <label
+                                for="coa-description"
+                                class="form-label">
+
+                                Description
+
+                            </label>
+
+                            <textarea
+                                id="coa-description"
+                                class="form-control"
+                                rows="3"
+                                placeholder="Additional information about this account..."></textarea>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- ==================================================
+                 MODAL FOOTER
+            =================================================== -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btn-save-coa">
+
+                    <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                    Save Chart Of Account
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     CONFIRM DELETE CHART OF ACCOUNT
+=========================================================== -->
+
+<div
+    class="modal fade"
+    id="coaDeleteModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div
+        class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+
+            <!-- ==================================================
+                 HEADER
+            =================================================== -->
+
+            <div class="modal-header">
+
+                <h5
+                    class="modal-title d-flex align-items-center gap-2">
+
+                    <i
+                        class="fa-solid fa-trash text-danger">
+                    </i>
+
+                    Confirm Delete Chart Of Account
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================
+                 BODY
+            =================================================== -->
+
+            <div class="modal-body">
+
+
+                <!-- DELETE ICON -->
+
+                <div class="text-center mb-3">
+
+                    <i
+                        class="fa-solid fa-trash-can text-danger"
+                        style="font-size: 52px;">
+                    </i>
+
+                </div>
+
+
+                <!-- CONFIRMATION TEXT -->
+
+                <div class="text-center mb-3">
+
+                    <div
+                        style="
+                            font-size: 17px;
+                            color: #263f63;
+                        ">
+
+                        Apakah Anda yakin ingin
+
+                        <strong>
+                            menghapus Chart Of Account
+                        </strong>
+
+                        ini?
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     ACCOUNT INFORMATION
+                =================================================== -->
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered mb-3">
+
+                        <tbody>
+
+                            <tr>
+
+                                <th style="width: 32%;">
+
+                                    Account Code
+
+                                </th>
+
+                                <td id="coa-delete-code">
+
+                                    -
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+
+                                    Account Name
+
+                                </th>
+
+                                <td id="coa-delete-name">
+
+                                    -
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+
+                                    Parent Account
+
+                                </th>
+
+                                <td id="coa-delete-parent">
+
+                                    -
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- ==================================================
+                     WARNING
+                =================================================== -->
+
+                <div
+                    class="alert alert-danger d-flex align-items-center gap-2 mb-0">
+
+                    <i
+                        class="fa-solid fa-triangle-exclamation">
+                    </i>
+
+                    <span>
+
+                        Chart Of Account yang dihapus
+                        tidak dapat dikembalikan.
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 FOOTER
+            =================================================== -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    <i
+                        class="fa-solid fa-xmark me-1">
+                    </i>
+
+                    Batal
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="btn-confirm-delete-coa">
+
+                    <i
+                        class="fa-solid fa-trash me-1">
+                    </i>
+
+                    Ya, Hapus
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

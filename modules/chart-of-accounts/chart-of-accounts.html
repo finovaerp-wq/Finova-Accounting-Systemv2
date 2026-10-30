@@ -1,0 +1,394 @@
+<!--
+===========================================
+FINOVA ACCOUNTING SYSTEM
+Chart Of Account Module
+Version : 2.0.0
+===========================================
+-->
+
+<div class="finova-page coa-page">
+
+    <!-- ==========================================
+         PAGE HEADER
+    =========================================== -->
+
+   <div class="finova-page-header">
+
+    <!-- LEFT -->
+
+    <div class="finova-page-header-left">
+
+        <h1 class="finova-page-title">
+            Chart Of Accounts
+        </h1>
+
+        <p class="finova-page-subtitle">
+            Master Data / Chart Of Accounts
+        </p>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="finova-page-header-right">
+
+        <button
+            id="btn-add-account"
+            class="btn btn-primary finova-btn">
+
+            <i class="fas fa-plus"></i>
+
+            Add Account
+
+        </button>
+
+        <button
+            id="btn-export"
+            class="btn btn-outline-success finova-btn">
+
+            <i class="fas fa-file-excel"></i>
+
+            Download Excel
+
+        </button>
+
+        <button
+            id="btn-preview"
+            class="btn btn-outline-primary finova-btn">
+
+            <i class="fas fa-print"></i>
+
+            Preview HTML
+
+        </button>
+
+        <button
+            id="btn-refresh"
+            class="btn btn-outline-secondary finova-btn">
+
+            <i class="fas fa-rotate-right"></i>
+
+            Refresh
+
+        </button>
+
+    </div>
+
+</div>
+    <!-- ==========================================
+     TOOLBAR
+========================================== -->
+
+<div class="finova-card coa-filter-card mb-1">
+
+    <div class="finova-card-body">
+
+        <div class="row align-items-end g-3">
+
+            <!-- SEARCH -->
+
+            <div class="col-lg-9">
+
+                <label
+                    for="coa-search"
+                    class="form-label">
+
+                    Search
+
+                </label>
+
+                <input
+                    id="coa-search"
+                    type="text"
+                    class="form-control finova-control"
+                    placeholder="Search Account Code or Account Name"
+                    autocomplete="off">
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="col-lg-3">
+
+                <label
+                    for="coa-status-filter"
+                    class="form-label">
+
+                    Status
+
+                </label>
+
+                <select
+                    id="coa-status-filter"
+                    class="form-select finova-control">
+
+                    <option value="">
+
+                        All Status
+
+                    </option>
+
+                    <option value="true">
+
+                        Active
+
+                    </option>
+
+                    <option value="false">
+
+                        Inactive
+
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ==========================================
+     DATA TABLE
+========================================== -->
+
+<div class="finova-card finova-table-card coa-table-card">
+
+    <div class="finova-card-body no-padding">
+
+        <div class="finova-table-container">
+
+            <div class="table-responsive">
+
+                <table class="table finova-table table-hover">
+
+                    <thead class="finova-table-header">
+
+    <tr>
+
+        <th
+            class="finova-table-code"
+            style="width:130px">
+
+            Account Code
+
+        </th>
+
+        <th class="finova-table-name">
+
+            Account Name
+
+        </th>
+
+        <th class="finova-table-name">
+
+            Parent Account
+
+        </th>
+
+        <th>
+
+            Currency
+
+        </th>
+
+        <th
+            style="width:130px">
+
+            Normal Balance
+
+        </th>
+
+        <th
+            style="width:140px">
+
+            Posting Type
+
+        </th>
+
+        <th
+            class="text-center"
+            style="width:90px">
+
+            Header
+
+        </th>
+
+        <th
+            class="finova-table-status"
+            style="width:100px">
+
+            Status
+
+        </th>
+
+        <th
+            class="finova-table-action"
+            style="width:110px">
+
+            Action
+
+        </th>
+
+    </tr>
+
+</thead>
+                    <tbody id="coa-table-body">
+
+                        <tr>
+                            <td colspan="9">
+
+                                <div class="finova-empty">
+
+                                    <i class="fas fa-folder-open"></i>
+
+                                    <h5>
+                                        No Chart Of Accounts
+                                    </h5>
+
+                                    <p>
+                                        Click
+                                        <strong>Add Account</strong>
+                                        to create your first account.
+                                    </p>
+
+                                </div>
+
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+<!-- ==================================================
+     PAGINATION
+=================================================== -->
+
+<div class="finova-pagination-wrapper">
+
+    <div class="finova-pagination-left">
+
+        <!-- FIRST -->
+
+        <button
+            type="button"
+            id="coa-pagination-first"
+            class="finova-pagination-btn"
+            title="First Page">
+
+            <i class="fa-solid fa-backward-step"></i>
+
+        </button>
+
+
+        <!-- PREVIOUS -->
+
+        <button
+            type="button"
+            id="coa-pagination-prev"
+            class="finova-pagination-btn"
+            title="Previous Page">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+        </button>
+
+
+        <!-- PAGE -->
+
+        <span class="finova-pagination-label">
+
+            Page
+
+        </span>
+
+
+        <!-- CURRENT PAGE -->
+
+        <input
+            type="number"
+            id="coa-pagination-page-input"
+            value="1"
+            min="1"
+            class="form-control finova-pagination-input"
+            aria-label="Current Page"
+            autocomplete="off">
+
+
+        <!-- OF -->
+
+        <span class="finova-pagination-label">
+
+            of
+
+        </span>
+
+
+        <!-- TOTAL PAGE -->
+
+        <span
+            id="coa-pagination-total-pages"
+            class="finova-pagination-total">
+
+            1
+
+        </span>
+
+
+        <!-- NEXT -->
+
+        <button
+            type="button"
+            id="coa-pagination-next"
+            class="finova-pagination-btn"
+            title="Next Page">
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+        </button>
+
+
+        <!-- LAST -->
+
+        <button
+            type="button"
+            id="coa-pagination-last"
+            class="finova-pagination-btn"
+            title="Last Page">
+
+            <i class="fa-solid fa-forward-step"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- RECORD INFO -->
+
+    <div
+        id="coa-pagination-info"
+        class="finova-pagination-info">
+
+        Displaying Record 0 - 0 of 0
+
+    </div>
+
+</div>
+
+
+</div>
+<!-- END finova-card-body -->
+
+
+</div>
+<!-- END coa-table-card -->
+
+
+</div>
+<!-- END coa-page -->

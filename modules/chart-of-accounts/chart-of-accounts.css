@@ -1,0 +1,674 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : CHART OF ACCOUNTS
+
+Version : 2.1 Enterprise
+
+TABLE STANDARD :
+GLOBAL TABLE COMPONENT
+
+VISUAL STANDARD :
+BUSINESS PARTNER / TAX MASTER
+
+NOTE :
+- Table visual controlled by Global Table CSS
+- Pagination controlled by Global Pagination CSS
+- Filter position aligned with Business Partner
+- No table visual override here
+==========================================================
+*/
+
+
+/* ==========================================================
+   COA PAGE
+========================================================== */
+
+.coa-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.coa-page > .finova-page-header {
+
+    width: 100%;
+
+    margin-bottom: 8px !important;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+}
+
+/* ==========================================================
+   FILTER CARD
+   SAME POSITION AS BUSINESS PARTNER
+========================================================== */
+
+.coa-page
+> .coa-filter-card {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD BODY
+========================================================== */
+
+.coa-filter-card
+> .finova-card-body {
+
+    width: 100%;
+
+    padding: 8px 20px 8px 20px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER ROW
+========================================================== */
+
+.coa-filter-card
+> .finova-card-body
+> .row {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+
+    align-items: end !important;
+
+}
+
+
+/* ==========================================================
+   FILTER COLUMN
+========================================================== */
+
+.coa-filter-card
+> .finova-card-body
+> .row
+> [class*="col-"] {
+
+    box-sizing: border-box;
+
+    min-width: 0;
+
+    margin: 0;
+
+}
+
+
+/* ==========================================================
+   FILTER LABEL
+========================================================== */
+
+.coa-filter-card
+.form-label {
+
+    display: block;
+
+    margin-top: 0 !important;
+
+    margin-bottom: 6px !important;
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT & SELECT
+========================================================== */
+
+.coa-filter-card
+.form-control,
+
+.coa-filter-card
+.form-select {
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   COA TABLE CARD
+========================================================== */
+
+.coa-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD BODY
+========================================================== */
+
+.coa-table-card
+.finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CONTAINER
+   STANDARD BUSINESS PARTNER / TAX MASTER
+========================================================== */
+
+.coa-table-card
+.finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.coa-table-card
+.finova-table-container
+.table-responsive {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: auto;
+
+}
+
+
+/* ==========================================================
+   TABLE
+   VISUAL CONTROLLED BY GLOBAL TABLE CSS
+========================================================== */
+
+.coa-table-card
+.finova-table {
+
+    width: 100%;
+
+    margin-bottom: 0;
+
+    vertical-align: middle;
+
+}
+/* ==========================================================
+   TABLE HEADER
+   ALL COLUMN HEADERS BOLD
+========================================================== */
+
+.coa-table-card
+.finova-table
+thead
+th {
+
+    font-weight: 700 !important;
+
+}
+/* ==========================================================
+   TABLE BODY
+   NORMAL WEIGHT - STRONGER TEXT
+========================================================== */
+
+.coa-table-card
+.finova-table
+tbody
+td {
+
+    font-weight: 400 !important;
+
+    color: #1F2937 !important;
+
+}
+/* ==========================================================
+   TABLE BODY CONTENT
+   REMOVE UNWANTED BOLD
+========================================================== */
+
+.coa-table-card
+.finova-table
+tbody
+td strong,
+
+.coa-table-card
+.finova-table
+tbody
+td b,
+
+.coa-table-card
+.finova-table
+tbody
+td .fw-bold,
+
+.coa-table-card
+.finova-table
+tbody
+td .fw-semibold {
+
+    font-weight: 400 !important;
+
+}
+
+
+/* ==========================================================
+   PAGINATION
+   SAME POSITION AS BUSINESS PARTNER
+========================================================== */
+
+.coa-table-card
+.finova-table-container
+.finova-pagination-wrapper {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin-top: auto;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .coa-filter-card
+    > .finova-card-body {
+
+        padding-left: 16px !important;
+
+        padding-right: 16px !important;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .coa-filter-card
+    > .finova-card-body {
+
+        padding: 8px 16px !important;
+
+    }
+
+}
+
+/* ==========================================================
+   COA PAGINATION
+   SPACING SAME AS BUSINESS PARTNER
+========================================================== */
+
+.coa-table-card
+.finova-pagination-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LABEL
+========================================================== */
+
+.coa-table-card
+.finova-pagination-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   TOTAL PAGE
+========================================================== */
+
+.coa-table-card
+.finova-pagination-total {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-width: 18px;
+
+    margin-left: 2px;
+
+}
+/* ==========================================================
+   COA STATUS BADGE
+========================================================== */
+
+.coa-status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+}
+
+
+.coa-status-active {
+
+    color: #15803d;
+
+    background: #dcfce7;
+
+}
+
+
+.coa-status-inactive {
+
+    color: #b91c1c;
+
+    background: #fee2e2;
+
+}
+
+
+/* ==========================================================
+   COA ACTION GROUP
+========================================================== */
+
+.coa-action-group {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+}
+
+
+/* ==========================================================
+   COA ACTION BUTTON
+========================================================== */
+
+.coa-action-btn {
+
+    width: 32px;
+
+    height: 32px;
+
+    min-width: 32px;
+
+    min-height: 32px;
+
+    padding: 0;
+
+    border: 1px solid transparent;
+
+    border-radius: 6px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition:
+        all 0.15s ease;
+
+}
+
+
+.coa-action-btn i {
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================================
+   EDIT
+========================================================== */
+
+.coa-action-edit {
+
+    color: #2563eb;
+
+    background: #eff6ff;
+
+    border-color: #bfdbfe;
+
+}
+
+
+.coa-action-edit:hover {
+
+    background: #dbeafe;
+
+}
+
+
+/* ==========================================================
+   ACTIVE
+========================================================== */
+
+.coa-action-active {
+
+    color: #16a34a;
+
+    background: #f0fdf4;
+
+    border-color: #bbf7d0;
+
+}
+
+
+.coa-action-active:hover {
+
+    background: #dcfce7;
+
+}
+
+
+/* ==========================================================
+   INACTIVE
+========================================================== */
+
+.coa-action-inactive {
+
+    color: #d97706;
+
+    background: #fffbeb;
+
+    border-color: #fde68a;
+
+}
+
+
+.coa-action-inactive:hover {
+
+    background: #fef3c7;
+
+}
+
+
+/* ==========================================================
+   DELETE
+========================================================== */
+
+.coa-action-delete {
+
+    color: #dc2626;
+
+    background: #fef2f2;
+
+    border-color: #fecaca;
+
+}
+
+
+.coa-action-delete:hover {
+
+    background: #fee2e2;
+
+}
+
+/* ==========================================================
+   COA MODAL DRAG
+   ========================================================== */
+
+#coa-modal .modal-content {
+    cursor: move;
+    user-select: none;
+}
+
+/* Text / input elements: I-beam */
+#coa-modal input:not([type="radio"]):not([type="checkbox"]),
+#coa-modal textarea,
+#coa-modal [contenteditable="true"] {
+    cursor: text;
+    user-select: text;
+}
+
+/* Interactive controls: pointer */
+#coa-modal select,
+#coa-modal button,
+#coa-modal input[type="radio"],
+#coa-modal input[type="checkbox"],
+#coa-modal a,
+#coa-modal label,
+#coa-modal [role="button"] {
+    cursor: pointer;
+}
+
+/* Native <option> keeps the browser/default cursor */
+#coa-modal option {
+    cursor: default;
+}
+
+/* Hide COA mutation actions for Staff while preserving any explicit view-only action. */
+body:not([data-finova-master-manager="true"]) .coa-action-group .coa-action-btn:not([data-action="view"]):not(.finova-staff-view-only) {
+    display: none !important;
+    visibility: hidden !important;
+}

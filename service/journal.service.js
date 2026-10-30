@@ -1,0 +1,2731 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+Module  : General Journal Service
+Version : Enterprise 3.0
+Author  : FINOVA Development Team
+==========================================================
+*/
+
+import {
+
+    supabase,
+    TABLE
+
+} from "../assets/js/core/supabase.js";
+
+import { TenantContext } from "../assets/js/core/tenant-context.js";
+
+/*
+==========================================================
+GENERAL JOURNAL SERVICE
+==========================================================
+*/
+
+export class GeneralJournalService {
+
+    /*
+    ==========================================================
+    CONSTRUCTOR
+    ==========================================================
+    */
+
+    constructor() {
+
+    }
+    /*
+==========================================================
+CHECK ACCOUNTING PERIOD
+==========================================================
+*/
+
+async getAccountingPeriod(accountingDate) {
+
+    if (!accountingDate) {
+
+        throw new Error(
+            "Accounting Date is required."
+        );
+
+    }
+
+
+    // Schema FINOVA yang digunakan saat ini menyimpan periode sebagai
+    // period_year, period_month, dan period_code; bukan period/month/year
+    // atau start_date/end_date.
+    const dateText = String(accountingDate).slice(0, 10);
+    const year = Number(dateText.slice(0, 4));
+    const month = Number(dateText.slice(5, 7));
+
+    if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(dateText) ||
+        !Number.isInteger(year) ||
+        !Number.isInteger(month) ||
+        month < 1 ||
+        month > 12
+    ) {
+        throw new Error(`Invalid Accounting Date: ${accountingDate}`);
+    }
+
+    const {
+        data,
+        error
+    } = await supabase
+        .from("mst_accounting_period")
+        .select(`
+            id,
+            company_id,
+            period_year,
+            period_month,
+            period_code,
+            status
+        `)
+        .eq("period_year", year)
+        .eq("period_month", month)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "GeneralJournalService.getAccountingPeriod",
+            error
+        );
+
+        throw error;
+
+    }
+
+
+    /*
+    ======================================================
+    PERIOD NOT FOUND
+    ======================================================
+    */
+
+    if (!data) {
+
+        throw new Error(
+            `Accounting Period for ${accountingDate} is not configured.`
+        );
+
+    }
+
+
+    const periodLabel =
+        data.period_code ||
+        `${data.period_year}-${String(data.period_month).padStart(2, "0")}`;
+
+    // Keep period property for existing UI/error-message compatibility.
+    return {
+        ...data,
+        period: periodLabel
+    };
+
+}
+
+
+/*
+==========================================================
+VALIDATE ACCOUNTING PERIOD OPEN
+==========================================================
+*/
+
+async validateAccountingPeriod(accountingDate) {
+
+    const period =
+        await this.getAccountingPeriod(
+            accountingDate
+        );
+
+
+    const status =
+        String(
+            period.status || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    /*
+    ======================================================
+    CLOSED PERIOD
+    ======================================================
+    */
+
+    if (status === "closed") {
+
+        throw new Error(
+            `Accounting Period ${period.period} is Closed. ` +
+            `Transaction dated ${accountingDate} cannot be processed.`
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    UNKNOWN STATUS
+    FAIL CLOSED
+    ======================================================
+    */
+
+    if (status !== "open") {
+
+        throw new Error(
+            `Accounting Period ${period.period} is not Open.`
+        );
+
+    }
+
+
+    return period;
+
+}
+
+    /*
+    ==========================================================
+    CONSTANT
+    ==========================================================
+    */
+
+    get STATUS() {
+
+    return {
+
+        DRAFT: "Draft",
+
+        POSTED: "Posted",
+
+        VOID: "Void"
+
+    };
+
+}
+    
+   /*
+==========================================================
+GET ALL GENERAL JOURNAL
+==========================================================
+*/
+
+async getAll() {
+
+    const { data, error } = await supabase
+
+        .from(
+            TABLE.GL_JOURNAL
+        )
+
+        .select("*")
+
+        .order(
+            "journal_no",
+            {
+                ascending: true
+            }
+        );
+
+
+    
+
+
+    if (error) {
+
+        throw error;
+
+    }
+
+
+    return data ?? [];
+
+}
+/*
+==========================================================
+GET JOURNAL BY ID
+==========================================================
+*/
+
+async getById(id) {
+
+    try {
+
+        /*
+        ======================================================
+        HEADER
+        ======================================================
+        */
+
+        const {
+
+            data: header,
+
+            error: headerError
+
+        } = await supabase
+
+            .from(TABLE.GL_JOURNAL)
+
+            .select("*")
+
+            .eq("id", id)
+
+            .single();
+
+        if (headerError) {
+
+            throw headerError;
+
+        }
+
+        /*
+        ======================================================
+        DETAIL
+        ======================================================
+        */
+
+        const {
+
+        data: details,
+
+        error: detailError
+
+    } = await supabase
+
+        .from(TABLE.GL_JOURNAL_DETAIL)
+
+        .select(`
+            *,
+            mst_chart_of_accounts (
+                id,
+                account_code,
+                account_name
+            ),
+            mst_business_partner (
+                id,
+                bp_code,
+                bp_name
+            )
+        `)
+
+        .eq(
+            "journal_id",
+            id
+        )
+
+        .order(
+            "line_no",
+            {
+                ascending: true
+            }
+        );
+
+        if (detailError) {
+
+            throw detailError;
+
+        }
+        
+
+        /*
+        ======================================================
+        RESULT
+        ======================================================
+        */
+
+        return {
+
+            ...header,
+
+            details: details ?? []
+
+        };
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "GeneralJournalService.getById",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+
+/*
+==========================================================
+SEARCH GENERAL JOURNAL
+==========================================================
+*/
+
+async search(filter = {}) {
+
+    try {
+
+        let query = supabase
+
+            .from(TABLE.GL_JOURNAL)
+
+            .select("*");
+
+        /*
+        ======================================================
+        DATE
+        ======================================================
+        */
+
+        if (filter.dateFrom) {
+
+    query = query.gte(
+        "journal_date",
+        filter.dateFrom
+    );
+
+}
+
+if (filter.dateTo) {
+
+    query = query.lte(
+        "journal_date",
+        filter.dateTo
+    );
+
+}
+
+        /*
+        ======================================================
+        STATUS
+        ======================================================
+        */
+
+        if (
+
+            filter.status &&
+
+            filter.status !== "all"
+
+        ) {
+
+            query = query.eq(
+
+                "status",
+
+                filter.status
+
+            );
+
+        }
+
+        /*
+        ======================================================
+        KEYWORD
+        ======================================================
+        */
+
+        if (
+
+            filter.keyword &&
+
+            filter.keyword.length > 0
+
+        ) {
+
+            query = query.ilike(
+
+                filter.findBy,
+
+                `%${filter.keyword}%`
+
+            );
+
+        }
+
+        /*
+        ======================================================
+        ORDER
+        ======================================================
+        */
+
+        query = query
+
+    .order(
+        "journal_date",
+        {
+            ascending: false
+        }
+    )
+
+    .order(
+        "journal_no",
+        {
+            ascending: false
+        }
+    );
+        /*
+        ======================================================
+        EXECUTE
+        ======================================================
+        */
+
+        const {
+
+            data,
+
+            error
+
+        } = await query;
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        return data ?? [];
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "GeneralJournalService.search",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+CREATE GENERAL JOURNAL
+==========================================================
+*/
+
+async create(header, details = []) {
+
+    
+
+    try {
+
+        /*
+        ======================================================
+        RESOLVE TENANT COMPANY BEFORE INSERT
+        RLS requires company_id = finova_effective_company_id().
+        Never insert a GL journal without a verified tenant ID.
+        ======================================================
+        */
+
+        const effectiveCompanyId = await TenantContext.getCompanyId({ refresh: true });
+
+        if (!effectiveCompanyId) {
+            throw new Error(
+                "Perusahaan aktif tidak ditemukan. Silakan login ulang atau pilih perusahaan aktif sebelum menyimpan GL Journal."
+            );
+        }
+
+        if (
+            header.company_id &&
+            String(header.company_id) !== String(effectiveCompanyId)
+        ) {
+            throw new Error(
+                "Company ID pada jurnal tidak sesuai dengan perusahaan aktif. Jurnal tidak disimpan."
+            );
+        }
+
+        header.company_id = effectiveCompanyId;
+
+        /*
+        ======================================================
+        GENERATE JOURNAL NUMBER
+        ======================================================
+        */
+
+        if (!header.journal_no?.trim()) {
+
+            header.journal_no =
+                await this.generateDocumentNumber();
+
+        }
+
+        /*
+======================================================
+DEFAULT STATUS
+======================================================
+*/
+
+header.status ??=
+    this.STATUS.DRAFT;
+
+
+/*
+======================================================
+DEFAULT SOURCE
+MANUAL GENERAL JOURNAL
+======================================================
+*/
+
+header.source_module ??=
+    "GLJ";
+
+
+header.source_document_type ??=
+    "MANUAL_JOURNAL";
+
+
+header.source_document_id ??=
+    null;
+
+
+/*
+======================================================
+SOURCE DOCUMENT REFERENCE
+AP / AR / OTHER MODULE
+======================================================
+*/
+
+header.source_invoice_no ??=
+    null;
+
+
+header.source_po_no ??=
+    null;
+
+        /*
+        ======================================================
+        VALIDATE
+        ======================================================
+        */
+
+        this.validateHeader(header);
+
+        this.validateDetail(details);
+
+
+        /*
+        ==========================================================
+        ACCOUNTING PERIOD LOCK
+        ==========================================================
+        */
+
+        await this.validateAccountingPeriod(
+            header.journal_date
+        );
+
+        /*
+        ======================================================
+        BUILD GL DETAIL
+        ======================================================
+        */
+
+        const journalDetails =
+
+            this.buildJournalDetail(details);
+        
+        /*
+        ======================================================
+        CALCULATE TOTAL
+        ======================================================
+        */
+
+        const total =
+
+            this.calculateTotal(
+
+                journalDetails
+
+            );
+
+        header.total_debit =
+
+            total.totalDebit;
+
+        header.total_credit =
+
+            total.totalCredit;
+/*
+==========================================================
+REMOVE EMPTY ID
+==========================================================
+*/
+
+if (header.id == null) {
+
+    delete header.id;
+
+}
+
+
+        /*
+==========================================================
+INSERT HEADER
+==========================================================
+*/
+
+
+const {
+
+    data: journal,
+
+    error: headerError
+
+} = await supabase
+
+    .from(TABLE.GL_JOURNAL)
+    
+
+    .insert(header)
+    
+
+    .select()
+
+    .single();
+
+/*
+==================================================
+HEADER INSERT ERROR
+==================================================
+*/
+
+if (
+    headerError
+) {
+
+    console.error(
+        "========== HEADER INSERT ERROR =========="
+    );
+
+    console.error(
+        "MESSAGE :",
+        headerError.message
+    );
+
+    console.error(
+        "DETAILS :",
+        headerError.details
+    );
+
+    console.error(
+        "HINT :",
+        headerError.hint
+    );
+
+    console.error(
+        "CODE :",
+        headerError.code
+    );
+
+    console.error(
+        "FULL ERROR :",
+        headerError
+    );
+
+    console.error(
+        "=========================================="
+    );
+
+
+    throw headerError;
+
+}
+
+
+/*
+==================================================
+HEADER INSERT SUCCESS
+==================================================
+*/
+/*
+        ======================================================
+        PREPARE DETAIL
+        ======================================================
+        */
+
+        const insertDetails =
+    journalDetails.map(item => ({
+
+        journal_id:
+            journal.id,
+
+        // Detail must inherit the same tenant company as its header.
+        company_id:
+            journal.company_id,
+
+        line_no:
+            item.line_no,
+
+        account_id:
+            item.account_id,
+
+        business_partner_id:
+            item.business_partner_id,
+
+        description:
+            item.description,
+
+        debit:
+            item.debit,
+
+        credit:
+            item.credit,
+
+        transaction_group:
+            item.transaction_group
+
+    }));
+
+/*
+==========================================================
+INSERT DETAIL
+==========================================================
+*/
+
+
+if (
+    insertDetails.length
+) {
+
+    const {
+
+        data: insertedDetails,
+
+        error: detailError
+
+    } = await supabase
+
+        .from(
+            TABLE.GL_JOURNAL_DETAIL
+        )
+
+        .insert(
+            insertDetails
+        )
+
+        .select();
+
+
+    /*
+    ==================================================
+    DETAIL INSERT ERROR
+    ==================================================
+    */
+
+    if (
+        detailError
+    ) {
+
+        console.error(
+            "========== DETAIL INSERT ERROR =========="
+        );
+
+        console.error(
+            "MESSAGE :",
+            detailError.message
+        );
+
+        console.error(
+            "DETAILS :",
+            detailError.details
+        );
+
+        console.error(
+            "HINT :",
+            detailError.hint
+        );
+
+        console.error(
+            "CODE :",
+            detailError.code
+        );
+
+        console.error(
+            "FULL ERROR :",
+            detailError
+        );
+
+        console.error(
+            "=========================================="
+        );
+
+
+        /*
+        ==============================================
+        ROLLBACK JOURNAL HEADER
+        ==============================================
+        */
+
+        await supabase
+
+            .from(
+                TABLE.GL_JOURNAL
+            )
+
+            .delete()
+
+            .eq(
+                "id",
+                journal.id
+            );
+
+
+        throw detailError;
+
+    }
+
+
+    
+
+}
+
+        /*
+        ======================================================
+        RETURN
+        ======================================================
+        */
+
+        return journal;
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "GeneralJournalService.create",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+
+/*
+==========================================================
+UPDATE GENERAL JOURNAL
+WITH ACCOUNTING PERIOD LOCK
+==========================================================
+*/
+
+async update(id, header, details = []) {
+
+    try {
+
+        /*
+        ======================================================
+        VALIDATE ID
+        ======================================================
+        */
+
+        if (!id) {
+
+            throw new Error(
+                "General Journal ID is required."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        VALIDATE HEADER & DETAIL
+        ======================================================
+        */
+
+        this.validateHeader(header);
+
+        this.validateDetail(details);
+
+        // Build the normalized database detail rows before calculating totals.
+        // This declaration was missing and caused ReferenceError: journalDetails is not defined.
+        const journalDetails = this.buildJournalDetail(details);
+
+        /*
+        ======================================================
+        GET EXISTING JOURNAL
+        ======================================================
+
+        IMPORTANT:
+
+        We must validate the ORIGINAL journal date first.
+
+        Example:
+
+        Original Journal Date:
+        31-08-2026
+        Period:
+        2026-08 CLOSED
+
+        User must NOT be allowed to change it to:
+
+        01-09-2026
+
+        just to bypass Accounting Period Lock.
+        ======================================================
+        */
+
+        const existingJournal =
+            await this.getById(id);
+
+
+        if (!existingJournal) {
+
+            throw new Error(
+                "General Journal not found."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        ACCOUNTING PERIOD LOCK
+        ORIGINAL JOURNAL DATE
+        ======================================================
+        */
+
+        await this.validateAccountingPeriod(
+            existingJournal.journal_date
+        );
+
+
+        /*
+        ======================================================
+        ACCOUNTING PERIOD LOCK
+        NEW JOURNAL DATE
+        ======================================================
+        */
+
+        await this.validateAccountingPeriod(
+            header.journal_date
+        );
+
+
+        
+
+
+        /*
+        ======================================================
+        TOTAL
+        ======================================================
+        */
+
+        const total =
+            this.calculateTotal(
+                journalDetails
+            );
+
+
+        header.total_debit =
+            total.totalDebit;
+
+
+        header.total_credit =
+            total.totalCredit;
+
+
+        /*
+        ======================================================
+        UPDATE HEADER
+        ======================================================
+        */
+
+        const {
+
+            error: headerError
+
+        } = await supabase
+
+            .from(
+                TABLE.GL_JOURNAL
+            )
+
+            .update(
+                header
+            )
+
+            .eq(
+                "id",
+                id
+            );
+
+
+        if (headerError) {
+
+            throw headerError;
+
+        }
+
+
+        /*
+        ======================================================
+        DELETE OLD DETAIL
+        ======================================================
+        */
+
+        const {
+
+            error: deleteError
+
+        } = await supabase
+
+            .from(
+                TABLE.GL_JOURNAL_DETAIL
+            )
+
+            .delete()
+
+            .eq(
+                "journal_id",
+                id
+            );
+
+
+        if (deleteError) {
+
+            throw deleteError;
+
+        }
+
+
+        /*
+        ======================================================
+        PREPARE DETAIL
+        ======================================================
+        */
+
+
+        const insertDetail =
+
+            journalDetails.map(
+                item => ({
+
+                    journal_id:
+                        id,
+
+                    // Keep detail rows in the same tenant as the journal header.
+                    company_id:
+                        existingJournal.company_id,
+
+                    line_no:
+                        item.line_no,
+
+                    account_id:
+                        item.account_id,
+
+                    business_partner_id:
+                        item.business_partner_id,
+
+                    description:
+                        item.description,
+
+                    debit:
+                        item.debit,
+
+                    credit:
+                        item.credit,
+
+                    transaction_group:
+                        item.transaction_group
+
+                })
+            );
+
+
+        /*
+        ======================================================
+        INSERT DETAIL
+        ======================================================
+        */
+
+        if (
+            insertDetail.length > 0
+        ) {
+
+            const {
+
+                error: detailError
+
+            } = await supabase
+
+                .from(
+                    TABLE.GL_JOURNAL_DETAIL
+                )
+
+                .insert(
+                    insertDetail
+                );
+
+
+            if (detailError) {
+
+                throw detailError;
+
+            }
+
+        }
+
+
+        /*
+        ======================================================
+        SUCCESS
+        ======================================================
+        */
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GeneralJournalService.update",
+            error
+        );
+
+
+        throw error;
+
+    }
+
+}
+
+/*
+==========================================================
+DELETE GENERAL JOURNAL
+DIAGNOSTIC VERSION
+==========================================================
+*/
+
+/*
+==========================================================
+DELETE GENERAL JOURNAL
+ATOMIC DATABASE RPC
+==========================================================
+*/
+
+async delete(id) {
+
+    try {
+
+        /*
+        ======================================================
+        VALIDATE ID
+        ======================================================
+        */
+
+        if (!id) {
+
+            throw new Error(
+                "General Journal ID is required."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        LOG
+        ======================================================
+        */
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "FINOVA DELETE JOURNAL - START"
+        );
+
+        console.log(
+            "DELETE JOURNAL ID:",
+            id
+        );
+
+
+        /*
+        ======================================================
+        AUTH CHECK
+        ======================================================
+        */
+
+        const {
+
+            data: authData,
+
+            error: authError
+
+        } = await supabase.auth.getUser();
+
+
+        console.log(
+            "DELETE AUTH USER:",
+            authData?.user?.id || null
+        );
+
+        console.log(
+            "DELETE AUTH ERROR:",
+            authError || null
+        );
+
+
+        if (authError) {
+
+            throw authError;
+
+        }
+
+
+        if (!authData?.user) {
+
+            throw new Error(
+                "User is not authenticated."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        DELETE VIA ATOMIC RPC
+        ======================================================
+
+        IMPORTANT:
+
+        Jangan melakukan direct DELETE ke
+        trx_gl_journal di frontend.
+
+        RPC menangani:
+
+        1. Validate company
+        2. Validate journal
+        3. Validate Draft
+        4. Validate accounting period
+        5. Reset linked AP
+        6. Delete GL header
+        7. GL detail CASCADE
+        8. Commit / rollback
+        ======================================================
+        */
+
+        console.log(
+            "DELETE JOURNAL - CALLING RPC..."
+        );
+
+
+        const {
+
+            data: deleteResult,
+
+            error: deleteError
+
+        } = await supabase.rpc(
+
+            "finova_delete_gl_journal",
+
+            {
+                p_journal_id: id
+            }
+
+        );
+
+
+        /*
+        ======================================================
+        RPC ERROR
+        ======================================================
+        */
+
+        if (deleteError) {
+
+            console.error(
+                "=========================================="
+            );
+
+            console.error(
+                "GENERAL JOURNAL DELETE RPC ERROR"
+            );
+
+            console.error(
+                "CODE:",
+                deleteError.code
+            );
+
+            console.error(
+                "MESSAGE:",
+                deleteError.message
+            );
+
+            console.error(
+                "DETAILS:",
+                deleteError.details
+            );
+
+            console.error(
+                "HINT:",
+                deleteError.hint
+            );
+
+            console.error(
+                "FULL ERROR:",
+                JSON.stringify(
+                    deleteError,
+                    null,
+                    2
+                )
+            );
+
+            console.error(
+                "=========================================="
+            );
+
+
+            // Convert foreign-key failures into a clear, actionable message.
+            if (deleteError.code === "23503") {
+                const friendlyError = new Error(
+                    "Jurnal tidak dapat dihapus karena masih digunakan oleh transaksi lain, termasuk kemungkinan transaksi penyusutan Fixed Asset. Periksa dan selesaikan relasi transaksi terkait terlebih dahulu."
+                );
+                friendlyError.code = deleteError.code;
+                friendlyError.details = deleteError.details;
+                throw friendlyError;
+            }
+
+            throw deleteError;
+
+        }
+
+
+        /*
+        ======================================================
+        RPC RESULT
+        ======================================================
+        */
+
+        console.log(
+            "DELETE JOURNAL - RPC RESULT:",
+            deleteResult
+        );
+
+
+        /*
+        ======================================================
+        SUCCESS VALIDATION
+        ======================================================
+        */
+
+        if (
+            deleteResult !== true
+        ) {
+
+            throw new Error(
+                `General Journal ${id} was not deleted.`
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        SUCCESS
+        ======================================================
+        */
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "GENERAL JOURNAL DELETED SUCCESSFULLY:",
+            id
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GeneralJournalService.delete:",
+            error
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+DUPLICATE GENERAL JOURNAL
+==========================================================
+*/
+
+async duplicate(id){
+
+    try{
+
+        /*
+        ======================================================
+        GET ORIGINAL
+        ======================================================
+        */
+
+        const original =
+            await this.getById(id);
+
+        if(!original){
+
+            throw new Error(
+
+                "Journal not found."
+
+            );
+
+        }
+
+        /*
+        ======================================================
+        NEW HEADER
+        ======================================================
+        */
+
+        const {
+
+    details,
+
+    id: _,
+
+    created_at,
+
+    updated_at,
+
+    ...header
+
+} = original;
+
+        header.journal_no =
+
+    await this.generateDocumentNumber();
+
+        header.status=
+            this.STATUS.DRAFT;
+
+        header.journal_date =
+
+    new Date()
+
+        .toISOString()
+
+        .substring(0, 10);
+
+        /*
+        ======================================================
+        CREATE NEW
+        ======================================================
+        */
+
+        return await this.create(
+
+            header,
+
+            details
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+
+            "GeneralJournalService.duplicate",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+GENERATE DOCUMENT NUMBER
+==========================================================
+*/
+
+async generateDocumentNumber() {
+
+    try {
+
+        /*
+        ======================================================
+        PREFIX
+        ======================================================
+        */
+
+        const today = new Date();
+
+        const yyyy =
+            today.getFullYear();
+
+        const mm =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        const prefix =
+            `GJ-${yyyy}${mm}`;
+
+        /*
+        ======================================================
+        GET LAST DOCUMENT
+        ======================================================
+        */
+
+        const {
+
+    data,
+
+    error
+
+} = await supabase
+
+    .from(TABLE.GL_JOURNAL)
+
+    .select("journal_no")
+
+    .ilike(
+
+        "journal_no",
+
+        `${prefix}%`
+
+    )
+
+    .order(
+
+        "journal_no",
+
+        {
+
+            ascending: false
+
+        }
+
+    )
+
+    .limit(1);
+
+        if (error) {
+
+    throw error;
+
+}
+
+        /*
+        ======================================================
+        NEXT RUNNING NUMBER
+        ======================================================
+        */
+
+        let running = 1;
+
+        if (
+
+            data &&
+
+            data.length > 0
+
+        ) {
+
+            const lastDocument =
+                data[0].journal_no;
+
+            const number =
+                lastDocument.split("-").pop();
+
+            running =
+                Number(number) + 1;
+
+        }
+
+        /*
+        ======================================================
+        RESULT
+        ======================================================
+        */
+
+        return `${prefix}-${String(running).padStart(6, "0")}`;
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "GeneralJournalService.generateDocumentNumber",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+GET CHART OF ACCOUNT
+==========================================================
+*/
+
+/*
+==========================================================
+GET CHART OF ACCOUNT
+==========================================================
+*/
+
+async getCOA() {
+
+    try {
+
+        const { data, error } = await supabase
+
+            .from(TABLE.CHART_OF_ACCOUNTS)
+
+            .select(
+                "id, account_code, account_name"
+            )
+
+            .eq(
+                "status",
+                true
+            )
+
+            .order(
+                "account_code",
+                {
+                    ascending: true
+                }
+            );
+
+        
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        return data ?? [];
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GeneralJournalService.getCOA",
+            error
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+GET BUSINESS PARTNER
+==========================================================
+*/
+
+/*
+==========================================================
+GET BUSINESS PARTNER
+==========================================================
+*/
+
+async getBusinessPartner() {
+
+    try {
+
+        const { data, error } = await supabase
+
+            .from(TABLE.BUSINESS_PARTNER)
+
+            .select(
+                "id, bp_code, bp_name"
+            )
+
+            .eq(
+                "is_active",
+                true
+            )
+
+            .order(
+                "bp_code",
+                {
+                    ascending: true
+                }
+            );
+
+        
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        return data ?? [];
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GeneralJournalService.getBusinessPartner",
+            error
+        );
+
+        throw error;
+
+    }
+
+}
+
+/*
+==========================================================
+GET COA BY ID
+==========================================================
+*/
+
+async getCOAById(id) {
+
+    try {
+
+        const {
+
+            data,
+
+            error
+
+        } = await supabase
+
+            .from(TABLE.CHART_OF_ACCOUNTS)
+
+            .select("*")
+
+            .eq(
+
+                "id",
+
+                id
+
+            )
+
+            .single();
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        return data;
+
+    }
+
+    catch (error) {
+
+    console.error(
+        "GeneralJournalService.getCOAById",
+        error
+    );
+
+    throw error;
+
+}
+}
+
+/*
+==========================================================
+GET BUSINESS PARTNER BY ID
+==========================================================
+*/
+
+async getBusinessPartnerById(id) {
+
+    try {
+
+        const {
+
+            data,
+
+            error
+
+        } = await supabase
+
+            .from(TABLE.BUSINESS_PARTNER)
+
+            .select("*")
+
+            .eq(
+
+                "id",
+
+                id
+
+            )
+
+            .single();
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "GeneralJournalService.getBusinessPartnerById",
+
+            error
+
+        );
+
+        throw error;
+
+    }
+
+}
+/*
+==========================================================
+VALIDATE HEADER
+==========================================================
+*/
+
+validateHeader(header = {}) {
+
+    if (!header) {
+
+        throw new Error(
+            "Journal Header is required."
+        );
+
+    }
+
+    /*
+    ======================================================
+    ACCOUNTING DATE
+    ======================================================
+    */
+
+    if (!header.journal_date) {
+
+        throw new Error(
+            "Accounting Date is required."
+        );
+
+    }
+    if (!header.source_module) {
+
+    header.source_module = "GENERAL";
+
+}
+
+    /*
+    ======================================================
+    JOURNAL NUMBER
+    ======================================================
+    */
+
+    if (!header.journal_no) {
+
+        throw new Error(
+            "Journal Number is required."
+        );
+
+    }
+
+    /*
+    ======================================================
+    DESCRIPTION
+    ======================================================
+    */
+
+    if (!header.description?.trim()) {
+
+        throw new Error(
+            "Description is required."
+        );
+
+    }
+
+}
+
+/*
+==========================================================
+VALIDATE DETAIL
+==========================================================
+*/
+
+validateDetail(details = []) {
+
+    if (!Array.isArray(details)) {
+
+        throw new Error(
+            "Journal Detail is invalid."
+        );
+
+    }
+
+    if (details.length === 0) {
+
+        throw new Error(
+            "Journal Detail cannot be empty."
+        );
+
+    }
+
+    details.forEach((item, index) => {
+
+        if (!item.debit_account_id) {
+
+            throw new Error(
+
+                `Debit Account is required on line ${index + 1}.`
+
+            );
+
+        }
+
+        if (!item.credit_account_id) {
+
+            throw new Error(
+
+                `Credit Account is required on line ${index + 1}.`
+
+            );
+
+        }
+
+        const amount =
+            Number(item.amount || 0);
+
+        if (amount <= 0) {
+
+            throw new Error(
+
+                `Amount must be greater than zero on line ${index + 1}.`
+
+            );
+
+        }
+
+    });
+
+}
+
+/*
+==========================================================
+BUILD JOURNAL DETAIL
+UI
+↓↓↓
+DATABASE
+==========================================================
+*/
+
+buildJournalDetail(details = []) {
+
+    return details.flatMap((item, index) => {
+
+        const amount =
+            Number(item.amount || 0);
+
+        /*
+        ======================================================
+        TRANSACTION GROUP
+        ======================================================
+        */
+
+        const transactionGroup =
+            crypto.randomUUID();
+
+        return [
+
+            /*
+            ==================================================
+            DEBIT
+            ==================================================
+            */
+
+            {
+
+                line_no:
+                    (index * 2) + 1,
+
+                account_id:
+                    Number(item.debit_account_id),
+
+                business_partner_id:
+                    item.business_partner_id
+                        ? Number(
+                            item.business_partner_id
+                        )
+                        : null,
+
+                description:
+                    item.description || "",
+
+                debit:
+                    amount,
+
+                credit:
+                    0,
+
+                transaction_group:
+                    transactionGroup
+
+            },
+
+            /*
+            ==================================================
+            CREDIT
+            ==================================================
+            */
+
+            {
+
+                line_no:
+                    (index * 2) + 2,
+
+                account_id:
+                    Number(item.credit_account_id),
+
+                business_partner_id:
+                    item.business_partner_id
+                        ? Number(
+                            item.business_partner_id
+                        )
+                        : null,
+
+                description:
+                    item.description || "",
+
+                debit:
+                    0,
+
+                credit:
+                    amount,
+
+                transaction_group:
+                    transactionGroup
+
+            }
+
+        ];
+
+    });
+
+}
+/*
+==========================================================
+MERGE JOURNAL DETAIL
+DATABASE
+↓↓↓
+UI
+==========================================================
+*/
+
+mergeJournalDetail(details = []) {
+
+    const result = [];
+
+    for (let i = 0; i < details.length; i += 2) {
+
+        const debitLine =
+            details[i];
+
+        const creditLine =
+            details[i + 1];
+
+        if (!debitLine || !creditLine) {
+
+            continue;
+
+        }
+
+        result.push({
+
+            description:
+
+                debitLine.description || "",
+
+            debit_account_id:
+
+                debitLine.account_id,
+
+            debit_account_code:
+
+                debitLine.mst_chart_of_accounts?.account_code || "",
+
+            debit_account_name:
+
+                debitLine.mst_chart_of_accounts?.account_name || "",
+
+            credit_account_id:
+
+                creditLine.account_id,
+
+            credit_account_code:
+
+                creditLine.mst_chart_of_accounts?.account_code || "",
+
+            credit_account_name:
+
+                creditLine.mst_chart_of_accounts?.account_name || "",
+
+            business_partner_id:
+
+                debitLine.business_partner_id,
+
+            business_partner_name:
+
+                debitLine.mst_business_partner?.bp_name || "",
+
+            amount:
+
+                Number(
+
+                    debitLine.debit || creditLine.credit || 0
+
+                )
+
+        });
+
+    }
+
+    return result;
+
+}
+
+/*
+==========================================================
+CALCULATE TOTAL
+==========================================================
+*/
+
+calculateTotal(details = []) {
+
+    let totalDebit = 0;
+
+    let totalCredit = 0;
+
+    details.forEach(item => {
+
+        totalDebit +=
+            Number(item.debit || 0);
+
+        totalCredit +=
+            Number(item.credit || 0);
+
+    });
+
+    return {
+
+        totalDebit,
+
+        totalCredit
+
+    };
+
+}
+
+/*
+==========================================================
+CHECK BALANCE
+==========================================================
+*/
+
+checkBalance(details = []) {
+
+    const total =
+
+        this.calculateTotal(details);
+
+    return (
+
+        total.totalDebit ===
+
+        total.totalCredit
+
+    );
+
+}
+
+
+/*
+==========================================================
+FIXED ASSET DEPRECIATION STATUS SYNC
+==========================================================
+
+The depreciation register is marked Posted only after its linked
+GL journal is Posted. If that GL journal is voided, the linked
+fixed-asset depreciation row is marked Void so the period can be
+re-created without counting the voided amount in accumulated
+commercial depreciation.
+*/
+
+async syncFixedAssetDepreciationStatus(journal, targetStatus) {
+
+    if (
+        !journal?.id ||
+        String(journal.source_module || "").trim().toUpperCase() !== "FA" ||
+        String(journal.source_document_type || "").trim().toUpperCase() !== "FA_DEPRECIATION"
+    ) {
+        return false;
+    }
+
+    const { data, error } = await supabase
+        .from("trx_fixed_asset_depreciation")
+        .update({
+            status: targetStatus,
+            updated_at: new Date().toISOString()
+        })
+        .eq("gl_journal_id", journal.id)
+        .eq("status", targetStatus === this.STATUS.POSTED ? "Draft" : "Posted")
+        .select("id");
+
+    if (error) {
+        throw new Error(
+            `GL journal status is ${targetStatus}, but Fixed Asset depreciation status sync failed: ${error.message || error.details || "Unknown database error"}`
+        );
+    }
+
+    return Array.isArray(data) && data.length > 0;
+
+}
+
+/*
+==========================================================
+POST JOURNAL
+WITH ACCOUNTING PERIOD LOCK
+DRAFT / VOID -> POSTED
+==========================================================
+*/
+
+async post(id) {
+
+    /*
+    ======================================================
+    VALIDATION
+    ======================================================
+    */
+
+    if (!id) {
+
+        throw new Error(
+            "Journal ID is required."
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    GET JOURNAL
+    ======================================================
+    */
+
+    const journal =
+        await this.getById(id);
+
+
+    if (!journal) {
+
+        throw new Error(
+            "Journal not found."
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    NORMALIZE STATUS
+    ======================================================
+    */
+
+    const currentStatus =
+        String(
+            journal.status
+            || ""
+        )
+        .trim()
+        .toUpperCase();
+
+
+    /*
+    ======================================================
+    ALREADY POSTED
+    ======================================================
+    */
+
+    if (
+        currentStatus ===
+        "POSTED"
+    ) {
+
+        await this.syncFixedAssetDepreciationStatus(
+            journal,
+            this.STATUS.POSTED
+        );
+
+        return true;
+
+    }
+
+
+    /*
+    ======================================================
+    FINOVA RULE
+
+    DRAFT -> POSTED
+    VOID  -> POSTED
+    ======================================================
+    */
+
+    if (
+        currentStatus !== "DRAFT"
+        &&
+        currentStatus !== "VOID"
+    ) {
+
+        throw new Error(
+            `Journal status "${journal.status || ""}" cannot be posted.`
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    ACCOUNTING PERIOD LOCK
+    ======================================================
+    */
+
+    await this.validateAccountingPeriod(
+        journal.journal_date
+    );
+
+
+    /*
+    ======================================================
+    VALIDATE JOURNAL DETAILS
+    ======================================================
+    */
+
+    const details =
+        Array.isArray(journal.details)
+            ? journal.details
+            : [];
+
+
+    if (
+        details.length === 0
+    ) {
+
+        throw new Error(
+            "Journal Detail cannot be empty."
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    VALIDATE DEBIT / CREDIT VALUES
+    ======================================================
+    */
+
+    const hasInvalidAmount =
+        details.some(item => {
+
+            const debit =
+                Number(item.debit ?? 0);
+
+            const credit =
+                Number(item.credit ?? 0);
+
+            return (
+                !Number.isFinite(debit)
+                ||
+                !Number.isFinite(credit)
+                ||
+                debit < 0
+                ||
+                credit < 0
+            );
+
+        });
+
+
+    if (
+        hasInvalidAmount
+    ) {
+
+        throw new Error(
+            "Journal contains invalid debit or credit amount."
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    VALIDATE JOURNAL BALANCE
+    ======================================================
+    */
+
+    const total =
+        this.calculateTotal(
+            details
+        );
+
+
+    const totalDebit =
+        Number(
+            total.totalDebit
+        );
+
+
+    const totalCredit =
+        Number(
+            total.totalCredit
+        );
+
+
+    if (
+        !Number.isFinite(totalDebit)
+        ||
+        !Number.isFinite(totalCredit)
+    ) {
+
+        throw new Error(
+            "Journal total debit or credit is invalid."
+        );
+
+    }
+
+
+    if (
+        !this.checkBalance(
+            details
+        )
+    ) {
+
+        throw new Error(
+            `Journal is not balanced. ` +
+            `Debit: ${totalDebit}, ` +
+            `Credit: ${totalCredit}.`
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    POST JOURNAL
+
+    IMPORTANT:
+    ONLY UPDATE VERIFIED FIELD.
+    ======================================================
+    */
+
+    const {
+        error
+    } = await supabase
+
+        .from(
+            TABLE.GL_JOURNAL
+        )
+
+        .update({
+
+            status:
+                this.STATUS.POSTED
+
+        })
+
+        .eq(
+            "id",
+            id
+        );
+
+
+    if (error) {
+
+        throw error;
+
+    }
+
+    await this.syncFixedAssetDepreciationStatus(
+        journal,
+        this.STATUS.POSTED
+    );
+
+    return true;
+
+}
+/*
+==========================================================
+VOID JOURNAL
+WITH ACCOUNTING PERIOD LOCK
+==========================================================
+*/
+
+async voidJournal(id, reason = "") {
+
+    try {
+
+        /*
+        ======================================================
+        GET JOURNAL
+        ======================================================
+        */
+
+        const journal =
+            await this.getById(id);
+
+
+        if (!journal) {
+
+            throw new Error(
+                "Journal not found."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        VALIDATE STATUS
+        ======================================================
+        */
+
+        if (
+            journal.status !==
+            this.STATUS.POSTED
+        ) {
+
+            throw new Error(
+                "Only Posted Journal can be void."
+            );
+
+        }
+
+
+        /*
+        ======================================================
+        ACCOUNTING PERIOD LOCK
+        ======================================================
+        */
+
+        await this.validateAccountingPeriod(
+            journal.journal_date
+        );
+
+
+        /*
+        ======================================================
+        VOID
+        ======================================================
+        */
+
+        const {
+            error
+        } = await supabase
+
+            .from(
+                TABLE.GL_JOURNAL
+            )
+
+            .update({
+
+                status:
+                    this.STATUS.VOID,
+
+                void_reason:
+                    reason,
+
+                void_at:
+                    new Date().toISOString()
+
+            })
+
+            .eq(
+                "id",
+                id
+            );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        await this.syncFixedAssetDepreciationStatus(
+            journal,
+            this.STATUS.VOID
+        );
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GeneralJournalService.voidJournal",
+            error
+        );
+
+        throw error;
+
+    }
+
+}
+
+
+}

@@ -1,0 +1,487 @@
+/*
+===========================================
+FINOVA ACCOUNTING SYSTEM
+Layout
+Version : 1.0.0
+===========================================
+*/
+/*
+==========================================================
+FINOVA FULL HEIGHT
+==========================================================
+*/
+
+html,
+body {
+
+    width: 100%;
+
+    min-height: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+#finova-app {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+}
+
+/* ===========================================
+   APPLICATION
+=========================================== */
+
+.finova-layout {
+
+    display: flex;
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    height: 100vh;
+
+    background: var(--body-bg);
+
+}
+
+/* ===========================================
+   SIDEBAR CONTAINER
+=========================================== */
+
+#finova-sidebar {
+
+    width: var(--sidebar-width);
+
+    min-width: var(--sidebar-width);
+
+    height: 100vh;
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    z-index: var(--z-sidebar);
+
+}
+
+/* ===========================================
+   MAIN CONTAINER
+=========================================== */
+
+.finova-main {
+
+    display: flex;
+
+    flex-direction: column;
+
+    width: calc(100% - var(--sidebar-width));
+
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
+
+    background: var(--content-bg);
+
+}
+
+/* ===========================================
+   TOPBAR
+=========================================== */
+
+#finova-topbar {
+
+    width: 100%;
+
+    height: var(--topbar-height);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: var(--z-topbar);
+
+}
+
+/* Hide the global top bar while a module modal is open. The workspace tabs
+   remain available, and the top bar returns automatically after modal close. */
+html.finova-module-modal-open #finova-topbar {
+    display: none !important;
+}
+
+/* ===========================================
+   CONTENT
+=========================================== */
+
+#finova-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    padding: var(--space-lg);
+
+    overflow: auto;
+
+}
+
+/* ===========================================
+   FOOTER
+=========================================== */
+
+#finova-footer {
+
+    width: 100%;
+
+    margin-top: auto;
+
+    flex-shrink: 0;
+
+}
+/* ===========================================
+   PAGE CONTAINER
+=========================================== */
+
+.finova-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    width:100%;
+
+}
+
+.finova-page-content{
+
+    width:100%;
+
+}
+/* ===========================================================
+   FINOVA DESIGN SYSTEM
+   Version : 1.0.0
+=========================================================== */
+
+
+/* ===========================================================
+   PAGE HEADER
+=========================================================== */
+
+.finova-page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:24px;
+
+    margin-bottom:24px;
+
+}
+
+.finova-page-header-left{
+
+    flex:1;
+
+}
+
+.finova-page-title{
+
+    margin:0;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    line-height:1.2;
+
+    letter-spacing:-0.3px;
+
+    color:var(--text-primary);
+
+}
+
+.finova-page-subtitle{
+
+    margin-top:4px;
+
+    margin-bottom:0;
+
+    font-size:13px;
+
+    line-height:1.4;
+
+    color:var(--text-secondary);
+
+}
+
+.finova-page-header-right{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+}
+
+
+/* ===========================================================
+   GLOBAL BUTTON
+=========================================================== */
+
+.finova-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    height:38px;
+
+    min-height:38px;
+
+    padding:0 16px;
+
+    border-radius:6px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    line-height:1;
+
+    white-space:nowrap;
+
+}
+
+
+/* Full Width */
+
+.finova-btn-block{
+
+    width:100%;
+
+}
+
+
+/* ===========================================================
+   GLOBAL FORM CONTROL
+=========================================================== */
+
+.finova-control{
+
+    height:38px;
+
+    min-height:38px;
+
+    border-radius:6px;
+
+    font-size:13px;
+
+    box-sizing:border-box;
+
+}
+
+
+/* Focus */
+
+.finova-control:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:none;
+
+}
+
+
+/* ===========================================================
+   FORM LABEL
+=========================================================== */
+
+.finova-label{
+
+    margin-bottom:6px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:var(--text-primary);
+
+}
+/* ==========================================================
+   PAGE FLEX HEIGHT FIX
+========================================================== */
+
+#finova-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:0;
+
+}
+
+
+.finova-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    min-height:0;
+
+}
+
+
+.finova-page-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+}
+
+
+.gl-journal-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    min-height:0;
+
+}
+/*
+==========================================================
+ACCOUNT PAYABLE
+FULL HEIGHT LAYOUT
+==========================================================
+*/
+
+.ap-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    width: 100%;
+
+    min-height: 0;
+
+    height: 100%;
+
+}
+
+
+/*
+==========================================================
+AP TABLE CARD
+==========================================================
+*/
+
+.ap-page .finova-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+}
+
+
+/*
+==========================================================
+AP TABLE CARD BODY
+==========================================================
+*/
+
+.ap-page .finova-table-card > .finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+}
+
+
+/*
+==========================================================
+AP TABLE CONTAINER
+==========================================================
+*/
+
+.ap-page .finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+}
+
+
+/*
+==========================================================
+AP TABLE
+==========================================================
+*/
+
+.ap-page .table-responsive {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow: auto;
+
+}
+
+
+.ap-page .finova-pagination-wrapper {
+
+    flex-shrink: 0;
+
+    width: 100%;
+
+}

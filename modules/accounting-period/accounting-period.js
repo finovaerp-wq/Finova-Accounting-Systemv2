@@ -1,0 +1,3488 @@
+import { applyMasterViewOnlyForStaff } from "../../service/master-view-access.js";
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE  : ACCOUNTING PERIOD
+FILE    : accounting-period.js
+VERSION : 1.0.0 FINAL
+==========================================================
+*/
+
+import {
+    AccountingPeriodService
+} from "../../service/accounting-period.service.js";
+
+import {
+    supabase
+} from "../../assets/js/core/supabase.js";
+
+
+export class AccountingPeriod {
+
+
+    /*
+    ======================================================
+    CONSTRUCTOR
+    ======================================================
+    */
+
+    constructor() {
+
+        /*
+        ==================================================
+        SERVICE
+        ==================================================
+        */
+
+        this.service =
+            new AccountingPeriodService();
+
+
+        /*
+        ==================================================
+        DATA
+        ==================================================
+        */
+
+        this.data =
+            [];
+
+        this.filteredData =
+            [];
+
+
+        /*
+        ==================================================
+        FILTER DOM
+        ==================================================
+        */
+
+        this.tableBody =
+            null;
+
+        this.filterYear =
+            null;
+
+        this.filterStatus =
+            null;
+
+        this.filterSearch =
+            null;
+
+        this.btnFind =
+            null;
+
+        this.btnRefresh =
+            null;
+
+
+        /*
+        ==================================================
+        ACTION MODAL
+        ==================================================
+        */
+
+        this.actionModal =
+            null;
+
+        this.viewModalElement = null;
+        this.viewModal = null;
+
+        this.selectedPeriod =
+            null;
+
+        this.selectedAction =
+            null;
+
+        this.periodHistoryCache =
+            new Map();
+        
+        /*
+        ==================================================
+        ACCESS CONTROL
+        ==================================================
+        */
+
+        this.currentUser =
+            null;
+
+        this.currentUserProfile =
+            null;
+
+        this.isManager =
+            false;
+
+
+        /*
+        ==================================================
+        SELF INITIALIZE
+        ==================================================
+        */
+
+        this.init();
+
+    }
+
+
+    async init() {
+
+    try {
+
+        this.cacheDom();
+
+        /*
+        ==================================================
+        LOAD CURRENT USER ACCESS
+        ==================================================
+        */
+
+        await this.loadCurrentUserAccess();
+        await applyMasterViewOnlyForStaff("Accounting Period", ["btn-add-accounting-period"]);
+
+        this.bindEvents();
+
+        await this.loadData();
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "AccountingPeriod.init:",
+            error
+        );
+
+
+        this.showError(
+            error?.message
+            ||
+            "Failed to initialize Accounting Period."
+        );
+
+    }
+
+}
+/*
+==========================================================
+LOAD CURRENT USER ACCESS
+==========================================================
+*/
+
+async loadCurrentUserAccess() {
+
+    /*
+    ======================================================
+    DEFAULT ACCESS
+    ======================================================
+    */
+
+    this.currentUser =
+        null;
+
+    this.currentUserProfile =
+        null;
+
+    this.isManager =
+        false;
+
+
+    /*
+    ======================================================
+    GET AUTH USER
+    ======================================================
+    */
+
+    const {
+        data: authData,
+        error: authError
+    } =
+        await supabase.auth.getUser();
+
+
+    if (
+        authError
+    ) {
+
+        throw authError;
+
+    }
+
+
+    const user =
+        authData?.user;
+
+
+    if (
+        !user?.id
+    ) {
+
+        throw new Error(
+            "Authenticated user not found."
+        );
+
+    }
+
+
+    this.currentUser =
+        user;
+
+
+    /*
+    ======================================================
+    GET USER PROFILE
+    ======================================================
+    */
+
+    const {
+        data: profile,
+        error: profileError
+    } =
+        await supabase
+
+            .from(
+                "mst_users"
+            )
+
+            .select(`
+                user_uid,
+                full_name,
+                email,
+                role,
+                status,
+                company_id
+            `)
+
+            .eq(
+                "user_uid",
+                user.id
+            )
+
+            .maybeSingle();
+
+
+    if (
+        profileError
+    ) {
+
+        throw profileError;
+
+    }
+
+
+    if (
+        !profile
+    ) {
+
+        throw new Error(
+            "User profile not found."
+        );
+
+    }
+
+
+    this.currentUserProfile =
+        profile;
+
+
+    /*
+    ======================================================
+    ACTIVE MANAGER ONLY
+    ======================================================
+    */
+
+    this.isManager =
+        profile.status === true
+        &&
+        String(
+            profile.role
+            ||
+            ""
+        )
+        .trim()
+        .toLowerCase()
+        ===
+        "manager";
+
+
+    console.log(
+        "Accounting Period Access:",
+        {
+            email:
+                profile.email,
+
+            role:
+                profile.role,
+
+            status:
+                profile.status,
+
+            isManager:
+                this.isManager
+        }
+    );
+
+}
+
+
+    /*
+    ======================================================
+    CACHE DOM
+    ======================================================
+    */
+
+    cacheDom() {
+
+        /*
+        ==================================================
+        TABLE
+        ==================================================
+        */
+
+        this.tableBody =
+            document.getElementById(
+                "accounting-period-tbody"
+            );
+
+
+        /*
+        ==================================================
+        FILTER
+        ==================================================
+        */
+
+        this.filterYear =
+            document.getElementById(
+                "accounting-period-year"
+            );
+
+
+        this.filterStatus =
+            document.getElementById(
+                "accounting-period-status"
+            );
+
+
+        this.filterSearch =
+            document.getElementById(
+                "accounting-period-search"
+            );
+
+
+        this.btnFind =
+            document.getElementById(
+                "btn-find-accounting-period"
+            );
+
+
+        this.btnRefresh =
+            document.getElementById(
+                "btn-refresh-accounting-period"
+            );
+
+
+        this.btnAdd =
+            document.getElementById(
+                "btn-add-accounting-period"
+            );
+
+        this.addModalElement =
+            document.getElementById(
+                "accountingPeriodAddModal"
+            );
+
+        this.addYear = document.getElementById("accounting-period-add-year");
+        this.addMonth = document.getElementById("accounting-period-add-month");
+        this.addStatus = document.getElementById("accounting-period-add-status");
+        this.addError = document.getElementById("accounting-period-add-error");
+        this.btnConfirmAdd = document.getElementById("btn-confirm-add-accounting-period");
+
+        this.addModal =
+            this.addModalElement && window.bootstrap
+                ? bootstrap.Modal.getOrCreateInstance(this.addModalElement)
+                : null;
+
+
+        /*
+        ==================================================
+        ACTION MODAL
+        ==================================================
+        */
+
+        this.actionModalElement =
+            document.getElementById(
+                "accountingPeriodActionModal"
+            );
+
+
+        this.actionModalLabel =
+            document.getElementById(
+                "accountingPeriodActionModalLabel"
+            );
+
+
+        this.actionIcon =
+            document.getElementById(
+                "accounting-period-action-icon"
+            );
+
+
+        this.actionTitle =
+            document.getElementById(
+                "accounting-period-action-title"
+            );
+
+
+        this.actionMessage =
+            document.getElementById(
+                "accounting-period-action-message"
+            );
+
+
+        this.modalPeriod =
+            document.getElementById(
+                "accounting-period-modal-period"
+            );
+
+
+        this.modalStartDate =
+            document.getElementById(
+                "accounting-period-modal-start-date"
+            );
+
+
+        this.modalEndDate =
+            document.getElementById(
+                "accounting-period-modal-end-date"
+            );
+
+
+        this.modalStatus =
+            document.getElementById(
+                "accounting-period-modal-status"
+            );
+
+
+        this.actionReason =
+            document.getElementById(
+                "accounting-period-action-reason"
+            );
+
+
+        this.reasonRequired =
+            document.getElementById(
+                "accounting-period-reason-required"
+            );
+
+
+        this.reasonHelp =
+            document.getElementById(
+                "accounting-period-reason-help"
+            );
+
+
+        this.modalError =
+            document.getElementById(
+                "accounting-period-modal-error"
+            );
+
+
+        this.btnConfirmAction =
+            document.getElementById(
+                "btn-confirm-accounting-period-action"
+            );
+
+
+        this.confirmIcon =
+            document.getElementById(
+                "accounting-period-confirm-icon"
+            );
+
+
+        this.confirmText =
+            document.getElementById(
+                "accounting-period-confirm-text"
+            );
+
+
+        /*
+        ==================================================
+        BOOTSTRAP MODAL INSTANCE
+        ==================================================
+        */
+
+        if (
+            this.actionModalElement
+            &&
+            window.bootstrap
+        ) {
+
+            this.actionModal =
+                bootstrap.Modal
+                    .getOrCreateInstance(
+                        this.actionModalElement
+                    );
+
+        }
+
+        this.viewModalElement = document.getElementById("accountingPeriodViewModal");
+        this.viewModal = this.viewModalElement && window.bootstrap
+            ? bootstrap.Modal.getOrCreateInstance(this.viewModalElement)
+            : null;
+
+    }
+
+
+    /*
+    ======================================================
+    BIND EVENTS
+    ======================================================
+    */
+
+    bindEvents() {
+
+
+        /*
+        ==================================================
+        REFRESH
+        ==================================================
+        */
+
+        this.btnRefresh?.addEventListener(
+            "click",
+            async () => { await this.loadData(); }
+        );
+
+        this.btnAdd?.addEventListener("click", () => this.openAddPeriodModal());
+
+        this.btnConfirmAdd?.addEventListener("click", async () => {
+            await this.confirmAddPeriod();
+        });
+
+
+        /*
+        ==================================================
+        FIND
+        ==================================================
+        */
+
+        this.btnFind?.addEventListener(
+
+            "click",
+
+            () => {
+
+                this.applyFilter();
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        YEAR
+        ==================================================
+        */
+
+        this.filterYear?.addEventListener(
+
+            "change",
+
+            () => {
+
+                this.applyFilter();
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        STATUS
+        ==================================================
+        */
+
+        this.filterStatus?.addEventListener(
+
+            "change",
+
+            () => {
+
+                this.applyFilter();
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        SEARCH ENTER
+        ==================================================
+        */
+
+        this.filterSearch?.addEventListener(
+
+            "keydown",
+
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    this.applyFilter();
+
+                }
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        TABLE ACTION
+        ==================================================
+        */
+
+        this.tableBody?.addEventListener(
+
+            "click",
+
+            async event => {
+
+                const viewButton = event.target.closest("[data-period-view]");
+                if (viewButton) {
+                    const period = this.findPeriodById(viewButton.dataset.id);
+                    if (!period) return;
+                    const setText = (id, value) => {
+                        const el = this.viewModalElement?.querySelector(`#${id}`);
+                        if (el) el.textContent = value == null || value === "" ? "-" : String(value);
+                    };
+                    setText("accounting-period-view-code", period.period_code);
+                    setText("accounting-period-view-start", this.formatDate(period._start_date));
+                    setText("accounting-period-view-end", this.formatDate(period._end_date));
+                    setText("accounting-period-view-status", period.status || (period.is_open ? "Open" : "Closed"));
+                    setText("accounting-period-view-closed", this.formatDateTime(period.closed_at));
+                    setText("accounting-period-view-reopened", this.formatDateTime(period._reopened_at));
+                    this.viewModal?.show();
+                    return;
+                }
+
+                const button =
+                    event.target.closest(
+                        "[data-period-action]"
+                    );
+
+                if (!button) return;
+                /*
+                ==================================================
+                MANAGER ONLY
+                ==================================================
+                */
+
+                if (
+                    !this.isManager
+                ) {
+
+                    this.showError(
+                        "Access denied. Only Manager can manage Accounting Period."
+                    );
+
+                    return;
+
+                }
+
+
+                const action =
+                    String(
+                        button.dataset.periodAction
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                const id =
+                    String(
+                        button.dataset.id
+                        ||
+                        ""
+                    ).trim();
+
+
+                if (!id) {
+
+                    return;
+
+                }
+
+
+                if (
+                    action ===
+                    "close"
+                ) {
+
+                    this.openClosePeriod(
+                        id
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    action ===
+                    "open"
+                ) {
+
+                    this.openPeriod(
+                        id
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    action ===
+                    "reopen"
+                ) {
+
+                    this.openReopenPeriod(
+                        id
+                    );
+
+                }
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        CONFIRM ACTION
+        ==================================================
+        */
+
+        this.btnConfirmAction?.addEventListener(
+
+            "click",
+
+            async () => {
+
+                await this.confirmPeriodAction();
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        CLEAR REASON VALIDATION
+        ==================================================
+        */
+
+        this.actionReason?.addEventListener(
+
+            "input",
+
+            () => {
+
+                this.actionReason
+                    ?.classList
+                    .remove(
+                        "is-invalid"
+                    );
+
+
+                this.hideModalError();
+
+            }
+
+        );
+
+
+        /*
+        ==================================================
+        MODAL HIDDEN
+        ==================================================
+        */
+
+        this.actionModalElement?.addEventListener(
+
+            "hidden.bs.modal",
+
+            () => {
+
+                this.resetActionModal();
+
+            }
+
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    LOAD DATA
+    ======================================================
+    */
+
+    async loadData() {
+
+        try {
+
+            this.renderLoading();
+
+
+            /*
+            ==================================================
+            MASTER PERIOD
+            ==================================================
+            */
+
+            this.data =
+                await this.service
+                    .getAll();
+
+
+            /*
+            ==================================================
+            DERIVE UI DATES FROM YEAR / MONTH
+            DATABASE DOES NOT STORE START_DATE / END_DATE
+            ==================================================
+            */
+
+            this.data = (this.data || []).map(item => {
+
+                const year = Number(item.period_year);
+                const month = Number(item.period_month);
+                let startDate = null;
+                let endDate = null;
+
+                if (Number.isInteger(year) && Number.isInteger(month) && month >= 1 && month <= 12) {
+                    startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+                    const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+                    endDate = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+                }
+
+                return {
+                    ...item,
+                    _start_date: startDate,
+                    _end_date: endDate,
+                    _reopened_at: null
+                };
+            });
+
+
+            /*
+            ==================================================
+            CLEAR OLD HISTORY CACHE
+            ==================================================
+            */
+
+            this.periodHistoryCache.clear();
+
+
+            /*
+            ==================================================
+            DETERMINE OPEN / REOPEN BUTTON
+            ==================================================
+            */
+
+            await this.preparePeriodActions();
+
+
+            /*
+            ==================================================
+            COPY FILTER DATA
+            ==================================================
+            */
+
+            this.filteredData =
+                [
+                    ...this.data
+                ];
+
+
+            /*
+            ==================================================
+            FILTER
+            ==================================================
+            */
+
+            this.populateYearFilter();
+
+            this.applyFilter();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "AccountingPeriod.loadData:",
+                error
+            );
+
+
+            if (
+                this.tableBody
+            ) {
+
+                this.tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="
+                                text-center
+                                text-danger
+                                py-5
+                            ">
+
+                            Failed to load Accounting Period.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            this.showError(
+                error?.message
+                ||
+                "Failed to load Accounting Period."
+            );
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    PREPARE PERIOD ACTION
+
+    OPEN PERIOD:
+    STATUS OPEN
+        -> CLOSE
+
+    CLOSED PERIOD:
+    HAS CLOSE HISTORY
+        -> REOPEN
+
+    LEGACY PAST CLOSED PERIOD
+        -> REOPEN
+
+    FUTURE CLOSED PERIOD
+        -> OPEN
+    ======================================================
+    */
+
+    async preparePeriodActions() {
+
+        if (!Array.isArray(this.data)) return;
+
+        const today = this.getJakartaToday();
+
+        this.data.forEach(item => {
+            const status = String(item.status || "").trim().toUpperCase();
+
+            if (status === "OPEN") {
+                item._periodAction = "close";
+                return;
+            }
+
+            const endDate = String(item._end_date || "");
+            item._periodAction = endDate && endDate <= today ? "reopen" : "open";
+        });
+    }
+
+
+    /*
+    ======================================================
+    GET JAKARTA TODAY
+    YYYY-MM-DD
+    ======================================================
+    */
+
+    getJakartaToday() {
+
+        try {
+
+            const parts =
+                new Intl.DateTimeFormat(
+                    "en-CA",
+                    {
+                        timeZone:
+                            "Asia/Jakarta",
+
+                        year:
+                            "numeric",
+
+                        month:
+                            "2-digit",
+
+                        day:
+                            "2-digit"
+                    }
+                )
+                .formatToParts(
+                    new Date()
+                );
+
+
+            const map =
+                {};
+
+
+            parts.forEach(
+
+                part => {
+
+                    map[
+                        part.type
+                    ] =
+                        part.value;
+
+                }
+
+            );
+
+
+            return (
+                `${map.year}-${map.month}-${map.day}`
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            const now =
+                new Date();
+
+
+            const year =
+                now.getFullYear();
+
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                )
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+            const day =
+                String(
+                    now.getDate()
+                )
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+            return (
+                `${year}-${month}-${day}`
+            );
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    POPULATE YEAR FILTER
+    ======================================================
+    */
+
+    populateYearFilter() {
+
+        if (
+            !this.filterYear
+        ) {
+
+            return;
+
+        }
+
+
+        const currentValue =
+            this.filterYear.value;
+
+
+        const years =
+            [
+                ...new Set(
+
+                    this.data.map(
+
+                        item =>
+                            Number(
+                                item.period_year
+                            )
+
+                    )
+
+                )
+            ]
+
+            .filter(
+                Boolean
+            )
+
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    b - a
+            );
+
+
+        this.filterYear.innerHTML = `
+
+            <option value="">
+                All Year
+            </option>
+
+            ${
+                years.map(
+
+                    year => `
+
+                        <option value="${year}">
+                            ${year}
+                        </option>
+
+                    `
+
+                )
+                .join("")
+            }
+
+        `;
+
+
+        if (
+            years.includes(
+                Number(
+                    currentValue
+                )
+            )
+        ) {
+
+            this.filterYear.value =
+                currentValue;
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    APPLY FILTER
+    ======================================================
+    */
+
+    applyFilter() {
+
+        const year =
+            String(
+                this.filterYear?.value
+                ||
+                ""
+            );
+
+
+        const status =
+            String(
+                this.filterStatus?.value
+                ||
+                ""
+            );
+
+
+        const keyword =
+            String(
+                this.filterSearch?.value
+                ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
+
+
+        this.filteredData =
+            this.data.filter(
+
+                item => {
+
+
+                    /*
+                    ==========================================
+                    YEAR
+                    ==========================================
+                    */
+
+                    if (
+                        year
+                        &&
+                        String(
+                            item.period_year
+                        )
+                        !==
+                        year
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    STATUS
+                    ==========================================
+                    */
+
+                    if (
+                        status
+                        &&
+                        String(
+                            item.status
+                        )
+                        !==
+                        status
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    SEARCH
+                    ==========================================
+                    */
+
+                    if (
+                        keyword
+                    ) {
+
+                        const searchable =
+                            [
+                                item.period_code,
+                                item.period_year,
+                                item.period_month,
+                                item.status
+                            ]
+                            .join(
+                                " "
+                            )
+                            .toLowerCase();
+
+
+                        if (
+                            !searchable.includes(
+                                keyword
+                            )
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+
+                    return true;
+
+                }
+
+            );
+
+
+        this.renderTable();
+
+    }
+
+
+    /*
+    ======================================================
+    RENDER TABLE
+    ======================================================
+    */
+
+    renderTable() {
+
+        if (
+            !this.tableBody
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !this.filteredData.length
+        ) {
+
+            this.tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="
+                            text-center
+                            text-muted
+                            py-5
+                        ">
+
+                        No Accounting Period found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        this.tableBody.innerHTML =
+            this.filteredData
+
+                .map(
+
+                    (
+                        item,
+                        index
+                    ) =>
+                        this.createRow(
+                            item,
+                            index + 1
+                        )
+
+                )
+
+                .join("");
+
+    }
+
+
+    /*
+    ======================================================
+    CREATE ROW
+    ======================================================
+    */
+
+    createRow(
+        item,
+        rowNumber
+    ) {
+
+        const normalizedStatus =
+            String(
+                item.status
+                ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
+
+
+        const isOpen =
+            normalizedStatus ===
+            "open";
+
+
+        /*
+        ==================================================
+        STATUS
+        ==================================================
+        */
+
+        const statusBadge =
+            isOpen
+
+                ?
+                `
+                    <span class="badge bg-success">
+                        Open
+                    </span>
+                `
+
+                :
+                `
+                    <span class="badge bg-secondary">
+                        Closed
+                    </span>
+                `;
+
+
+        /*
+        ==================================================
+        ACTION
+        ==================================================
+        */
+
+        const periodAction =
+            String(
+                item._periodAction
+                ||
+                (
+                    isOpen
+                        ?
+                        "close"
+                        :
+                        "open"
+                )
+            )
+            .toLowerCase();
+
+
+        let actionButton =
+    "";
+
+
+/*
+==================================================
+NON MANAGER
+VIEW ONLY
+==================================================
+*/
+
+if (
+    !this.isManager
+) {
+
+    actionButton = `
+        <button type="button"
+            class="btn btn-sm btn-outline-primary finova-staff-view-only" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:32px;height:32px;min-width:32px;padding:0;font-size:13px;line-height:1;"
+            title="View"
+            aria-label="View Accounting Period"
+            data-period-view="true"
+            data-id="${this.escapeHTML(item.id)}">
+            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+    `;
+
+}
+
+
+/*
+==================================================
+MANAGER
+==================================================
+*/
+
+else if (
+    periodAction ===
+    "close"
+) {
+
+    actionButton = `
+
+        <button
+            type="button"
+            class="
+                btn
+                btn-sm
+                btn-outline-danger
+            "
+            data-period-action="close"
+            data-id="${item.id}">
+
+            <i class="fa-solid fa-lock me-1"></i>
+
+            Close
+
+        </button>
+
+    `;
+
+}
+
+
+else if (
+    periodAction ===
+    "reopen"
+) {
+
+    actionButton = `
+
+        <button
+            type="button"
+            class="
+                btn
+                btn-sm
+                btn-outline-warning
+            "
+            data-period-action="reopen"
+            data-id="${item.id}">
+
+            <i class="fa-solid fa-rotate-left me-1"></i>
+
+            Reopen
+
+        </button>
+
+    `;
+
+}
+
+
+else {
+
+    actionButton = `
+
+        <button
+            type="button"
+            class="
+                btn
+                btn-sm
+                btn-outline-success
+            "
+            data-period-action="open"
+            data-id="${item.id}">
+
+            <i class="fa-solid fa-lock-open me-1"></i>
+
+            Open
+
+        </button>
+
+    `;
+
+}
+
+
+        /*
+        ==================================================
+        ROW
+        ==================================================
+        */
+
+        return `
+
+            <tr>
+
+
+                <!-- NO -->
+
+                <td class="finova-table-index">
+
+                    ${rowNumber}
+
+                </td>
+
+
+                <!-- PERIOD -->
+
+                <td class="finova-table-code">
+
+                    <strong>
+
+                        ${this.escapeHTML(
+                            item.period_code
+                        )}
+
+                    </strong>
+
+                </td>
+
+
+                <!-- START DATE -->
+
+                <td class="finova-table-date">
+
+                    ${this.formatDate(
+                        item._start_date
+                    )}
+
+                </td>
+
+
+                <!-- END DATE -->
+
+                <td class="finova-table-date">
+
+                    ${this.formatDate(
+                        item._end_date
+                    )}
+
+                </td>
+
+
+                <!-- STATUS -->
+
+                <td class="finova-table-status">
+
+                    ${statusBadge}
+
+                </td>
+
+
+                <!-- LAST CLOSED -->
+
+                <td class="finova-table-date">
+
+                    ${this.formatDateTime(
+                        item.closed_at
+                    )}
+
+                </td>
+
+
+                <!-- LAST REOPENED -->
+
+                <td class="finova-table-date">
+
+                    ${this.formatDateTime(
+                        item._reopened_at
+                    )}
+
+                </td>
+
+
+                <!-- ACTION -->
+
+                <td class="finova-table-action">
+
+                    ${actionButton}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    /*
+    ======================================================
+    FIND PERIOD BY ID
+    ======================================================
+    */
+
+    findPeriodById(
+        id
+    ) {
+
+        return (
+            this.data.find(
+
+                item =>
+
+                    String(item.id)
+                    ===
+                    String(id)
+
+            )
+            ||
+            null
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    GET PERIOD HISTORY
+    ======================================================
+    */
+
+    async getPeriodHistory(
+        periodId,
+        forceReload = false
+    ) {
+
+        const key =
+            String(periodId);
+
+
+        if (
+            !forceReload
+            &&
+            this.periodHistoryCache.has(
+                key
+            )
+        ) {
+
+            return (
+                this.periodHistoryCache.get(
+                    key
+                )
+                ||
+                []
+            );
+
+        }
+
+
+        const history =
+            await this.service
+                .getHistory(
+                    periodId
+                );
+
+
+        this.periodHistoryCache.set(
+            key,
+            history
+            ||
+            []
+        );
+
+
+        return (
+            history
+            ||
+            []
+        );
+
+    }
+
+
+    openAddPeriodModal() {
+        if (!this.isManager) {
+            this.showError("Access denied. Only Manager can add Accounting Period.");
+            return;
+        }
+
+        const now = new Date();
+        const jakarta = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jakarta", year: "numeric", month: "numeric" }).formatToParts(now);
+        const year = Number(jakarta.find(x => x.type === "year")?.value) || new Date().getFullYear();
+        const month = Number(jakarta.find(x => x.type === "month")?.value) || 1;
+
+        if (this.addYear) this.addYear.value = year;
+        if (this.addMonth) this.addMonth.value = String(month);
+        if (this.addStatus) this.addStatus.value = "OPEN";
+        this.hideAddError();
+        this.addModal?.show();
+    }
+
+    hideAddError() {
+        if (this.addError) { this.addError.textContent = ""; this.addError.classList.add("d-none"); }
+    }
+
+    showAddError(message) {
+        if (this.addError) { this.addError.textContent = message; this.addError.classList.remove("d-none"); }
+    }
+
+    async confirmAddPeriod() {
+        if (!this.isManager) {
+            this.showAddError("Access denied. Only Manager can add Accounting Period.");
+            return;
+        }
+
+        const year = Number(this.addYear?.value);
+        const month = Number(this.addMonth?.value);
+        const status = String(this.addStatus?.value || "OPEN").toUpperCase();
+
+        this.hideAddError();
+
+        try {
+            if (this.btnConfirmAdd) this.btnConfirmAdd.disabled = true;
+            await this.service.addPeriod(year, month, status);
+            this.addModal?.hide();
+            await this.loadData();
+        } catch (error) {
+            console.error("AccountingPeriod.confirmAddPeriod:", error);
+            this.showAddError(error?.message || "Failed to add Accounting Period.");
+        } finally {
+            if (this.btnConfirmAdd) this.btnConfirmAdd.disabled = false;
+        }
+    }
+
+
+    /*
+    ======================================================
+    CLOSE PERIOD
+    ======================================================
+    */
+
+    openClosePeriod(
+        id
+    ) {
+
+        const period =
+            this.findPeriodById(
+                id
+            );
+
+
+        if (
+            !period
+        ) {
+
+            this.showError(
+                "Accounting Period not found."
+            );
+
+            return;
+
+        }
+
+
+        this.openPeriodActionModal(
+            period,
+            "CLOSE"
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    OPEN PERIOD
+    ======================================================
+    */
+
+    openPeriod(
+        id
+    ) {
+
+        const period =
+            this.findPeriodById(
+                id
+            );
+
+
+        if (
+            !period
+        ) {
+
+            this.showError(
+                "Accounting Period not found."
+            );
+
+            return;
+
+        }
+
+
+        this.openPeriodActionModal(
+            period,
+            "OPEN"
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    REOPEN PERIOD
+    ======================================================
+    */
+
+    openReopenPeriod(
+        id
+    ) {
+
+        const period =
+            this.findPeriodById(
+                id
+            );
+
+
+        if (
+            !period
+        ) {
+
+            this.showError(
+                "Accounting Period not found."
+            );
+
+            return;
+
+        }
+
+
+        this.openPeriodActionModal(
+            period,
+            "REOPEN"
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    OPEN ACTION MODAL
+    ======================================================
+    */
+
+    openPeriodActionModal(
+        period,
+        action
+    ) {
+
+        if (
+            !this.actionModal
+        ) {
+
+            this.showError(
+                "Accounting Period confirmation modal not found."
+            );
+
+            return;
+
+        }
+
+
+        this.selectedPeriod =
+            period;
+
+
+        this.selectedAction =
+            String(
+                action
+                ||
+                ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        /*
+        ==================================================
+        RESET REASON
+        ==================================================
+        */
+
+        if (
+            this.actionReason
+        ) {
+
+            this.actionReason.value =
+                "";
+
+            this.actionReason.classList.remove(
+                "is-invalid"
+            );
+
+        }
+
+
+        this.hideModalError();
+
+
+        /*
+        ==================================================
+        PERIOD INFORMATION
+        ==================================================
+        */
+
+        if (
+            this.modalPeriod
+        ) {
+
+            this.modalPeriod.textContent =
+                period.period_code
+                ||
+                "-";
+
+        }
+
+
+        if (
+            this.modalStartDate
+        ) {
+
+            this.modalStartDate.textContent =
+                this.formatDate(
+                    period._start_date
+                );
+
+        }
+
+
+        if (
+            this.modalEndDate
+        ) {
+
+            this.modalEndDate.textContent =
+                this.formatDate(
+                    period._end_date
+                );
+
+        }
+
+
+        if (
+            this.modalStatus
+        ) {
+
+            const isOpen =
+                String(
+                    period.status
+                    ||
+                    ""
+                )
+                .trim()
+                .toLowerCase()
+                ===
+                "open";
+
+
+            this.modalStatus.innerHTML =
+                isOpen
+
+                    ?
+                    `
+                        <span class="badge bg-success">
+                            Open
+                        </span>
+                    `
+
+                    :
+                    `
+                        <span class="badge bg-secondary">
+                            Closed
+                        </span>
+                    `;
+
+        }
+
+
+        /*
+        ==================================================
+        CONFIGURE MODAL
+        ==================================================
+        */
+
+        switch (
+            this.selectedAction
+        ) {
+
+            case "OPEN":
+
+                this.configureOpenModal();
+
+                break;
+
+
+            case "CLOSE":
+
+                this.configureCloseModal();
+
+                break;
+
+
+            case "REOPEN":
+
+                this.configureReopenModal();
+
+                break;
+
+
+            default:
+
+                this.showError(
+                    "Invalid Accounting Period action."
+                );
+
+                return;
+
+        }
+
+
+        /*
+        ==================================================
+        SHOW MODAL
+        ==================================================
+        */
+
+        this.actionModal.show();
+
+
+        window.setTimeout(
+
+            () => {
+
+                this.actionReason?.focus();
+
+            },
+
+            200
+
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    CONFIGURE OPEN MODAL
+    ======================================================
+    */
+
+    configureOpenModal() {
+
+        const period =
+            this.selectedPeriod?.period
+            ||
+            "-";
+
+
+        this.actionModalLabel.textContent =
+            "Confirm Open Accounting Period";
+
+
+        this.actionIcon.innerHTML = `
+
+            <i
+                class="
+                    fa-solid
+                    fa-lock-open
+                    text-success
+                ">
+            </i>
+
+        `;
+
+
+        this.actionTitle.textContent =
+            `Open Accounting Period ${period}?`;
+
+
+        this.actionMessage.textContent =
+            "Accounting transactions will be allowed for this period.";
+
+
+        this.reasonRequired
+            ?.classList
+            .remove(
+                "d-none"
+            );
+
+
+        if (
+            this.reasonHelp
+        ) {
+
+            this.reasonHelp.textContent =
+                "Reason is required to open this Accounting Period.";
+
+        }
+
+
+        if (
+            this.btnConfirmAction
+        ) {
+
+            this.btnConfirmAction.className =
+                "btn btn-success finova-btn";
+
+        }
+
+
+        if (
+            this.confirmIcon
+        ) {
+
+            this.confirmIcon.className =
+                "fa-solid fa-lock-open me-1";
+
+        }
+
+
+        if (
+            this.confirmText
+        ) {
+
+            this.confirmText.textContent =
+                "Open Period";
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    CONFIGURE CLOSE MODAL
+    ======================================================
+    */
+
+    configureCloseModal() {
+
+        const period =
+            this.selectedPeriod?.period
+            ||
+            "-";
+
+
+        this.actionModalLabel.textContent =
+            "Confirm Close Accounting Period";
+
+
+        this.actionIcon.innerHTML = `
+
+            <i
+                class="
+                    fa-solid
+                    fa-lock
+                    text-danger
+                ">
+            </i>
+
+        `;
+
+
+        this.actionTitle.textContent =
+            `Close Accounting Period ${period}?`;
+
+
+        this.actionMessage.textContent =
+            "Accounting transactions cannot be entered or posted to this period after it is closed.";
+
+
+        this.reasonRequired
+            ?.classList
+            .add(
+                "d-none"
+            );
+
+
+        if (
+            this.reasonHelp
+        ) {
+
+            this.reasonHelp.textContent =
+                "Reason is optional for closing this Accounting Period.";
+
+        }
+
+
+        if (
+            this.btnConfirmAction
+        ) {
+
+            this.btnConfirmAction.className =
+                "btn btn-danger finova-btn";
+
+        }
+
+
+        if (
+            this.confirmIcon
+        ) {
+
+            this.confirmIcon.className =
+                "fa-solid fa-lock me-1";
+
+        }
+
+
+        if (
+            this.confirmText
+        ) {
+
+            this.confirmText.textContent =
+                "Close Period";
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    CONFIGURE REOPEN MODAL
+    ======================================================
+    */
+
+    configureReopenModal() {
+
+        const period =
+            this.selectedPeriod?.period
+            ||
+            "-";
+
+
+        this.actionModalLabel.textContent =
+            "Confirm Reopen Accounting Period";
+
+
+        this.actionIcon.innerHTML = `
+
+            <i
+                class="
+                    fa-solid
+                    fa-rotate-left
+                    text-warning
+                ">
+            </i>
+
+        `;
+
+
+        this.actionTitle.textContent =
+            `Reopen Accounting Period ${period}?`;
+
+
+        this.actionMessage.textContent =
+            "Accounting transactions will be allowed again for this previously closed period.";
+
+
+        this.reasonRequired
+            ?.classList
+            .remove(
+                "d-none"
+            );
+
+
+        if (
+            this.reasonHelp
+        ) {
+
+            this.reasonHelp.textContent =
+                "Reason is required to reopen this Accounting Period.";
+
+        }
+
+
+        if (
+            this.btnConfirmAction
+        ) {
+
+            this.btnConfirmAction.className =
+                "btn btn-warning finova-btn";
+
+        }
+
+
+        if (
+            this.confirmIcon
+        ) {
+
+            this.confirmIcon.className =
+                "fa-solid fa-rotate-left me-1";
+
+        }
+
+
+        if (
+            this.confirmText
+        ) {
+
+            this.confirmText.textContent =
+                "Reopen Period";
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    CONFIRM PERIOD ACTION
+    ======================================================
+    */
+
+    async confirmPeriodAction() {
+
+        /*
+        ==========================================================
+        MANAGER ACCESS
+        ==========================================================
+        */
+
+        if (
+            !this.isManager
+        ) {
+
+            this.showModalError(
+                "Access denied. Only Manager can manage Accounting Period."
+            );
+
+            return;
+
+        }
+
+        if (
+            !this.selectedPeriod
+            ||
+            !this.selectedAction
+        ) {
+
+            this.showModalError(
+                "Accounting Period action is not available."
+            );
+
+            return;
+
+        }
+
+
+        const period =
+            this.selectedPeriod;
+
+
+        const action =
+            this.selectedAction;
+
+
+        const reason =
+            String(
+                this.actionReason?.value
+                ||
+                ""
+            )
+            .trim();
+
+
+        /*
+        ==================================================
+        VALIDATE REASON
+
+        OPEN   = REQUIRED
+        REOPEN = REQUIRED
+        CLOSE  = OPTIONAL
+        ==================================================
+        */
+
+        if (
+            (
+                action === "OPEN"
+                ||
+                action === "REOPEN"
+            )
+            &&
+            !reason
+        ) {
+
+            this.actionReason
+                ?.classList
+                .add(
+                    "is-invalid"
+                );
+
+
+            this.showModalError(
+                "Reason is required."
+            );
+
+
+            this.actionReason?.focus();
+
+
+            return;
+
+        }
+
+
+        this.actionReason
+            ?.classList
+            .remove(
+                "is-invalid"
+            );
+
+
+        /*
+        ==================================================
+        PREVENT DOUBLE CLICK
+        ==================================================
+        */
+
+        if (
+            this.btnConfirmAction?.disabled
+        ) {
+
+            return;
+
+        }
+
+
+        const originalButtonHTML =
+            this.btnConfirmAction?.innerHTML
+            ||
+            "";
+
+
+        if (
+            this.btnConfirmAction
+        ) {
+
+            this.btnConfirmAction.disabled =
+                true;
+
+
+            this.btnConfirmAction.innerHTML = `
+
+                <span
+                    class="
+                        spinner-border
+                        spinner-border-sm
+                        me-1
+                    "
+                    role="status"
+                    aria-hidden="true">
+                </span>
+
+                Processing...
+
+            `;
+
+        }
+
+
+        try {
+
+
+            /*
+            ==================================================
+            CLOSE
+            ==================================================
+            */
+
+            if (
+                action ===
+                "CLOSE"
+            ) {
+
+                await this.service
+                    .closePeriod(
+
+                        period.id,
+
+                        reason
+                        ||
+                        null
+
+                    );
+
+            }
+
+
+            /*
+            ==================================================
+            OPEN
+
+            Current database RPC:
+            reopen_accounting_period()
+
+            It changes Closed -> Open.
+            ==================================================
+            */
+
+           else if (
+                action ===
+                "OPEN"
+            ) {
+
+                await this.service
+                    .openPeriod(
+                        period.id,
+                        reason
+                    );
+
+            }
+
+            /*
+            ==================================================
+            REOPEN
+            ==================================================
+            */
+
+            else if (
+                action ===
+                "REOPEN"
+            ) {
+
+                await this.service
+                    .reopenPeriod(
+
+                        period.id,
+
+                        reason
+
+                    );
+
+            }
+
+
+            else {
+
+                throw new Error(
+                    "Invalid Accounting Period action."
+                );
+
+            }
+
+
+            /*
+            ==================================================
+            CLEAR HISTORY CACHE
+            ==================================================
+            */
+
+            this.periodHistoryCache.delete(
+                Number(
+                    period.id
+                )
+            );
+
+
+            /*
+            ==================================================
+            HIDE MODAL
+            ==================================================
+            */
+
+            this.actionModal?.hide();
+
+
+            /*
+            ==================================================
+            SUCCESS
+            ==================================================
+            */
+
+            if (
+                action ===
+                "CLOSE"
+            ) {
+
+                this.showSuccess(
+                    `Accounting Period ${period.period_code} closed successfully.`
+                );
+
+            }
+
+
+            else if (
+                action ===
+                "REOPEN"
+            ) {
+
+                this.showSuccess(
+                    `Accounting Period ${period.period_code} reopened successfully.`
+                );
+
+            }
+
+
+            else {
+
+                this.showSuccess(
+                    `Accounting Period ${period.period_code} opened successfully.`
+                );
+
+            }
+
+
+            /*
+            ==================================================
+            RELOAD
+            ==================================================
+            */
+
+            await this.loadData();
+
+
+            /*
+            ==================================================
+            RESET STATE
+            ==================================================
+            */
+
+            this.selectedPeriod =
+                null;
+
+
+            this.selectedAction =
+                null;
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "AccountingPeriod.confirmPeriodAction:",
+                error
+            );
+
+
+            this.showModalError(
+                error?.message
+                ||
+                "Failed to update Accounting Period."
+            );
+
+        }
+
+        finally {
+
+            if (
+                this.btnConfirmAction
+            ) {
+
+                this.btnConfirmAction.disabled =
+                    false;
+
+
+                this.btnConfirmAction.innerHTML =
+                    originalButtonHTML;
+
+            }
+
+        }
+
+    }
+
+
+    /*
+    ======================================================
+    RESET ACTION MODAL
+    ======================================================
+    */
+
+    resetActionModal() {
+
+        this.selectedPeriod =
+            null;
+
+
+        this.selectedAction =
+            null;
+
+
+        if (
+            this.actionReason
+        ) {
+
+            this.actionReason.value =
+                "";
+
+
+            this.actionReason
+                .classList
+                .remove(
+                    "is-invalid"
+                );
+
+        }
+
+
+        this.hideModalError();
+
+    }
+
+
+    /*
+    ======================================================
+    SHOW MODAL ERROR
+    ======================================================
+    */
+
+    showModalError(
+        message
+    ) {
+
+        if (
+            !this.modalError
+        ) {
+
+            this.showError(
+                message
+            );
+
+            return;
+
+        }
+
+
+        this.modalError.textContent =
+            String(
+                message
+                ||
+                "Unknown error."
+            );
+
+
+        this.modalError.classList.remove(
+            "d-none"
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    HIDE MODAL ERROR
+    ======================================================
+    */
+
+    hideModalError() {
+
+        if (
+            !this.modalError
+        ) {
+
+            return;
+
+        }
+
+
+        this.modalError.textContent =
+            "";
+
+
+        this.modalError.classList.add(
+            "d-none"
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    LOADING
+    ======================================================
+    */
+
+    renderLoading() {
+
+        if (
+            !this.tableBody
+        ) {
+
+            return;
+
+        }
+
+
+        this.tableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="
+                        text-center
+                        py-5
+                    ">
+
+                    <div
+                        class="
+                            d-flex
+                            flex-column
+                            align-items-center
+                            justify-content-center
+                            gap-2
+                        ">
+
+                        <div
+                            class="
+                                spinner-border
+                                spinner-border-sm
+                                text-primary
+                            "
+                            role="status">
+
+                            <span class="visually-hidden">
+                                Loading...
+                            </span>
+
+                        </div>
+
+
+                        <div class="text-muted small">
+
+                            Loading Accounting Period...
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    /*
+    ======================================================
+    FORMAT DATE
+    ======================================================
+    */
+
+    formatDate(
+        value
+    ) {
+
+        if (
+            !value
+        ) {
+
+            return "-";
+
+        }
+
+
+        const parts =
+            String(
+                value
+            )
+            .substring(
+                0,
+                10
+            )
+            .split("-");
+
+
+        if (
+            parts.length !==
+            3
+        ) {
+
+            return String(
+                value
+            );
+
+        }
+
+
+        return (
+            `${parts[2]}/${parts[1]}/${parts[0]}`
+        );
+
+    }
+
+
+    /*
+    ======================================================
+    FORMAT DATE TIME
+    WIB
+    ======================================================
+    */
+
+    formatDateTime(
+        value
+    ) {
+
+        if (
+            !value
+        ) {
+
+            return "-";
+
+        }
+
+
+        try {
+
+            const formatter =
+                new Intl.DateTimeFormat(
+
+                    "id-ID",
+
+                    {
+
+                        timeZone:
+                            "Asia/Jakarta",
+
+                        day:
+                            "2-digit",
+
+                        month:
+                            "2-digit",
+
+                        year:
+                            "numeric",
+
+                        hour:
+                            "2-digit",
+
+                        minute:
+                            "2-digit",
+
+                        hourCycle:
+                            "h23"
+
+                    }
+
+                );
+
+
+            return (
+                formatter
+                    .format(
+                        new Date(
+                            value
+                        )
+                    )
+                    .replace(
+                        ".",
+                        ":"
+                    )
+                +
+                " WIB"
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            return String(
+                value
+            );
+
+        }
+
+    }
+
+
+    /*
+==========================================================
+SHOW ERROR
+BOOTSTRAP ALERT
+ACCOUNTING PERIOD
+SAME STYLE AS ACCOUNT PAYABLE
+==========================================================
+*/
+
+showError(
+    message
+) {
+
+    const errorMessage =
+        message
+        ||
+        "An unexpected error occurred.";
+
+
+    /*
+    ==================================================
+    REMOVE EXISTING ERROR ALERT
+    ==================================================
+    */
+
+    document
+        .getElementById(
+            "accounting-period-bootstrap-error-alert"
+        )
+        ?.remove();
+
+
+    /*
+    ==================================================
+    CREATE ALERT
+    ==================================================
+    */
+
+    const alertElement =
+        document.createElement(
+            "div"
+        );
+
+
+    alertElement.id =
+        "accounting-period-bootstrap-error-alert";
+
+
+    alertElement.className = `
+        alert
+        alert-danger
+        alert-dismissible
+        fade
+        show
+        d-flex
+        align-items-center
+        shadow-sm
+        mb-0
+    `;
+
+
+    alertElement.setAttribute(
+        "role",
+        "alert"
+    );
+
+
+    alertElement.innerHTML = `
+
+        <i
+            class="
+                fa-solid
+                fa-circle-exclamation
+                me-2
+            ">
+        </i>
+
+        <div class="flex-grow-1">
+
+            ${this.escapeHTML(
+                errorMessage
+            )}
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close">
+        </button>
+
+    `;
+
+
+    /*
+    ==================================================
+    PAGE LEVEL ALERT
+    ==================================================
+    */
+
+    alertElement.style.position =
+        "fixed";
+
+    alertElement.style.top =
+        "20px";
+
+    alertElement.style.left =
+        "50%";
+
+    alertElement.style.transform =
+        "translateX(-50%)";
+
+    alertElement.style.zIndex =
+        "99999";
+
+    alertElement.style.width =
+        "auto";
+
+    alertElement.style.minWidth =
+        "380px";
+
+    alertElement.style.maxWidth =
+        "90vw";
+
+
+    document.body.appendChild(
+        alertElement
+    );
+
+
+    /*
+    ==================================================
+    AUTO CLOSE
+    ==================================================
+    */
+
+    setTimeout(
+        () => {
+
+            const currentAlert =
+                document.getElementById(
+                    "accounting-period-bootstrap-error-alert"
+                );
+
+
+            if (
+                !currentAlert
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                window.bootstrap
+                &&
+                bootstrap.Alert
+            ) {
+
+                bootstrap.Alert
+                    .getOrCreateInstance(
+                        currentAlert
+                    )
+                    .close();
+
+            }
+
+            else {
+
+                currentAlert.remove();
+
+            }
+
+        },
+
+        5000
+
+    );
+
+}
+
+
+    /*
+==========================================================
+SHOW SUCCESS
+BOOTSTRAP ALERT
+ACCOUNTING PERIOD
+SAME STYLE AS ACCOUNT PAYABLE
+==========================================================
+*/
+
+showSuccess(
+    message
+) {
+
+    const successMessage =
+        message
+        ||
+        "Action completed successfully.";
+
+
+    /*
+    ==================================================
+    REMOVE EXISTING SUCCESS ALERT
+    ==================================================
+    */
+
+    document
+        .getElementById(
+            "accounting-period-bootstrap-success-alert"
+        )
+        ?.remove();
+
+
+    /*
+    ==================================================
+    CREATE ALERT
+    ==================================================
+    */
+
+    const alertElement =
+        document.createElement(
+            "div"
+        );
+
+
+    alertElement.id =
+        "accounting-period-bootstrap-success-alert";
+
+
+    alertElement.className = `
+        alert
+        alert-success
+        alert-dismissible
+        fade
+        show
+        d-flex
+        align-items-center
+        shadow-sm
+        mb-0
+    `;
+
+
+    alertElement.setAttribute(
+        "role",
+        "alert"
+    );
+
+
+    alertElement.innerHTML = `
+
+        <i
+            class="
+                fa-solid
+                fa-circle-check
+                me-2
+            ">
+        </i>
+
+        <div class="flex-grow-1">
+
+            ${this.escapeHTML(
+                successMessage
+            )}
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close">
+        </button>
+
+    `;
+
+
+    /*
+    ==================================================
+    PAGE LEVEL ALERT
+    ==================================================
+    */
+
+    alertElement.style.position =
+        "fixed";
+
+    alertElement.style.top =
+        "20px";
+
+    alertElement.style.left =
+        "50%";
+
+    alertElement.style.transform =
+        "translateX(-50%)";
+
+    alertElement.style.zIndex =
+        "99999";
+
+    alertElement.style.width =
+        "auto";
+
+    alertElement.style.minWidth =
+        "380px";
+
+    alertElement.style.maxWidth =
+        "90vw";
+
+
+    document.body.appendChild(
+        alertElement
+    );
+
+
+    /*
+    ==================================================
+    AUTO CLOSE
+    ==================================================
+    */
+
+    setTimeout(
+        () => {
+
+            const currentAlert =
+                document.getElementById(
+                    "accounting-period-bootstrap-success-alert"
+                );
+
+
+            if (
+                !currentAlert
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                window.bootstrap
+                &&
+                bootstrap.Alert
+            ) {
+
+                bootstrap.Alert
+                    .getOrCreateInstance(
+                        currentAlert
+                    )
+                    .close();
+
+            }
+
+            else {
+
+                currentAlert.remove();
+
+            }
+
+        },
+
+        5000
+
+    );
+
+}
+
+
+    /*
+    ======================================================
+    ESCAPE HTML
+    ======================================================
+    */
+
+    escapeHTML(
+        value
+    ) {
+
+        return String(
+            value
+            ??
+            ""
+        )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+    }
+
+}

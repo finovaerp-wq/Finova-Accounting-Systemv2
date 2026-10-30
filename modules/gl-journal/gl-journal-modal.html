@@ -1,0 +1,638 @@
+<!-- ======================================================
+GENERAL JOURNAL MODAL
+FINAL
+====================================================== -->
+
+<div
+    class="modal fade"
+    id="glJournalModal"
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+>
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content shadow-lg gl-journal-modal-content">
+
+
+            <!-- ==================================================
+                 MODAL HEADER
+            =================================================== -->
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    <i class="fa-solid fa-book me-2"></i>
+
+                    General Journal
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                >
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================
+                 MODAL BODY
+            =================================================== -->
+
+            <div class="modal-body gl-journal-modal-body">
+
+
+                <!-- ==================================================
+                     JOURNAL INFORMATION
+                =================================================== -->
+
+                <div
+                    class="
+                        card
+                        gl-journal-info-card
+                        shadow-sm
+                        border-0
+                        mb-3
+                    "
+                >
+
+
+                    <!-- ==========================================
+                         INFORMATION HEADER
+                    =========================================== -->
+
+                    <div class="card-header bg-white">
+
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-center
+                            "
+                        >
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+
+                                    Journal Information
+
+                                </h5>
+
+                                <small class="text-muted">
+
+                                    General Journal Header
+
+                                </small>
+
+                            </div>
+
+
+                            <span
+                                id="journal-header-status"
+                                class="
+                                    badge
+                                    rounded-pill
+                                    bg-primary
+                                    px-3
+                                    py-2
+                                "
+                            >
+
+                                Draft
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         INFORMATION BODY
+                    =========================================== -->
+
+                    <div class="card-body">
+
+                        <div class="row g-3">
+
+
+                            <!-- ACCOUNTING DATE -->
+
+                            <div class="col-md-3">
+
+                                <label
+                                    for="journal-accounting-date"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Accounting Date
+
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="journal-accounting-date"
+                                    class="form-control"
+                                >
+
+                            </div>
+
+
+                            <!-- JOURNAL NUMBER -->
+
+                            <div class="col-md-3">
+
+                                <label
+                                    for="journal-journal-no"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    No. Journal
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="journal-journal-no"
+                                    class="form-control bg-light"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <!-- STATUS -->
+
+                            <div class="col-md-3">
+
+                                <label
+                                    for="journal-status"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Status
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="journal-status"
+                                    class="form-control bg-light"
+                                    value="Draft"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <!-- POSTING PERIOD -->
+
+                            <div class="col-md-3">
+
+                                <label
+                                    for="journal-posting-period"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Posting Period
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="journal-posting-period"
+                                    class="form-control bg-light"
+                                    value="-"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <!-- REFERENCE -->
+
+                            <div class="col-md-4">
+
+                                <label
+                                    for="journal-reference-no"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Reference No
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="journal-reference-no"
+                                    class="form-control"
+                                    placeholder="Optional"
+                                >
+
+                            </div>
+
+
+                            <!-- DESCRIPTION -->
+
+                            <div class="col-md-8">
+
+                                <label
+                                    for="journal-description"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Description
+
+                                </label>
+
+                                <textarea
+                                    id="journal-description"
+                                    rows="3"
+                                    class="form-control"
+                                    placeholder="Enter journal description..."
+                                ></textarea>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     JOURNAL DETAIL
+                =================================================== -->
+
+                <div
+                    class="
+                        card
+                        gl-journal-detail-card
+                        shadow-sm
+                        border-0
+                    "
+                >
+
+
+                    <!-- ==========================================
+                         DETAIL HEADER
+                    =========================================== -->
+
+                    <div class="card-header bg-white">
+
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-center
+                            "
+                        >
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+
+                                    Journal Detail
+
+                                </h5>
+
+                                <small class="text-muted">
+
+                                    Journal transaction detail
+
+                                </small>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="btn-add-line"
+                                class="btn btn-primary"
+                            >
+
+                                <i class="fa-solid fa-plus me-2"></i>
+
+                                Add Line
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         DETAIL TABLE SCROLL AREA
+                    =========================================== -->
+
+                    <div class="journal-detail-scroll">
+
+                        <div class="table-responsive">
+
+                            <table
+                                id="journal-detail-table"
+                                class="
+                                    table
+                                    table-hover
+                                    align-middle
+                                    mb-0
+                                    journal-detail-table
+                                "
+                            >
+
+
+                                <!-- ==================================
+                                     COLUMN WIDTH
+                                =================================== -->
+
+                                <colgroup>
+
+                                    <col class="journal-detail-col-no">
+
+                                    <col class="journal-detail-col-debit">
+
+                                    <col class="journal-detail-col-credit">
+
+                                    <col class="journal-detail-col-amount">
+
+                                    <col class="journal-detail-col-bp">
+
+                                    <col class="journal-detail-col-action">
+
+                                </colgroup>
+
+
+                                <!-- ==================================
+                                     TABLE HEADER
+                                =================================== -->
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th class="text-center">
+                                            No
+                                        </th>
+
+                                        <th>
+                                            Debit Account
+                                        </th>
+
+                                        <th>
+                                            Credit Account
+                                        </th>
+
+                                        <th class="text-end">
+                                            Amount
+                                        </th>
+
+                                        <th>
+                                            Business Partner
+                                        </th>
+
+                                        <th class="text-center">
+                                            Action
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <!-- ==================================
+                                     TABLE BODY
+                                =================================== -->
+
+                                <tbody id="journal-detail-tbody">
+
+                                    <tr id="journal-empty-row">
+
+                                        <td
+                                            colspan="6"
+                                            class="
+                                                text-center
+                                                py-5
+                                                text-muted
+                                            "
+                                        >
+
+                                            <i
+                                                class="
+                                                    fa-solid
+                                                    fa-folder-open
+                                                    fa-2x
+                                                    d-block
+                                                    mb-3
+                                                "
+                                            ></i>
+
+                                            No journal detail available.
+
+                                            <br>
+
+                                            Click Add Line to add journal detail.
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         PERMANENT JOURNAL SUMMARY
+                    =========================================== -->
+
+                    <div class="journal-summary-sticky">
+
+                        <div class="journal-summary-title">
+
+                            <div>
+
+                                <strong>
+                                    Journal Summary
+                                </strong>
+
+                                <small class="text-muted d-block">
+
+                                    Journal transaction summary
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TOTAL LINE -->
+
+                        <div class="journal-summary-item">
+
+                            <span class="journal-summary-label">
+
+                                Total Line
+
+                            </span>
+
+                            <strong
+                                id="summary-total-line"
+                                class="journal-summary-value"
+                            >
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TOTAL AMOUNT -->
+
+                        <div class="journal-summary-item">
+
+                            <span class="journal-summary-label">
+
+                                Total Amount
+
+                            </span>
+
+                            <strong
+                                id="summary-total-amount"
+                                class="journal-summary-value"
+                            >
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ==================================================
+                     LEGACY DETAIL TEMPLATE
+                =================================================== -->
+
+                <template id="journal-detail-template">
+
+                </template>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 MODAL FOOTER
+            =================================================== -->
+
+            <div class="modal-footer bg-white gl-journal-footer">
+
+                <div
+                    class="
+                        w-100
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        flex-wrap
+                        gap-3
+                    "
+                >
+
+
+                    <!-- LEFT -->
+
+                    <div class="text-muted small">
+
+                        <i class="fa-solid fa-circle-info me-2"></i>
+
+                        Journal will be saved as
+                        <strong>Draft</strong>
+                        until it is posted.
+
+                    </div>
+
+
+                    <!-- RIGHT -->
+
+                    <div class="d-flex align-items-center gap-2">
+
+
+                        <!-- CANCEL -->
+
+                        <button
+                            type="button"
+                            class="btn btn-light border"
+                            data-bs-dismiss="modal"
+                        >
+
+                            <i class="fa-solid fa-xmark me-2"></i>
+
+                            Cancel
+
+                        </button>
+
+
+                        <!-- SAVE -->
+
+                        <button
+                            type="button"
+                            id="btn-save-journal"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                            Save Draft
+
+                        </button>
+
+
+                        <!-- POST -->
+
+                        <button
+                            type="button"
+                            id="btn-post-journal"
+                            class="btn btn-success"
+                        >
+
+                            <i class="fa-solid fa-paper-plane me-2"></i>
+
+                            Save & Post
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

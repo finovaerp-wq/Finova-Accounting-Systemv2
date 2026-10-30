@@ -1,0 +1,4340 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : ACCOUNT PAYABLE
+
+Version : 2.1 Enterprise
+
+TABLE STANDARD :
+GLOBAL TABLE COMPONENT
+
+VISUAL STANDARD :
+BUSINESS PARTNER / CHART OF ACCOUNTS
+
+NOTE :
+- Header aligned with BP / COA
+- Filter aligned with BP / COA
+- Table visual controlled by Global Table CSS
+- Pagination controlled by Global Pagination CSS
+- AP business status behavior remains here
+==========================================================
+*/
+
+
+/* ==========================================================
+   ACCOUNT PAYABLE PAGE
+========================================================== */
+
+.account-payable-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-page
+> .finova-page-header {
+
+    width: 100%;
+
+    margin-bottom: 8px !important;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-page
+> .account-payable-filter-card {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD BODY
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-filter-card
+> .finova-card-body {
+
+    width: 100%;
+
+    padding: 8px 20px 8px 20px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER ROW
+========================================================== */
+
+.account-payable-filter-card
+> .finova-card-body
+> .row {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+
+    align-items: end !important;
+
+}
+
+
+/* ==========================================================
+   FILTER COLUMN
+========================================================== */
+
+.account-payable-filter-card
+> .finova-card-body
+> .row
+> [class*="col-"] {
+
+    min-width: 0;
+
+    margin: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER LABEL
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-filter-card
+.form-label {
+
+    display: block;
+
+    margin-top: 0 !important;
+
+    margin-bottom: 6px !important;
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT & SELECT
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-filter-card
+.form-control,
+
+.account-payable-filter-card
+.form-select {
+
+    width: 100%;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT GROUP
+========================================================== */
+
+.account-payable-filter-card
+.input-group {
+
+    display: flex !important;
+
+    flex-wrap: nowrap !important;
+
+    align-items: stretch;
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   KEYWORD INPUT
+========================================================== */
+
+.account-payable-filter-card
+.input-group
+#ap-keyword {
+
+    flex: 1 1 auto !important;
+
+    width: 1% !important;
+
+    min-width: 0 !important;
+
+    height: 46px !important;
+
+    border-top-right-radius: 0 !important;
+
+    border-bottom-right-radius: 0 !important;
+
+}
+
+
+/* ==========================================================
+   FIND BUTTON
+========================================================== */
+
+.account-payable-filter-card
+.input-group
+#btn-find-ap {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    flex: 0 0 80px !important;
+
+    width: 80px !important;
+
+    min-width: 80px !important;
+
+    height: 46px !important;
+
+    padding: 0 12px !important;
+
+    white-space: nowrap;
+
+    border-top-left-radius: 0 !important;
+
+    border-bottom-left-radius: 0 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.account-payable-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD BODY
+========================================================== */
+
+.account-payable-table-card
+.finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CONTAINER
+========================================================== */
+
+.account-payable-table-card
+.finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.account-payable-table-card
+.finova-table-container
+.table-responsive {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.account-payable-table-card
+.finova-table {
+
+    width: 100%;
+
+    margin-bottom: 0;
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.account-payable-table-card
+.finova-table
+thead
+th {
+
+    font-weight: 700 !important;
+
+    color: #111827 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.account-payable-table-card
+.finova-table
+tbody
+td {
+
+    font-weight: 400 !important;
+
+    color: #1F2937 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE NUMBER
+   CENTER ALIGNMENT
+========================================================== */
+
+.account-payable-table-card
+.finova-table
+th:first-child,
+
+.account-payable-table-card
+.finova-table
+td:first-child {
+
+    text-align: center !important;
+
+    vertical-align: middle !important;
+
+}
+
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+
+.account-payable-table-card
+.finova-table-container
+.finova-pagination-wrapper {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin-top: auto;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LEFT
+   SAME AS BP / COA
+========================================================== */
+
+.account-payable-table-card
+.finova-pagination-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LABEL
+========================================================== */
+
+.account-payable-table-card
+.finova-pagination-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   PAGINATION TOTAL
+========================================================== */
+
+.account-payable-table-card
+.finova-pagination-total {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-width: 18px;
+
+    margin-left: 2px;
+
+}
+
+
+/* ==========================================================
+   AP TABLE BODY
+========================================================== */
+
+#ap-table-body {
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   AP ROW STATUS
+   KEEP NORMAL TABLE APPEARANCE
+========================================================== */
+
+.ap-row-posted,
+.ap-row-draft,
+.ap-row-complete,
+.ap-row-void {
+
+    opacity: 1 !important;
+
+}
+
+
+
+
+
+/* ==========================================================
+   STATUS BADGE
+========================================================== */
+
+#ap-table-body
+.badge {
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   ACTION BUTTON
+========================================================== */
+
+#ap-table-body
+.btn {
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .account-payable-filter-card
+    > .finova-card-body {
+
+        padding-left: 16px !important;
+
+        padding-right: 16px !important;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .account-payable-filter-card
+    > .finova-card-body {
+
+        padding: 8px 16px !important;
+
+    }
+
+}
+/* ==========================================================
+   AP TOM SELECT - COA SEARCHABLE DROPDOWN
+========================================================== */
+
+#accountPayableDetailModal
+.ts-wrapper {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT CONTROL
+   KEEP SEARCH INPUT ON SAME LINE
+========================================================== */
+
+#accountPayableDetailModal
+.ts-control {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    flex-wrap: nowrap !important;
+
+    width: 100% !important;
+
+    min-height: 38px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   SELECTED COA
+========================================================== */
+
+#accountPayableDetailModal
+.ts-control
+.item {
+
+    flex: 0 1 auto !important;
+
+    min-width: 0;
+
+    max-width: calc(100% - 30px);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT SEARCH INPUT
+   IMPORTANT : DO NOT USE WIDTH 100%
+========================================================== */
+
+#accountPayableDetailModal
+.ts-control
+> input {
+
+    flex: 1 1 auto !important;
+
+    width: 1px !important;
+
+    min-width: 20px !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 0 0 4px !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+}
+
+
+/* ==========================================================
+   REMOVE FOCUS SHADOW FROM INTERNAL INPUT
+========================================================== */
+
+#accountPayableDetailModal
+.ts-control
+> input:focus {
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+#accountPayableDetailModal
+.ts-dropdown {
+
+    width: 100%;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE
+COMPACT BODY TABLE LAYOUT
+==========================================================
+*/
+
+
+/*
+==========================================================
+TABLE HEADER WIDTH
+==========================================================
+*/
+
+.account-payable-table-card .ap-col-no {
+
+    width: 54px;
+
+    min-width: 54px;
+
+    max-width: 54px;
+
+}
+
+
+.account-payable-table-card .ap-col-document {
+
+    width: 245px;
+
+    min-width: 245px;
+
+}
+
+
+.account-payable-table-card .ap-col-vendor {
+
+    width: 360px;
+
+    min-width: 320px;
+
+}
+
+
+.account-payable-table-card .ap-col-date-info {
+
+    width: 210px;
+
+    min-width: 210px;
+
+}
+
+
+.account-payable-table-card .ap-col-amount-status {
+
+    width: 230px;
+
+    min-width: 230px;
+
+}
+
+
+.account-payable-table-card .ap-col-action {
+
+    width: 105px;
+
+    min-width: 105px;
+
+    max-width: 105px;
+
+}
+
+
+/*
+==========================================================
+TABLE ROW
+==========================================================
+*/
+
+.account-payable-table-card
+.finova-table
+tbody
+.ap-data-row {
+
+    min-height: 108px;
+
+}
+
+
+/*
+==========================================================
+TABLE CELL
+==========================================================
+*/
+
+.account-payable-table-card
+.finova-table
+tbody
+.ap-data-row
+> td {
+
+    padding: 12px 14px;
+
+    vertical-align: top;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+    background: #FFFFFF;
+
+}
+
+
+/*
+==========================================================
+ROW HOVER
+==========================================================
+*/
+
+.account-payable-table-card
+.finova-table
+tbody
+.ap-data-row:hover
+> td {
+
+    background: #F8FAFC;
+
+}
+
+
+/*
+==========================================================
+NO
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-no {
+
+    text-align: center;
+
+    vertical-align: middle !important;
+
+    font-weight: 600;
+
+    color: var(--text-secondary);
+
+}
+
+
+/*
+==========================================================
+DOCUMENT CELL
+==========================================================
+*/
+
+.ap-document-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+/*
+==========================================================
+DOCUMENT BADGES
+==========================================================
+*/
+
+.ap-document-badges {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 3px;
+
+}
+
+
+.ap-document-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 21px;
+
+    padding: 2px 8px;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    letter-spacing: .25px;
+
+    white-space: nowrap;
+
+}
+
+
+.ap-document-badge-payable {
+
+    background: #EAF2FF;
+
+    border: 1px solid #C8DAFA;
+
+    color: #315D9A;
+
+}
+
+
+.ap-document-badge-invoice {
+
+    background: #F3F4F6;
+
+    border: 1px solid #D9DEE5;
+
+    color: #56606D;
+
+}
+
+
+/*
+==========================================================
+GLOBAL INFO LINE
+==========================================================
+*/
+
+.ap-info-line {
+
+    display: grid;
+
+    grid-template-columns: 82px 10px minmax(0, 1fr);
+
+    align-items: start;
+
+    min-width: 0;
+
+    gap: 2px;
+
+}
+
+
+/*
+==========================================================
+INFO LABEL
+==========================================================
+*/
+
+.ap-info-label {
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+}
+
+
+/*
+==========================================================
+INFO SEPARATOR
+==========================================================
+*/
+
+.ap-info-separator {
+
+    color: #94A3B8;
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+INFO VALUE
+==========================================================
+*/
+
+.ap-info-value {
+
+    min-width: 0;
+
+    color: var(--text-primary);
+
+    font-size: 11.5px;
+
+    font-weight: 500;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/*
+==========================================================
+DOCUMENT VALUE
+==========================================================
+*/
+
+.ap-cell-document
+.ap-info-value {
+
+    font-weight: 500;
+
+}
+
+
+/*
+==========================================================
+VENDOR CELL
+==========================================================
+*/
+
+.ap-vendor-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+
+}
+
+
+/*
+==========================================================
+VENDOR NAME
+==========================================================
+*/
+
+.ap-vendor-name {
+
+    color: var(--text-primary);
+
+    font-size: 12.5px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    word-break: break-word;
+
+}
+
+
+/*
+==========================================================
+DESCRIPTION
+==========================================================
+*/
+
+.ap-description-line {
+
+    display: grid;
+
+    grid-template-columns: 82px 10px minmax(0, 1fr);
+
+    align-items: start;
+
+    gap: 2px;
+
+    min-width: 0;
+
+}
+
+
+.ap-description-value {
+
+    color: var(--text-secondary);
+
+    font-size: 11.5px;
+
+    font-weight: 400;
+
+    line-height: 1.5;
+
+    white-space: normal;
+
+    word-break: break-word;
+
+}
+
+
+/*
+==========================================================
+DATE CELL
+==========================================================
+*/
+
+.ap-date-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+.ap-cell-date-info
+.ap-info-line {
+
+    grid-template-columns: 72px 10px minmax(0, 1fr);
+
+}
+
+
+/*
+==========================================================
+AMOUNT / STATUS CELL
+==========================================================
+*/
+
+.ap-amount-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+.ap-cell-amount-status
+.ap-info-line {
+
+    grid-template-columns: 86px 10px minmax(0, 1fr);
+
+}
+
+
+/*
+==========================================================
+AMOUNT VALUE
+==========================================================
+*/
+
+.ap-amount-value {
+
+    font-weight: 600;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+}
+
+
+/*
+==========================================================
+STATUS LINE
+==========================================================
+*/
+
+.ap-status-line {
+
+    margin-top: 2px;
+
+}
+
+
+.ap-status-line
+.ap-info-value {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+/*
+==========================================================
+STATUS BADGE
+==========================================================
+*/
+
+.ap-status-line .badge {
+
+    min-width: 74px;
+
+    padding: 5px 8px;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+}
+
+
+/*
+==========================================================
+ACTION CELL
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action {
+
+    vertical-align: middle !important;
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+ACTION BUTTON GROUP
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action
+.btn-group {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 3px;
+
+}
+
+
+/*
+==========================================================
+ACTION BUTTON
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action
+.btn {
+
+    width: 30px;
+
+    height: 30px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    border-radius: 5px;
+
+}
+
+
+/*
+==========================================================
+ACTION ICON
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action
+.btn i {
+
+    font-size: 11px;
+
+}
+
+
+/*
+==========================================================
+HEADER ALIGNMENT
+==========================================================
+*/
+
+.account-payable-table-card
+.finova-table
+thead
+th {
+
+    vertical-align: middle;
+
+}
+
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-no {
+
+    text-align: center;
+
+}
+
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-document,
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-vendor,
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-date-info,
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-amount-status {
+
+    text-align: left;
+
+}
+
+
+.account-payable-table-card
+.finova-table
+thead
+.ap-col-action {
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+DESCRIPTION FULL BODY
+==========================================================
+*/
+
+.ap-cell-vendor {
+
+    white-space: normal;
+
+}
+
+
+.ap-description-value {
+
+    display: block;
+
+    max-width: 100%;
+
+}
+
+
+/*
+==========================================================
+PREVENT COLUMN CONTENT OVERFLOW
+==========================================================
+*/
+
+.ap-cell-document,
+
+.ap-cell-vendor,
+
+.ap-cell-date-info,
+
+.ap-cell-amount-status {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+}
+
+
+/*
+==========================================================
+RESPONSIVE
+==========================================================
+*/
+
+@media (max-width: 1200px) {
+
+    .account-payable-table-card .ap-col-document {
+
+        min-width: 220px;
+
+    }
+
+
+    .account-payable-table-card .ap-col-vendor {
+
+        min-width: 300px;
+
+    }
+
+
+    .account-payable-table-card .ap-col-date-info {
+
+        min-width: 195px;
+
+    }
+
+
+    .account-payable-table-card .ap-col-amount-status {
+
+        min-width: 215px;
+
+    }
+
+}
+
+
+/*
+==========================================================
+SMALL SCREEN
+KEEP HORIZONTAL TABLE SCROLL
+==========================================================
+*/
+
+@media (max-width: 768px) {
+
+    .account-payable-table-card
+    .finova-table {
+
+        min-width: 1180px;
+
+    }
+
+}
+/*
+==========================================================
+ACCOUNT PAYABLE
+BODY FONT SIZE ENHANCEMENT
+==========================================================
+*/
+
+
+/*
+==========================================================
+BASE BODY
+==========================================================
+*/
+
+.account-payable-table-card
+.finova-table
+tbody
+.ap-data-row
+> td {
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+}
+
+
+/*
+==========================================================
+DOCUMENT BADGE
+PAYABLE / INV
+==========================================================
+*/
+
+.ap-document-badge {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    min-height: 23px;
+
+    padding: 3px 9px;
+
+}
+
+
+/*
+==========================================================
+LABEL
+Inv No
+PO No
+Journal
+Description
+Inv Date
+Received
+Due Date
+Total
+Outstanding
+Status
+==========================================================
+*/
+
+.ap-info-label {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+}
+
+
+/*
+==========================================================
+SEPARATOR :
+==========================================================
+*/
+
+.ap-info-separator {
+
+    font-size: 13px;
+
+}
+
+
+/*
+==========================================================
+VALUE
+==========================================================
+*/
+
+.ap-info-value {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+}
+
+
+/*
+==========================================================
+VENDOR NAME
+==========================================================
+*/
+
+.ap-vendor-name {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+}
+
+
+/*
+==========================================================
+DESCRIPTION VALUE
+==========================================================
+*/
+
+.ap-description-value {
+
+    font-size: 13px;
+
+    line-height: 1.55;
+
+}
+
+
+/*
+==========================================================
+AMOUNT
+==========================================================
+*/
+
+.ap-amount-value {
+
+    font-size: 13.5px;
+
+    font-weight: 600;
+
+}
+
+
+/*
+==========================================================
+STATUS BADGE
+==========================================================
+*/
+
+.ap-status-line .badge {
+
+    font-size: 11.5px;
+
+    font-weight: 600;
+
+    min-width: 80px;
+
+    padding: 6px 9px;
+
+}
+
+
+/*
+==========================================================
+ACTION BUTTON
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action
+.btn {
+
+    width: 32px;
+
+    height: 32px;
+
+}
+
+
+/*
+==========================================================
+ACTION ICON
+==========================================================
+*/
+
+.account-payable-table-card
+.ap-cell-action
+.btn i {
+
+    font-size: 13px;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE MODAL TABS
+FINAL CLEAN SEGMENTED DESIGN
+==========================================================
+*/
+
+
+/*
+==========================================================
+TAB WRAPPER
+==========================================================
+*/
+
+#accountPayableModal
+.ap-modern-tabs-wrapper {
+
+    width: 100%;
+
+    padding: 6px;
+
+    background: #F1F3F6;
+
+    border-top: 1px solid #E1E5EA;
+
+    border-bottom: 1px solid #DDE2E8;
+
+}
+
+
+/*
+==========================================================
+TAB CONTAINER
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs {
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 5px;
+
+    width: 100%;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    border: 0 !important;
+
+}
+/*
+==========================================================
+TAB ITEM
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-item {
+
+    width: 100%;
+
+    min-width: 0;
+
+    margin: 0 !important;
+
+    flex: none !important;
+
+}
+
+
+/*
+==========================================================
+TAB BUTTON
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    min-height: 36px !important;
+
+    margin: 0 !important;
+
+    padding: 7px 14px !important;
+
+    background: transparent !important;
+
+    border: 1px solid transparent !important;
+
+    border-radius: 8px !important;
+
+    color: #344054 !important;
+
+    font-family: inherit;
+
+    font-size: 13.5px !important;
+
+    font-weight: 600 !important;
+
+    line-height: 1.2;
+
+    letter-spacing: .1px;
+
+    text-align: center;
+
+    box-shadow: none;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        box-shadow .18s ease;
+
+}
+
+/*
+==========================================================
+HIDE ICON AND SUBTITLE
+KEEP CLEAN DESIGN
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.ap-tab-icon,
+
+#accountPayableModal
+#ap-modal-tabs
+.ap-tab-subtitle {
+
+    display: none !important;
+
+}
+
+
+/*
+==========================================================
+TAB CONTENT
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.ap-tab-content {
+
+    display: block;
+
+    width: 100%;
+
+}
+
+
+/*
+==========================================================
+TAB TITLE
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.ap-tab-title {
+
+    display: block;
+
+    width: 100%;
+
+    color: inherit !important;
+
+    font-size: 13.5px !important;
+
+    font-weight: 600 !important;
+
+    line-height: 1.2;
+
+    letter-spacing: .1px;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/*
+==========================================================
+REMOVE BOOTSTRAP TAB DECORATION
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link::before,
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link::after {
+
+    display: none !important;
+
+}
+
+
+/*
+==========================================================
+HOVER
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link:hover {
+
+    background: rgba(
+        255,
+        255,
+        255,
+        .72
+    ) !important;
+
+    border-color: #DCE2E9 !important;
+
+    color: #0D6EFD !important;
+
+}
+
+
+/*
+==========================================================
+ACTIVE TAB
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link.active {
+
+    background: #FFFFFF !important;
+
+    border-color: #CFD7E2 !important;
+
+    color: #0B5ED7 !important;
+
+    font-weight: 700 !important;
+
+    box-shadow:
+        0 2px 7px rgba(15, 23, 42, .11),
+        0 1px 2px rgba(15, 23, 42, .05),
+        0 0 0 1px rgba(13, 110, 253, .025) !important;
+
+}
+
+
+/*
+==========================================================
+ACTIVE TITLE
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link.active
+.ap-tab-title {
+
+    color: #0B5ED7 !important;
+
+    font-size: 13.5px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: .15px;
+
+    text-shadow:
+        0 0 8px rgba(13, 110, 253, .16);
+
+}
+
+
+/*
+==========================================================
+FOCUS
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tabs
+.nav-link:focus {
+
+    outline: none !important;
+
+}
+
+
+/*
+==========================================================
+TAB CONTENT AREA
+==========================================================
+*/
+
+#accountPayableModal
+#ap-modal-tab-content {
+
+    background: #FFFFFF;
+
+    border: 0;
+
+}
+
+
+/*
+==========================================================
+RESPONSIVE
+==========================================================
+*/
+
+@media (max-width: 768px) {
+
+    #accountPayableModal
+    #ap-modal-tabs {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+/* ==========================================================
+   ACCOUNT PAYABLE
+   COMPLETE / NOT COMPLETE ROW
+   FINAL
+========================================================== */
+
+
+/* ==========================================================
+   NOT COMPLETED
+   Draft
+========================================================== */
+
+#ap-table-body
+tr.ap-data-row.ap-row-not-completed
+> td {
+
+    background: #FFFFFF !important;
+
+    background-color: #FFFFFF !important;
+
+}
+
+
+/* ==========================================================
+   COMPLETED
+   Complete / Partial Paid / Paid
+========================================================== */
+
+#ap-table-body
+tr.ap-data-row.ap-row-completed
+> td {
+
+    background: #EEF1F4 !important;
+
+    background-color: #EEF1F4 !important;
+
+}
+
+
+/* ==========================================================
+   NOT COMPLETED HOVER
+========================================================== */
+
+#ap-table-body
+tr.ap-data-row.ap-row-not-completed:hover
+> td {
+
+    background: #F8FAFC !important;
+
+    background-color: #F8FAFC !important;
+
+}
+
+
+/* ==========================================================
+   COMPLETED HOVER
+========================================================== */
+
+#ap-table-body
+tr.ap-data-row.ap-row-completed:hover
+> td {
+
+    background: #E3E7EB !important;
+
+    background-color: #E3E7EB !important;
+
+}
+/* ==========================================================
+   AP JOURNAL STATUS
+========================================================== */
+
+.ap-journal-status {
+
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+}
+
+
+/* ==========================================================
+   JOURNAL NOT POSTED
+========================================================== */
+
+.ap-journal-not-posted {
+
+    color: #DC3545;
+
+}
+
+
+/* ==========================================================
+   JOURNAL POSTED
+========================================================== */
+
+.ap-journal-posted {
+
+    color: #198754;
+
+}
+/* ==========================================================
+   AP PAYMENT HISTORY
+   JOURNAL COLUMN
+========================================================== */
+
+.ap-payment-journal-cell {
+
+    min-width: 170px;
+
+    vertical-align: middle !important;
+
+}
+
+
+/* ==========================================================
+   JOURNAL WRAPPER
+========================================================== */
+
+.ap-payment-journal-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   JOURNAL NUMBER
+========================================================== */
+
+.ap-payment-journal-no {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    line-height: 1.35;
+
+    white-space: nowrap;
+
+    color: var(--text-primary);
+
+}
+
+
+/* ==========================================================
+   JOURNAL STATUS
+========================================================== */
+
+.ap-payment-journal-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 64px;
+
+    padding: 5px 10px;
+
+    border-radius: 6px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+}
+/* ==========================================================
+   AP PAYMENT HISTORY
+   DESCRIPTION ROW
+========================================================== */
+
+.ap-payment-description-row {
+
+    background: #FAFBFC;
+
+}
+
+
+.ap-payment-description-row:hover {
+
+    background: #FAFBFC !important;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION CELL
+========================================================== */
+
+.ap-payment-description-cell {
+
+    padding: 8px 12px !important;
+
+    vertical-align: top !important;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION WRAPPER
+========================================================== */
+
+.ap-payment-description-wrap {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    width: 100%;
+
+    gap: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION LABEL
+========================================================== */
+
+.ap-payment-description-label {
+
+    flex: 0 0 auto;
+
+    font-weight: 600;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION SEPARATOR
+========================================================== */
+
+.ap-payment-description-separator {
+
+    flex: 0 0 auto;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION VALUE
+========================================================== */
+
+.ap-payment-description-value {
+
+    flex: 1;
+
+    min-width: 0;
+
+    color: var(--text-primary);
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+/* ==========================================================
+   AP PAYMENT SUMMARY
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-summary {
+
+    width: 100%;
+
+    padding: 14px 14px 16px 14px;
+
+    background: #F8F9FA;
+
+    border-radius: 6px;
+
+}
+
+
+/* ==========================================================
+   SUMMARY LINE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-summary-line {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    min-height: 28px;
+
+}
+
+
+/* ==========================================================
+   SUMMARY LABEL
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-summary-label {
+
+    color: #6B7280;
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+}
+
+
+/* ==========================================================
+   SUMMARY VALUE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-summary-value {
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   DIVIDER
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-summary-divider {
+
+    width: 100%;
+
+    height: 1px;
+
+    margin: 10px 0 14px 0;
+
+    background: #C9CDD3;
+
+}
+
+
+/* ==========================================================
+   PAYMENT AMOUNT
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-amount {
+
+    width: 100%;
+
+    height: 40px;
+
+    min-height: 40px;
+
+    padding-left: 12px;
+
+    padding-right: 12px;
+
+    color: #1F2937;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-description {
+
+    width: 100%;
+
+    min-height: 110px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+
+
+/* ==========================================================
+   JOURNAL PREVIEW
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-journal-preview {
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT PAYABLE
+   INVOICE DETAIL TABLE
+========================================================== */
+
+
+/* ==========================================================
+   TABLE WRAPPER
+========================================================== */
+
+.ap-invoice-detail-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.ap-invoice-detail-table {
+
+    width: 100%;
+
+    table-layout: fixed;
+
+    margin-bottom: 0;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.ap-invoice-detail-table thead th {
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+.ap-invoice-detail-table tbody td {
+
+    vertical-align: top;
+
+}
+
+
+/* ==========================================================
+   ACCOUNT COLUMN
+========================================================== */
+
+.ap-invoice-detail-table th:nth-child(2),
+.ap-invoice-detail-table td:nth-child(2) {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: normal;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION COLUMN
+========================================================== */
+
+.ap-invoice-detail-table th:nth-child(3),
+.ap-invoice-detail-table td:nth-child(3) {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: normal;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   NUMBER COLUMNS
+========================================================== */
+
+.ap-invoice-detail-table th:nth-child(4),
+.ap-invoice-detail-table td:nth-child(4),
+
+.ap-invoice-detail-table th:nth-child(5),
+.ap-invoice-detail-table td:nth-child(5),
+
+.ap-invoice-detail-table th:nth-child(6),
+.ap-invoice-detail-table td:nth-child(6) {
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACTION COLUMN
+========================================================== */
+
+.ap-invoice-detail-table th:nth-child(7),
+.ap-invoice-detail-table td:nth-child(7) {
+
+    white-space: nowrap;
+
+    text-align: center;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE
+HEADER INFO
+MATCH ACCOUNT RECEIVABLE
+==========================================================
+*/
+
+
+/* ==========================================================
+   HEADER INFO PANE
+========================================================== */
+
+#accountPayableModal
+#ap-header-info-pane
+> .p-4 {
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   HEADER CARD
+========================================================== */
+
+#accountPayableModal
+#ap-header-info-pane
+.finova-card {
+
+    width: 100% !important;
+
+    background: #FFFFFF !important;
+
+    border: 1px solid #EEF0F3 !important;
+
+    border-radius: 14px !important;
+
+    box-shadow:
+        0 3px 10px
+        rgba(
+            15,
+            23,
+            42,
+            .05
+        ) !important;
+
+}
+
+
+/* ==========================================================
+   HEADER CARD BODY
+========================================================== */
+
+#accountPayableModal
+#ap-header-info-pane
+.finova-card-body {
+
+    padding: 20px !important;
+
+}
+/*
+==========================================================
+ACCOUNT PAYABLE
+TAX (+) / TAX (-)
+FINAL COLUMN ALIGNMENT
+==========================================================
+*/
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(1),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(1),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(1),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(1) {
+
+    width: 6% !important;
+    white-space: nowrap !important;
+
+}
+
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(2),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(2),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(2),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(2) {
+
+    width: 34% !important;
+    white-space: nowrap !important;
+
+}
+
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(3),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(3),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(3),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(3) {
+
+    width: 26% !important;
+    white-space: nowrap !important;
+
+}
+
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(4),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(4),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(4),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(4) {
+
+    width: 14% !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+
+}
+
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(5),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(5),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(5),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(5) {
+
+    width: 8% !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+
+}
+
+
+#accountPayableModal
+#ap-tax-plus-pane
+th:nth-child(6),
+
+#accountPayableModal
+#ap-tax-plus-pane
+td:nth-child(6),
+
+#accountPayableModal
+#ap-tax-minus-pane
+th:nth-child(6),
+
+#accountPayableModal
+#ap-tax-minus-pane
+td:nth-child(6) {
+
+    width: 12% !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE
+ACCOUNTING PREVIEW
+FIXED 5 ROWS + SCROLL
+==========================================================
+*/
+
+
+/* ==========================================================
+   JOURNAL SCROLL AREA
+   SHOW APPROXIMATELY 5 ROWS
+========================================================== */
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll {
+
+    width: 100%;
+
+    max-height: 225px;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   KEEP TABLE HEADER VISIBLE
+========================================================== */
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll
+thead
+th {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 5;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   KEEP TOTAL ROW VISIBLE
+========================================================== */
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll
+tfoot
+td {
+
+    position: sticky;
+
+    bottom: 0;
+
+    z-index: 4;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   PREVENT AMOUNT WRAPPING
+========================================================== */
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll
+th,
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll
+td {
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING SUMMARY
+   NEVER SCROLL WITH JOURNAL
+========================================================== */
+
+#accountPayableModal
+#ap-accounting-preview-pane
+.ap-accounting-preview-scroll
++ .row {
+
+    flex: 0 0 auto;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+   KEEP PERMANENT
+========================================================== */
+
+#accountPayableModal
+.modal-footer {
+
+    flex: 0 0 auto;
+
+    background: #FFFFFF;
+
+}
+/*
+==========================================================
+ACCOUNT PAYABLE
+MAIN MODAL POSITION
+MATCH ACCOUNT RECEIVABLE
+==========================================================
+*/
+
+#accountPayableModal
+.modal-dialog {
+
+    width: calc(100% - 48px) !important;
+
+    max-width: 1140px !important;
+
+    height: auto !important;
+
+    max-height: none !important;
+
+    margin:
+
+        48px
+
+        auto !important;
+
+}
+
+
+/*
+==========================================================
+MODAL CONTENT
+==========================================================
+*/
+
+#accountPayableModal
+.modal-content {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    max-height: calc(100vh - 96px) !important;
+
+    min-height: 0 !important;
+
+    overflow: hidden !important;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE
+BULK AP PAYMENT MODAL
+TAHAP 4
+==========================================================
+*/
+
+
+/* ==========================================================
+   MODAL SIZE
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-dialog {
+
+    width: calc(100% - 48px);
+
+    max-width: 1180px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+}
+
+
+/* ==========================================================
+   MODAL CONTENT
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-content {
+
+    border: 0;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-header {
+
+    padding: 18px 22px;
+
+    background: #FFFFFF;
+
+    border-bottom: 1px solid #E5E7EB;
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-body {
+
+    padding: 20px;
+
+    background: #F8FAFC;
+
+}
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-section {
+
+    width: 100%;
+
+    padding: 18px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   SECTION HEADER
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+
+}
+
+
+/* ==========================================================
+   SECTION TITLE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-section-title {
+
+    color: #111827;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    line-height: 1.35;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-payment-section-subtitle {
+
+    margin-top: 2px;
+
+    color: #6B7280;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+}
+
+
+/* ==========================================================
+   FORM LABEL
+========================================================== */
+
+#accountPayablePaymentModal
+.form-label {
+
+    margin-bottom: 6px;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   FORM CONTROL
+========================================================== */
+
+#accountPayablePaymentModal
+.form-control,
+
+#accountPayablePaymentModal
+.form-select {
+
+    min-height: 42px;
+
+    border-color: #DDE2E8;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+}
+
+
+#accountPayablePaymentModal
+.form-control:focus,
+
+#accountPayablePaymentModal
+.form-select:focus {
+
+    border-color: #86B7FE;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            13,
+            110,
+            253,
+            .10
+        );
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-description {
+
+    width: 100%;
+
+    min-height: 74px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   SELECT ALL
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-select-all-wrapper {
+
+    flex: 0 0 auto;
+
+    margin: 0;
+
+}
+
+
+/* ==========================================================
+   EMPTY / LOADING STATE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-empty {
+
+    display: flex;
+
+    min-height: 150px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    color: #374151;
+
+    border: 1px dashed #D8DEE7;
+
+    border-radius: 10px;
+
+    background: #FAFBFC;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-payment-empty-icon {
+
+    display: flex;
+
+    width: 42px;
+
+    height: 42px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+    color: #6B7280;
+
+    font-size: 18px;
+
+    background: #F1F5F9;
+
+    border-radius: 50%;
+
+}
+
+
+/* ==========================================================
+   TABLE WRAPPER
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-invoice-table-wrapper {
+
+    width: 100%;
+
+    max-height: 330px;
+
+    overflow: auto;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 10px;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-invoice-table {
+
+    width: 100%;
+
+    min-width: 1040px;
+
+    margin: 0;
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-invoice-table
+thead
+th {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+
+    padding: 11px 10px;
+
+    color: #374151;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+    background: #F8FAFC;
+
+    border-bottom: 1px solid #DDE2E8;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-invoice-table
+tbody
+td {
+
+    padding: 10px;
+
+    color: #374151;
+
+    vertical-align: middle;
+
+    border-bottom-color: #EEF2F6;
+
+}
+
+
+/* ==========================================================
+   CHECK COLUMN
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-col-check {
+
+    width: 46px;
+
+    min-width: 46px;
+
+}
+
+
+/* ==========================================================
+   PAYMENT INPUT INSIDE TABLE
+   USED ON TAHAP 5
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-input {
+
+    width: 145px;
+
+    min-height: 36px;
+
+    margin-left: auto;
+
+    text-align: right;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   SELECTED ROW
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-invoice-table
+tr.ap-bulk-row-selected
+td {
+
+    background: #F5F9FF;
+
+}
+
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-summary-card {
+
+    height: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 10px;
+
+    background: #FAFBFC;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-summary-label {
+
+    margin-bottom: 5px;
+
+    color: #6B7280;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .02em;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-summary-value {
+
+    color: #111827;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1.25;
+
+}
+
+
+/* ==========================================================
+   TOTAL PAYMENT
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-summary-card-total {
+
+    border-color: #BFD4F5;
+
+    background: #F5F9FF;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-summary-total {
+
+    color: #0D6EFD;
+
+}
+
+
+/* ==========================================================
+   VALIDATION MESSAGE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-payment-message {
+
+    margin-top: 14px;
+
+    padding: 10px 12px;
+
+    color: #92400E;
+
+    font-size: 12px;
+
+    border: 1px solid #FDE68A;
+
+    border-radius: 8px;
+
+    background: #FFFBEB;
+
+}
+
+
+/* ==========================================================
+   JOURNAL PREVIEW
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-payment-journal-preview {
+
+    padding: 16px 18px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   JOURNAL LINE
+========================================================== */
+
+#accountPayablePaymentModal
+.ap-bulk-journal-line {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 32px;
+
+    padding: 4px 0;
+
+    color: #374151;
+
+    font-size: 12px;
+
+}
+
+
+#accountPayablePaymentModal
+.ap-bulk-journal-line
+> span:first-child {
+
+    width: 50px;
+
+    color: #6B7280;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+#accountPayablePaymentModal
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 14px 20px;
+
+    background: #FFFFFF;
+
+    border-top: 1px solid #E5E7EB;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media
+(max-width: 991.98px) {
+
+    #accountPayablePaymentModal
+    .modal-dialog {
+
+        width: calc(100% - 24px);
+
+    }
+
+
+    #accountPayablePaymentModal
+    .modal-body {
+
+        padding: 14px;
+
+    }
+
+
+    #accountPayablePaymentModal
+    .ap-bulk-payment-section {
+
+        padding: 14px;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media
+(max-width: 767.98px) {
+
+    #accountPayablePaymentModal
+    .modal-dialog {
+
+        width: calc(100% - 16px);
+
+        margin:
+            8px
+            auto;
+
+    }
+
+
+    #accountPayablePaymentModal
+    .modal-footer
+    > .me-auto {
+
+        display: none;
+
+    }
+
+
+    #accountPayablePaymentModal
+    .modal-footer {
+
+        justify-content: flex-end;
+
+    }
+
+
+    #accountPayablePaymentModal
+    .ap-bulk-payment-section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+/* ==========================================================
+   AP PAYMENT — LOCKED VENDOR + SEARCHABLE BANK ACCOUNT
+   FINAL
+========================================================== */
+
+#accountPayablePaymentModal
+#ap-payment-bulk-vendor:disabled {
+    background-color: #F8FAFC !important;
+    color: #111827 !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
+}
+
+#accountPayablePaymentModal
+.ts-wrapper {
+    width: 100%;
+}
+
+#accountPayablePaymentModal
+.ts-control {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    min-height: 42px;
+}
+
+#accountPayablePaymentModal
+.ts-control > input {
+    flex: 1 1 auto !important;
+    width: 1px !important;
+    min-width: 30px !important;
+    max-width: 100% !important;
+    margin: 0 0 0 4px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+#accountPayablePaymentModal
+.ts-dropdown {
+    width: 100%;
+    z-index: 1085;
+}
+
+
+/* ==========================================================
+   FINOVA AP — CLEAN INVOICE DETAIL TABLE FIX
+   Built from the original stylesheet; does not include the
+   previous experimental table hotfixes.
+========================================================== */
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table-wrapper {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table {
+    display: table;
+    width: 100%;
+    min-width: 985px;
+    max-width: none;
+    height: auto;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table > thead {
+    display: table-header-group;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table > tbody#ap-detail-body {
+    display: table-row-group;
+    height: auto;
+    min-height: 0;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table > tbody#ap-detail-body > tr {
+    display: table-row;
+    height: auto;
+    min-height: 0;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table > tbody#ap-detail-body > tr > td {
+    display: table-cell;
+    height: auto;
+    min-height: 0;
+    padding: 8px 8px;
+    vertical-align: middle;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+#accountPayableModal #ap-invoice-details-pane table.ap-invoice-detail-table > thead > tr > th {
+    padding: 9px 8px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(1) { width: 50px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(2) { width: 190px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(3) { width: 240px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(4) { width: 65px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(5) { width: 145px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(6) { width: 170px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table colgroup col:nth-child(7) { width: 100px !important; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table th:nth-child(1),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(1) { text-align: center; }
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table th:nth-child(4),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(4),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table th:nth-child(5),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(5),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table th:nth-child(6),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(6) {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table th:nth-child(7),
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(7) {
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+}
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(7) .btn,
+#accountPayableModal #ap-invoice-details-pane .ap-invoice-detail-table td:nth-child(7) button {
+    display: inline-flex;
+    visibility: visible;
+    opacity: 1;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1px;
+    padding: 4px 6px;
+}
+#accountPayableModal #ap-invoice-details-pane #ap-detail-body > tr > td[colspan="7"] {
+    height: auto;
+    text-align: center;
+}
+
+
+/* ==========================================================
+   AP MODAL: KEEP TOTAL SUMMARY VISIBLE WHILE DETAILS SCROLL
+========================================================== */
+#accountPayableModal .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+#accountPayableModal .modal-body {
+    min-height: 0;
+}
+#accountPayableModal .ap-total-summary-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    flex: 0 0 auto;
+    background: #fff;
+    box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ==========================================================
+   AP INVOICE DETAILS: SCROLL ONLY THE TRANSACTION ROWS
+   Keep modal title, tab navigation, detail heading and summary fixed.
+========================================================== */
+@supports selector(#accountPayableModal:has(.x)) {
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .modal-dialog {
+    height: calc(100vh - 2rem);
+    max-height: calc(100vh - 2rem);
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .modal-content {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .ap-modern-tabs-wrapper {
+    flex: 0 0 auto;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-modal-tab-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane.active {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane.active > .p-4 {
+    height: 100%;
+    min-height: 0;
+    padding: 1rem !important;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card-body > .d-flex.justify-content-between {
+    flex: 0 0 auto;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .ap-invoice-detail-table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .ap-invoice-detail-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafc;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .ap-total-summary-footer {
+    position: relative;
+    bottom: auto;
+    flex: 0 0 auto;
+  }
+}
+
+
+/* ==========================================================
+   FINOVA AP — DEFINITIVE INNER DETAIL SCROLL FIX
+   Only invoice rows scroll; modal header, tabs, detail heading,
+   column header and total summary stay in place.
+========================================================== */
+@supports selector(#accountPayableModal:has(#ap-invoice-details-pane.active)) {
+  #accountPayableModal:has(#ap-invoice-details-pane.active) {
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog {
+    height: calc(100dvh - 2rem) !important;
+    max-height: calc(100dvh - 2rem) !important;
+    margin: 1rem auto !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog > .modal-content {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-header {
+    flex: 0 0 auto !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-body {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .ap-modern-tabs-wrapper {
+    flex: 0 0 auto !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-modal-tab-content {
+    flex: 1 1 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane.active.show {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane.active.show > .p-4 {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card-body {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .finova-card-body > .d-flex.justify-content-between {
+    flex: 0 0 auto !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .ap-invoice-detail-table-wrapper {
+    display: block !important;
+    flex: 1 1 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: auto !important;
+    overscroll-behavior: contain;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .ap-invoice-detail-table {
+    height: auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) #ap-invoice-details-pane .ap-invoice-detail-table > thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background: #f8fafc !important;
+  }
+
+  #accountPayableModal:has(#ap-invoice-details-pane.active) .ap-total-summary-footer {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 auto !important;
+    z-index: 10 !important;
+    background: #fff !important;
+  }
+}
+
+
+
+
+/* PHASE III(10): Invoice Detail shows a compact initial view and scrolls long detail lists. */
+#ap-invoice-details-pane .table-responsive {
+    max-height: 290px;
+    overflow: auto;
+}
+
+#ap-invoice-details-pane .table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bs-body-bg, #fff);
+}
+
+
+/* ==========================================================
+   FINOVA AP — MATCH AR MODAL NATURAL HEIGHT / SPACING
+   The old AP detail-tab viewport sizing must not leak into
+   Header, Tax (+), Tax (-), or Accounting Preview tabs.
+========================================================== */
+#accountPayableModal.modal {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+#accountPayableModal > .modal-dialog,
+#accountPayableModal.modal .modal-dialog,
+#accountPayableModal .modal-dialog {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Default AP dialog sizing follows the actual content, like AR. */
+#accountPayableModal > .modal-dialog > .modal-content,
+#accountPayableModal .modal-content {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+}
+
+#accountPayableModal .modal-header,
+#accountPayableModal .modal-footer {
+    position: relative !important;
+    flex: 0 0 auto !important;
+}
+
+/* On non-invoice tabs, remove the stretched flex area causing
+   the large white gap above Tax and Accounting Preview cards. */
+@supports selector(#accountPayableModal:has(#ap-tax-plus-pane.active)) {
+    #accountPayableModal:has(#ap-header-info-pane.active) > .modal-dialog,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) > .modal-dialog,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) > .modal-dialog,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) > .modal-dialog {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) > .modal-dialog > .modal-content,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) > .modal-dialog > .modal-content,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) > .modal-dialog > .modal-content,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) > .modal-dialog > .modal-content {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) > .modal-dialog > .modal-content > .modal-body,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) > .modal-dialog > .modal-content > .modal-body,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) > .modal-dialog > .modal-content > .modal-body,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) > .modal-dialog > .modal-content > .modal-body {
+        display: block !important;
+        flex: 0 0 auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) #ap-modal-tab-content,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) #ap-modal-tab-content,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) #ap-modal-tab-content,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) #ap-modal-tab-content {
+        display: block !important;
+        flex: 0 0 auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) #ap-header-info-pane,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) #ap-tax-plus-pane,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) #ap-tax-minus-pane,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) #ap-accounting-preview-pane {
+        position: relative !important;
+        inset: auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) #ap-header-info-pane > .p-4,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) #ap-tax-plus-pane > .p-4,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) #ap-tax-minus-pane > .p-4,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) #ap-accounting-preview-pane > .p-4 {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        overflow: visible !important;
+    }
+
+    #accountPayableModal:has(#ap-header-info-pane.active) .finova-card,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) .finova-card,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) .finova-card,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) .finova-card,
+    #accountPayableModal:has(#ap-header-info-pane.active) .finova-card-body,
+    #accountPayableModal:has(#ap-tax-plus-pane.active) .finova-card-body,
+    #accountPayableModal:has(#ap-tax-minus-pane.active) .finova-card-body,
+    #accountPayableModal:has(#ap-accounting-preview-pane.active) .finova-card-body {
+        flex: 0 0 auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
+/* Preserve row scrolling when Invoice Details is selected. */
+
+
+/* ==========================================================
+   FINOVA MODAL ALIGNMENT PATCH — AP
+   Shared baseline with AR; preserve invoice-detail inner scroll.
+   ========================================================== */
+#accountPayableModal.modal {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    padding: 8px 0 !important;
+}
+#accountPayableModal > .modal-dialog,
+#accountPayableModal.modal .modal-dialog {
+    width: calc(100% - 48px) !important;
+    max-width: 1140px !important;
+    margin: 0 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+#accountPayableModal > .modal-dialog > .modal-content,
+#accountPayableModal .modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: calc(100dvh - 16px) !important;
+    overflow: hidden !important;
+}
+#accountPayableModal > .modal-dialog > .modal-content > .modal-header,
+#accountPayableModal > .modal-dialog > .modal-content > .modal-footer {
+    flex: 0 0 auto !important;
+}
+/* Default/non-detail tabs scroll in the body only when needed. */
+#accountPayableModal > .modal-dialog > .modal-content > .modal-body {
+    min-height: 0 !important;
+    max-height: calc(100dvh - 120px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+/* Invoice Details keeps its existing dedicated inner-scroll layout. */
+@supports selector(#accountPayableModal:has(#ap-invoice-details-pane.active)) {
+  #accountPayableModal:has(#ap-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-body {
+    overflow: hidden !important;
+    max-height: none !important;
+  }
+}
+
+
+/* FINOVA FIX 2026-10-28: compact AP Invoice Details when there are no rows.
+   The detail-tab flex/viewport layout must only constrain populated tables.
+   When the empty-state row is present, let the card and modal use natural height. */
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) .modal-dialog,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) .modal-content,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) .modal-body,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-modal-tab-content,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane > .p-4,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card-body,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .ap-invoice-detail-table-wrapper,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .table-responsive {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+}
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) .modal-content,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) .modal-body,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-modal-tab-content,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane > .p-4,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card-body,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .ap-invoice-detail-table-wrapper,
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .table-responsive {
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+}
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) > .modal-dialog > .modal-content > .modal-body {
+    display: block !important;
+}
+#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .ap-invoice-detail-table {
+    height: auto !important;
+    margin-bottom: 0 !important;
+}
+
+
+/* FINOVA FIX 2026-10-28: AP empty Invoice Details should size to its content only while Invoice Details is active.
+   Scope the empty-state rules to the active pane so Tax (+), Tax (-), and Accounting Preview retain their own layout. */
+@supports selector(#accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty)) {
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) > .modal-dialog {
+    height: auto !important;
+    max-height: calc(100dvh - 16px) !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) > .modal-dialog > .modal-content {
+    height: auto !important;
+    max-height: calc(100dvh - 16px) !important;
+    min-height: 0 !important;
+  }
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) > .modal-dialog > .modal-content > .modal-body {
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-modal-tab-content,
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane,
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane > .p-4,
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card,
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .finova-card-body,
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-invoice-details-pane .ap-invoice-detail-table-wrapper {
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+  #accountPayableModal:has(#ap-invoice-details-pane.active #ap-detail-body > #ap-detail-empty) #ap-detail-body > #ap-detail-empty > td {
+    height: auto !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+}
+
+
+/* ==========================================================
+   FINOVA AP/AR TAX (+) & TAX (-)
+   Wrap long invoice descriptions and scroll long tax lists.
+   Keep column headings visible while the tax rows scroll.
+========================================================== */
+
+/* Tax lists use an internal scrollbar, like Invoice Details. */
+#accountPayableModal #ap-tax-plus-pane .table-responsive,
+#accountPayableModal #ap-tax-minus-pane .table-responsive {
+    display: block !important;
+    width: 100% !important;
+    max-height: 290px !important;
+    min-height: 0 !important;
+    overflow: auto !important;
+    overscroll-behavior: contain;
+}
+
+#accountPayableModal #ap-tax-plus-pane .table-responsive thead th,
+#accountPayableModal #ap-tax-minus-pane .table-responsive thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background: #f8fafc !important;
+}
+
+#accountPayableModal #ap-tax-plus-pane .table-responsive table,
+#accountPayableModal #ap-tax-minus-pane .table-responsive table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    margin-bottom: 0 !important;
+}
+
+/* Description is allowed to wrap onto multiple lines instead of
+   running into the Tax Account column when the text is long. */
+#accountPayableModal #ap-tax-plus-pane .table-responsive th:nth-child(2),
+#accountPayableModal #ap-tax-plus-pane .table-responsive td:nth-child(2),
+#accountPayableModal #ap-tax-minus-pane .table-responsive th:nth-child(2),
+#accountPayableModal #ap-tax-minus-pane .table-responsive td:nth-child(2) {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    vertical-align: top !important;
+    line-height: 1.45;
+}
+
+#accountPayableModal #ap-tax-plus-pane .table-responsive td:not(:nth-child(2)),
+#accountPayableModal #ap-tax-minus-pane .table-responsive td:not(:nth-child(2)) {
+    vertical-align: top !important;
+}
+
+/* FINOVA FIX 2026-10-28: show an internal scrollbar from 5 tax rows onward. */
+#accountPayableModal #ap-tax-plus-pane .table-responsive,
+#accountPayableModal #ap-tax-minus-pane .table-responsive {
+    max-height: 160px !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+}
+
+#accountPayableModal #ap-tax-plus-pane .table-responsive thead th,
+#accountPayableModal #ap-tax-minus-pane .table-responsive thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background: #f8fafc !important;
+}

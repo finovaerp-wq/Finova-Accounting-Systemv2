@@ -1,0 +1,1228 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : BUSINESS PARTNER
+
+Version : 2.1 Enterprise
+
+TABLE STANDARD :
+GLOBAL TABLE COMPONENT
+
+VISUAL STANDARD :
+CHART OF ACCOUNTS
+
+NOTE :
+- Header aligned with COA
+- Filter aligned with COA
+- Table visual controlled by Global Table CSS
+- Pagination controlled by Global Pagination CSS
+==========================================================
+*/
+
+
+/* ==========================================================
+   BUSINESS PARTNER PAGE
+========================================================== */
+
+.business-partner-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+   SAME AS COA
+========================================================== */
+
+.business-partner-page
+> .finova-page-header {
+
+    width: 100%;
+
+    margin-bottom: 8px !important;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD
+   SAME AS COA
+========================================================== */
+
+.business-partner-page
+> .business-partner-filter-card {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD BODY
+   SAME AS COA
+========================================================== */
+
+.business-partner-filter-card
+> .finova-card-body {
+
+    width: 100%;
+
+    padding: 8px 20px 8px 20px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER ROW
+========================================================== */
+
+.business-partner-filter-card
+> .finova-card-body
+> .row {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+
+    align-items: end !important;
+
+}
+
+
+/* ==========================================================
+   FILTER COLUMN
+========================================================== */
+
+.business-partner-filter-card
+> .finova-card-body
+> .row
+> [class*="col-"] {
+
+    min-width: 0;
+
+    margin: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER LABEL
+   SAME AS COA
+========================================================== */
+
+.business-partner-filter-card
+.form-label {
+
+    display: block;
+
+    margin-top: 0 !important;
+
+    margin-bottom: 6px !important;
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT & SELECT
+   SAME AS COA
+========================================================== */
+
+.business-partner-filter-card
+.form-control,
+
+.business-partner-filter-card
+.form-select {
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.business-partner-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD BODY
+========================================================== */
+
+.business-partner-table-card
+.finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CONTAINER
+========================================================== */
+
+.business-partner-table-card
+.finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.business-partner-table-card
+.finova-table-container
+.table-responsive {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: auto;
+
+}
+
+
+/* ==========================================================
+   BUSINESS PARTNER TABLE
+   FINOVA / TAX MASTER STANDARD
+========================================================== */
+
+.business-partner-table-card
+.finova-table {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    margin-bottom: 0;
+
+    border-collapse: collapse;
+
+    border-spacing: 0;
+
+    table-layout: fixed;
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.business-partner-table-card
+.finova-table
+thead
+th {
+
+    background: #F8F9FA;
+
+    color: #212529;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+    padding: 12px 16px;
+
+    border: 1px solid #DEE2E6;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.business-partner-table-card
+.finova-table
+tbody {
+
+    background: #FFFFFF;
+
+}
+
+
+.business-partner-table-card
+.finova-table
+tbody
+tr {
+
+    background: #FFFFFF;
+
+    transition:
+        background-color .15s ease-in-out;
+
+}
+
+
+.business-partner-table-card
+.finova-table
+tbody
+td {
+
+    padding: 12px 16px;
+
+    min-height: 52px;
+
+    height: auto;
+
+    font-size: 13px;
+
+    font-weight: 400 !important;
+
+    line-height: 1.5;
+
+    color: #495057 !important;
+
+    vertical-align: middle;
+
+    border: 1px solid #DEE2E6;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   REMOVE UNWANTED BOLD
+========================================================== */
+
+.business-partner-table-card
+.finova-table
+tbody
+td strong,
+
+.business-partner-table-card
+.finova-table
+tbody
+td b,
+
+.business-partner-table-card
+.finova-table
+tbody
+td .fw-bold,
+
+.business-partner-table-card
+.finova-table
+tbody
+td .fw-semibold {
+
+    font-weight: 400 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE ROW HOVER
+========================================================== */
+
+.business-partner-table-card
+.finova-table.table-hover
+tbody
+tr:hover {
+
+    background-color: rgba(0, 0, 0, .075);
+
+}
+
+
+.business-partner-table-card
+.finova-table.table-hover
+tbody
+tr:hover > td {
+
+    background-color: rgba(0, 0, 0, .075);
+
+}
+
+
+/* ==========================================================
+   TABLE ALIGNMENT
+========================================================== */
+
+.business-partner-table-card
+.finova-table
+th.text-center,
+
+.business-partner-table-card
+.finova-table
+td.text-center {
+
+    text-align: center;
+
+}
+
+
+.business-partner-table-card
+.finova-table
+th.text-start,
+
+.business-partner-table-card
+.finova-table
+td.text-start {
+
+    text-align: left;
+
+}
+
+/* ==========================================================
+   PAGINATION
+   SAME AS COA
+========================================================== */
+
+.business-partner-table-card
+.finova-table-container
+.finova-pagination-wrapper {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin-top: auto;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LEFT
+========================================================== */
+
+.business-partner-table-card
+.finova-pagination-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LABEL
+========================================================== */
+
+.business-partner-table-card
+.finova-pagination-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   PAGINATION TOTAL
+========================================================== */
+
+.business-partner-table-card
+.finova-pagination-total {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-width: 18px;
+
+    margin-left: 2px;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .business-partner-filter-card
+    > .finova-card-body {
+
+        padding-left: 16px !important;
+
+        padding-right: 16px !important;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .business-partner-filter-card
+    > .finova-card-body {
+
+        padding: 8px 16px !important;
+
+    }
+
+}
+
+/* ==========================================================
+   BUSINESS PARTNER STATUS BADGE
+========================================================== */
+
+.bp-status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    min-width: 76px;
+
+    height: 22px;
+
+    padding: 0 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACTIVE
+========================================================== */
+
+.bp-status-active {
+
+    background: #DCFCE7;
+
+    color: #15803D;
+
+}
+
+
+/* ==========================================================
+   INACTIVE
+========================================================== */
+
+.bp-status-inactive {
+
+    background: #FEE2E2;
+
+    color: #B91C1C;
+
+}
+/* ==========================================================
+   BUSINESS PARTNER TABLE COLUMN STANDARD
+========================================================== */
+
+.business-partner-table-card
+.bp-col-no,
+.business-partner-table-card
+.bp-col-code,
+.business-partner-table-card
+.bp-col-name,
+.business-partner-table-card
+.bp-col-type,
+.business-partner-table-card
+.bp-col-phone,
+.business-partner-table-card
+.bp-col-email,
+.business-partner-table-card
+.bp-col-tax,
+.business-partner-table-card
+.bp-col-status,
+.business-partner-table-card
+.bp-col-action {
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   COLUMN WIDTH
+========================================================== */
+
+.business-partner-table-card
+.bp-col-no {
+
+    width: 64px;
+
+    min-width: 64px;
+
+    text-align: center;
+
+}
+
+
+.business-partner-table-card
+.bp-col-code {
+
+    width: 120px;
+
+    min-width: 120px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-name {
+
+    min-width: 240px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-type {
+
+    width: 120px;
+
+    min-width: 120px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-phone {
+
+    width: 150px;
+
+    min-width: 150px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-email {
+
+    min-width: 200px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-tax {
+
+    width: 180px;
+
+    min-width: 180px;
+
+}
+
+
+.business-partner-table-card
+.bp-col-status {
+
+    width: 110px;
+
+    min-width: 110px;
+
+    text-align: center;
+
+}
+
+
+.business-partner-table-card
+.bp-col-action {
+
+    width: 145px;
+
+    min-width: 145px;
+
+    text-align: center;
+
+}
+
+
+/* ==========================================================
+   BUSINESS PARTNER NAME
+========================================================== */
+
+.business-partner-table-card
+.bp-name-link {
+
+    cursor: pointer;
+
+    font-weight: 500;
+
+    color: #1D4ED8;
+
+    transition:
+        color 0.15s ease,
+        text-decoration 0.15s ease;
+
+}
+
+
+.business-partner-table-card
+.bp-name-link:hover {
+
+    color: #1E40AF;
+
+    text-decoration: underline;
+
+}
+
+/* ==========================================================
+   EMAIL
+========================================================== */
+
+.business-partner-table-card
+.finova-table-email {
+
+    min-width: 200px;
+
+    white-space: nowrap;
+
+}
+
+
+.business-partner-table-card
+.bp-email-link {
+
+    color: #2563EB;
+
+    text-decoration: none;
+
+    transition:
+        color 0.15s ease,
+        text-decoration 0.15s ease;
+
+}
+
+
+.business-partner-table-card
+.bp-email-link:hover {
+
+    color: #1D4ED8;
+
+    text-decoration: underline;
+
+}
+
+
+/* ==========================================================
+   TAX / NPWP
+========================================================== */
+
+.business-partner-table-card
+.finova-table-tax {
+
+    width: 180px;
+
+    min-width: 180px;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.business-partner-table-card
+.finova-table-status {
+
+    text-align: center;
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   ACTION
+========================================================== */
+
+.business-partner-table-card
+.finova-table-action {
+
+    text-align: center;
+
+    vertical-align: middle;
+
+}
+/* ==========================================================
+   BUSINESS PARTNER ACTION
+========================================================== */
+
+.business-partner-table-card
+.finova-table-action {
+
+    text-align: center;
+
+    vertical-align: middle;
+
+}
+
+
+
+/* ==========================================================
+   BP ACTION GROUP - SAME AS COA
+========================================================== */
+
+.bp-action-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* ==========================================================
+   BP ACTION BUTTON
+========================================================== */
+
+.bp-action-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+
+    padding: 0;
+
+    border: 1px solid transparent;
+    border-radius: 6px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.bp-action-btn i {
+    font-size: 13px;
+}
+
+/* ==========================================================
+   EDIT
+========================================================== */
+
+.btn-action-edit {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.btn-action-edit:hover {
+    background: #dbeafe;
+}
+
+/* ==========================================================
+   ACTIVE
+========================================================== */
+
+.bp-action-active {
+    color: #16a34a;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.bp-action-active:hover {
+    background: #dcfce7;
+}
+
+/* ==========================================================
+   INACTIVE
+========================================================== */
+
+.bp-action-inactive {
+    color: #d97706;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.bp-action-inactive:hover {
+    background: #fef3c7;
+}
+
+/* ==========================================================
+   DELETE
+========================================================== */
+
+.btn-action-delete {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.btn-action-delete:hover {
+    background: #fee2e2;
+}
+
+/* ==========================================================
+   BUSINESS PARTNER MODAL DRAG
+========================================================== */
+
+#businessPartnerModal
+.modal-content {
+
+    cursor: move;
+
+    user-select: none;
+
+}
+
+
+/* ==========================================================
+   INTERACTIVE ELEMENT
+   Tidak ikut drag
+========================================================== */
+
+#businessPartnerModal input,
+#businessPartnerModal textarea,
+#businessPartnerModal [contenteditable="true"] {
+    cursor: text;
+    user-select: text;
+}
+
+#businessPartnerModal select,
+#businessPartnerModal button,
+#businessPartnerModal a,
+#businessPartnerModal [role="button"] {
+    cursor: pointer;
+}
+
+#businessPartnerModal option,
+#businessPartnerModal label {
+    cursor: default;
+    user-select: text;
+}
+
+/*
+==========================================================
+WHATSAPP LINK
+==========================================================
+*/
+
+.bp-whatsapp-link {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.bp-whatsapp-link:hover {
+    text-decoration: underline;
+    opacity: 0.85;
+}
+
+.bp-whatsapp-link i {
+    font-size: 16px;
+}
+
+
+/* Business Partner Email: preserve the casing entered by the user.
+   Never visually force uppercase or lowercase in Add/Edit. */
+#businessPartnerModal #bp-email {
+    text-transform: none !important;
+}
+
+
+/* BUSINESS PARTNER PHONE / EMAIL WIDTH ADJUSTMENT */
+.business-partner-table-card .bp-col-phone,
+.business-partner-table-card .finova-table-phone {
+    width: 190px !important;
+    min-width: 190px !important;
+}
+
+.business-partner-table-card .bp-col-email,
+.business-partner-table-card .finova-table-email {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Searchable Bank dropdown: keep the menu above the BP modal and clickable. */
+#businessPartnerModal .ts-wrapper,
+#businessPartnerModal .ts-control {
+    width: 100%;
+}
+#businessPartnerModal .ts-dropdown {
+    z-index: 2005 !important;
+    pointer-events: auto !important;
+}
+#businessPartnerModal .ts-dropdown .option {
+    cursor: pointer;
+    pointer-events: auto;
+}
+#businessPartnerModal .ts-control input {
+    min-width: 2rem;
+    cursor: text;
+}
+
+
+/* ==========================================================
+   BUSINESS PARTNER BANK ACCOUNT EDITOR MODAL
+========================================================== */
+#bpBankAccountModal { z-index: 1070; }
+#bpBankAccountModal .modal-content { cursor: default; user-select: text; }
+#bpBankAccountModal .modal-header,
+#bpBankAccountModal .modal-footer { position: relative; z-index: 1; }
+#bpBankAccountModal .ts-wrapper { width: 100%; position: relative; }
+/* Keep the menu anchored to the Bank field; it overlays Account Holder inside the modal. */
+#bpBankAccountModal .ts-wrapper.dropdown-active { z-index: 1082; }
+#bpBankAccountModal .ts-dropdown {
+    position: absolute !important;
+    top: 100% !important;
+    right: auto !important;
+    left: 0 !important;
+    z-index: 1085 !important;
+    width: max(100%, 360px) !important;
+    min-width: 360px;
+    max-width: min(420px, 90vw);
+    margin-top: 2px;
+}
+#bpBankAccountModal .ts-dropdown .option { white-space: nowrap; cursor: pointer; }
+#bpBankAccountModal .ts-control { cursor: pointer; }
+#bpBankAccountModal .ts-control input { cursor: text; }
+#businessPartnerModal #bp-bank-table td { vertical-align: middle; }
+#businessPartnerModal #bp-bank-table .bp-bank-name-cell { min-width: 170px; white-space: nowrap; }
+#businessPartnerModal #bp-bank-table .btn-sm { padding: .25rem .45rem; }
+
+
+/* Bank account editor: keep searchable bank menu inside the modal and avoid accidental overlay issues. */
+#bpBankAccountModal { z-index: 1070; }
+#bpBankAccountModal .modal-dialog { position: relative; }
+#bpBankAccountModal .modal-content { overflow: visible; }
+#bpBankAccountModal .modal-body { overflow: visible; }
+#bpBankAccountModal .ts-wrapper { width: 100%; }
+#bpBankAccountModal .ts-dropdown { z-index: 1085 !important; min-width: min(280px, 90vw); max-width: min(420px, 90vw); }
+#bpBankAccountModal .ts-dropdown .option { white-space: nowrap; }
+
+/* ==========================================================
+   BUSINESS PARTNER TABLE — ZOOM / RESPONSIVE ALIGNMENT FIX
+   Keep column widths stable when browser zoom changes.
+   Horizontal scrolling is preferred over squeezing columns.
+========================================================== */
+.business-partner-table-card .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.business-partner-table-card .finova-table {
+    width: 100%;
+    /* Total column widths = 1,564px; preserve space for all action buttons. */
+    min-width: 1564px;
+    table-layout: fixed;
+}
+
+.business-partner-table-card .finova-table th,
+.business-partner-table-card .finova-table td {
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.business-partner-table-card .bp-col-no {
+    width: 64px;
+    min-width: 64px;
+}
+
+.business-partner-table-card .bp-col-code {
+    width: 160px;
+    min-width: 160px;
+}
+
+.business-partner-table-card .bp-col-name {
+    width: 230px;
+    min-width: 230px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.business-partner-table-card .bp-col-type {
+    width: 180px;
+    min-width: 180px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.business-partner-table-card .bp-col-phone,
+.business-partner-table-card .finova-table-phone {
+    width: 190px !important;
+    min-width: 190px !important;
+    white-space: nowrap;
+}
+
+.business-partner-table-card .bp-col-email,
+.business-partner-table-card .finova-table-email {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.business-partner-table-card .bp-col-tax {
+    width: 180px;
+    min-width: 180px;
+    overflow-wrap: anywhere;
+}
+
+.business-partner-table-card .bp-col-status {
+    width: 130px;
+    min-width: 130px;
+    white-space: nowrap;
+}
+
+.business-partner-table-card .bp-col-action {
+    width: 150px !important;
+    min-width: 150px !important;
+    white-space: nowrap;
+    text-align: center;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+/* Apply the width to the body cells as well as the header. */
+.business-partner-table-card .finova-table-action {
+    width: 150px !important;
+    min-width: 150px !important;
+    white-space: nowrap;
+    text-align: center;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.business-partner-table-card .bp-action-group {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.business-partner-table-card .bp-action-btn {
+    flex: 0 0 32px;
+}
+
+@media (max-width: 768px) {
+    .business-partner-table-card .finova-table {
+        min-width: 1564px;
+    }
+}

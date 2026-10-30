@@ -1,0 +1,6331 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : ACCOUNT RECEIVABLE
+
+Version : 2.1 Enterprise
+
+TABLE STANDARD :
+GLOBAL TABLE COMPONENT
+
+VISUAL STANDARD :
+BUSINESS PARTNER / CHART OF ACCOUNTS
+
+NOTE :
+- Header aligned with BP / COA
+- Filter aligned with BP / COA
+- Table visual controlled by Global Table CSS
+- Pagination controlled by Global Pagination CSS
+- AR business status behavior remains here
+==========================================================
+*/
+
+
+/* ==========================================================
+   ACCOUNT RECEIVABLE PAGE
+========================================================== */
+
+.account-receivable-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-page
+> .finova-page-header {
+
+    width: 100%;
+
+    margin-bottom: 8px !important;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-page
+> .account-receivable-filter-card {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD BODY
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-filter-card
+> .finova-card-body {
+
+    width: 100%;
+
+    padding: 8px 20px 8px 20px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER ROW
+========================================================== */
+
+.account-receivable-filter-card
+> .finova-card-body
+> .row {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+
+    align-items: end !important;
+
+}
+
+
+/* ==========================================================
+   FILTER COLUMN
+========================================================== */
+
+.account-receivable-filter-card
+> .finova-card-body
+> .row
+> [class*="col-"] {
+
+    min-width: 0;
+
+    margin: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER LABEL
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-filter-card
+.form-label {
+
+    display: block;
+
+    margin-top: 0 !important;
+
+    margin-bottom: 6px !important;
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT & SELECT
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-filter-card
+.form-control,
+
+.account-receivable-filter-card
+.form-select {
+
+    width: 100%;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER INPUT GROUP
+========================================================== */
+
+.account-receivable-filter-card
+.input-group {
+
+    display: flex !important;
+
+    flex-wrap: nowrap !important;
+
+    align-items: stretch;
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   KEYWORD INPUT
+========================================================== */
+
+.account-receivable-filter-card
+.input-group
+#ar-keyword {
+
+    flex: 1 1 auto !important;
+
+    width: 1% !important;
+
+    min-width: 0 !important;
+
+    height: 46px !important;
+
+    border-top-right-radius: 0 !important;
+
+    border-bottom-right-radius: 0 !important;
+
+}
+
+
+/* ==========================================================
+   FIND BUTTON
+========================================================== */
+
+.account-receivable-filter-card
+.input-group
+#btn-ar-find {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    flex: 0 0 80px !important;
+
+    width: 80px !important;
+
+    min-width: 80px !important;
+
+    height: 46px !important;
+
+    padding: 0 12px !important;
+
+    white-space: nowrap;
+
+    border-top-left-radius: 0 !important;
+
+    border-bottom-left-radius: 0 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.account-receivable-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD BODY
+========================================================== */
+
+.account-receivable-table-card
+.finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE CONTAINER
+========================================================== */
+
+.account-receivable-table-card
+.finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.account-receivable-table-card
+.finova-table-container
+.table-responsive {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.account-receivable-table-card
+.finova-table {
+
+    width: 100%;
+
+    margin-bottom: 0;
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.account-receivable-table-card
+.finova-table
+thead
+th {
+
+    font-weight: 700 !important;
+
+    color: #111827 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.account-receivable-table-card
+.finova-table
+tbody
+td {
+
+    font-weight: 400 !important;
+
+    color: #1F2937 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE NUMBER
+   CENTER ALIGNMENT
+========================================================== */
+
+.account-receivable-table-card
+.finova-table
+th:first-child,
+
+.account-receivable-table-card
+.finova-table
+td:first-child {
+
+    text-align: center !important;
+
+    vertical-align: middle !important;
+
+}
+
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+
+.account-receivable-table-card
+.finova-table-container
+.finova-pagination-wrapper {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin-top: auto;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LEFT
+   SAME AS BP / COA
+========================================================== */
+
+.account-receivable-table-card
+.finova-pagination-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+/* ==========================================================
+   PAGINATION LABEL
+========================================================== */
+
+.account-receivable-table-card
+.finova-pagination-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   PAGINATION TOTAL
+========================================================== */
+
+.account-receivable-table-card
+.finova-pagination-total {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-width: 18px;
+
+    margin-left: 2px;
+
+}
+
+
+/* ==========================================================
+   AR TABLE BODY
+========================================================== */
+
+#account-receivable-table-body {
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   AR ROW STATUS
+   KEEP NORMAL TABLE APPEARANCE
+========================================================== */
+
+.ar-row-draft,
+.ar-row-unpaid,
+.ar-row-paid,
+.ar-row-void {
+
+    opacity: 1 !important;
+
+}
+
+
+/* ==========================================================
+   ALL AR STATUS ROW
+   NO GREY BACKGROUND
+========================================================== */
+
+#account-receivable-table-body
+tr[data-status="draft"]
+> td,
+
+#account-receivable-table-body
+tr[data-status="unpaid"]
+> td,
+
+#account-receivable-table-body
+tr[data-status="paid"]
+> td,
+
+#account-receivable-table-body
+tr[data-status="void"]
+> td,
+
+#account-receivable-table-body
+tr.ar-row-draft
+> td,
+
+#account-receivable-table-body
+tr.ar-row-unpaid
+> td,
+
+#account-receivable-table-body
+tr.ar-row-paid
+> td,
+
+#account-receivable-table-body
+tr.ar-row-void
+> td {
+
+    background: #FFFFFF !important;
+
+    background-color: #FFFFFF !important;
+
+    color: inherit !important;
+
+}
+
+
+/* ==========================================================
+   STATUS BADGE
+========================================================== */
+
+#account-receivable-table-body
+.badge {
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   ACTION BUTTON
+========================================================== */
+
+#account-receivable-table-body
+.btn {
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .account-receivable-filter-card
+    > .finova-card-body {
+
+        padding-left: 16px !important;
+
+        padding-right: 16px !important;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .account-receivable-filter-card
+    > .finova-card-body {
+
+        padding: 8px 16px !important;
+
+    }
+
+}
+
+
+/* ==========================================================
+   AR TOM SELECT - COA SEARCHABLE DROPDOWN
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-wrapper {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT CONTROL
+   KEEP SEARCH INPUT ON SAME LINE
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    flex-wrap: nowrap !important;
+
+    width: 100% !important;
+
+    min-height: 38px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   SELECTED COA
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+.item {
+
+    flex: 0 1 auto !important;
+
+    min-width: 0;
+
+    max-width: calc(100% - 30px);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT SEARCH INPUT
+   IMPORTANT : DO NOT USE WIDTH 100%
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+> input {
+
+    flex: 1 1 auto !important;
+
+    width: 1px !important;
+
+    min-width: 20px !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 0 0 4px !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+}
+
+
+/* ==========================================================
+   REMOVE FOCUS SHADOW FROM INTERNAL INPUT
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+> input:focus {
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-dropdown {
+
+    width: 100%;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT RECEIVABLE
+COMPACT BODY TABLE LAYOUT
+MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+
+/*
+==========================================================
+TABLE HEADER WIDTH
+==========================================================
+*/
+
+.account-receivable-table-card .ar-col-no {
+
+    width: 54px;
+
+    min-width: 54px;
+
+    max-width: 54px;
+
+}
+
+
+.account-receivable-table-card .ar-col-document {
+
+    width: 245px;
+
+    min-width: 245px;
+
+}
+
+
+.account-receivable-table-card .ar-col-customer {
+
+    width: 360px;
+
+    min-width: 320px;
+
+}
+
+
+.account-receivable-table-card .ar-col-date-info {
+
+    width: 210px;
+
+    min-width: 210px;
+
+}
+
+
+.account-receivable-table-card .ar-col-amount-status {
+
+    width: 245px;
+
+    min-width: 245px;
+
+}
+
+
+.account-receivable-table-card .ar-col-action {
+
+    width: 120px;
+
+    min-width: 120px;
+
+    max-width: 120px;
+
+}
+
+
+/*
+==========================================================
+TABLE ROW
+==========================================================
+*/
+
+.account-receivable-table-card
+.finova-table
+tbody
+.ar-data-row {
+
+    min-height: 108px;
+
+}
+
+
+/*
+==========================================================
+TABLE CELL
+==========================================================
+*/
+
+.account-receivable-table-card
+.finova-table
+tbody
+.ar-data-row
+> td {
+
+    padding: 12px 14px;
+
+    vertical-align: top;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    background: #FFFFFF;
+
+}
+
+
+/*
+==========================================================
+ROW HOVER
+==========================================================
+*/
+
+.account-receivable-table-card
+.finova-table
+tbody
+.ar-data-row:hover
+> td {
+
+    background: #F8FAFC;
+
+}
+
+
+/*
+==========================================================
+NO
+==========================================================
+*/
+
+.account-receivable-table-card
+.ar-cell-no {
+
+    text-align: center;
+
+    vertical-align: middle !important;
+
+    font-weight: 600;
+
+    color: var(--text-secondary);
+
+}
+
+
+/*
+==========================================================
+DOCUMENT CELL
+==========================================================
+*/
+
+.ar-document-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+/*
+==========================================================
+DOCUMENT BADGES
+==========================================================
+*/
+
+.ar-document-badges {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 3px;
+
+}
+
+
+.ar-document-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 23px;
+
+    padding: 3px 9px;
+
+    border-radius: 4px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    letter-spacing: .25px;
+
+    white-space: nowrap;
+
+}
+
+
+.ar-document-badge-receivable {
+
+    background: #EAF2FF;
+
+    border: 1px solid #C8DAFA;
+
+    color: #315D9A;
+
+}
+
+
+.ar-document-badge-invoice {
+
+    background: #F3F4F6;
+
+    border: 1px solid #D9DEE5;
+
+    color: #56606D;
+
+}
+
+
+/*
+==========================================================
+GLOBAL INFO LINE
+==========================================================
+*/
+
+.ar-info-line {
+
+    display: grid;
+
+    grid-template-columns: 82px 10px minmax(0, 1fr);
+
+    align-items: start;
+
+    min-width: 0;
+
+    gap: 2px;
+
+}
+
+
+/*
+==========================================================
+INFO LABEL
+==========================================================
+*/
+
+.ar-info-label {
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+}
+
+
+/*
+==========================================================
+INFO SEPARATOR
+==========================================================
+*/
+
+.ar-info-separator {
+
+    color: #94A3B8;
+
+    font-size: 13px;
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+INFO VALUE
+==========================================================
+*/
+
+.ar-info-value {
+
+    min-width: 0;
+
+    color: var(--text-primary);
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/*
+==========================================================
+CUSTOMER CELL
+==========================================================
+*/
+
+.ar-customer-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+
+}
+
+
+/*
+==========================================================
+CUSTOMER NAME
+==========================================================
+*/
+
+.ar-customer-name {
+
+    color: var(--text-primary);
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    word-break: break-word;
+
+}
+
+
+/*
+==========================================================
+DESCRIPTION
+==========================================================
+*/
+
+.ar-description-line {
+
+    display: grid;
+
+    grid-template-columns: 82px 10px minmax(0, 1fr);
+
+    align-items: start;
+
+    gap: 2px;
+
+    min-width: 0;
+
+}
+
+
+.ar-description-value {
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+    line-height: 1.55;
+
+    white-space: normal;
+
+    word-break: break-word;
+
+}
+
+
+/*
+==========================================================
+DATE CELL
+==========================================================
+*/
+
+.ar-date-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+.ar-cell-date-info
+.ar-info-line {
+
+    grid-template-columns: 72px 10px minmax(0, 1fr);
+
+}
+
+
+/*
+==========================================================
+AMOUNT / STATUS CELL
+==========================================================
+*/
+
+.ar-amount-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+
+}
+
+
+.ar-cell-amount-status
+.ar-info-line {
+
+    grid-template-columns: 86px 10px minmax(0, 1fr);
+
+}
+
+
+/*
+==========================================================
+AMOUNT VALUE
+==========================================================
+*/
+
+.ar-amount-value {
+
+    font-size: 13.5px;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+}
+
+
+/*
+==========================================================
+STATUS LINE
+==========================================================
+*/
+
+.ar-status-line {
+
+    margin-top: 2px;
+
+}
+
+
+.ar-status-line
+.ar-info-value {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+/*
+==========================================================
+STATUS BADGE
+==========================================================
+*/
+
+.ar-status-line .badge {
+
+    min-width: 80px;
+
+    padding: 6px 9px;
+
+    border-radius: 4px;
+
+    font-size: 11.5px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+}
+
+
+/*
+==========================================================
+ACTION CELL
+==========================================================
+*/
+
+.account-receivable-table-card
+.ar-cell-action {
+
+    vertical-align: middle !important;
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+ACTION BUTTON GROUP
+==========================================================
+*/
+
+.account-receivable-table-card
+.ar-cell-action
+.btn-group {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 3px;
+
+}
+
+
+/*
+==========================================================
+ACTION BUTTON
+==========================================================
+*/
+
+.account-receivable-table-card
+.ar-cell-action
+.btn {
+
+    width: 32px;
+
+    height: 32px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    border-radius: 5px;
+
+}
+
+
+/*
+==========================================================
+ACTION ICON
+==========================================================
+*/
+
+.account-receivable-table-card
+.ar-cell-action
+.btn i {
+
+    font-size: 13px;
+
+}
+
+
+/*
+==========================================================
+HEADER ALIGNMENT
+==========================================================
+*/
+
+.account-receivable-table-card
+.finova-table
+thead
+th {
+
+    vertical-align: middle;
+
+}
+
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-no {
+
+    text-align: center;
+
+}
+
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-document,
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-customer,
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-date-info,
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-amount-status {
+
+    text-align: left;
+
+}
+
+
+.account-receivable-table-card
+.finova-table
+thead
+.ar-col-action {
+
+    text-align: center;
+
+}
+
+
+/*
+==========================================================
+DESCRIPTION FULL BODY
+==========================================================
+*/
+
+.ar-cell-customer {
+
+    white-space: normal;
+
+}
+
+
+.ar-description-value {
+
+    display: block;
+
+    max-width: 100%;
+
+}
+
+
+/*
+==========================================================
+PREVENT COLUMN CONTENT OVERFLOW
+==========================================================
+*/
+
+.ar-cell-document,
+
+.ar-cell-customer,
+
+.ar-cell-date-info,
+
+.ar-cell-amount-status {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+}
+
+
+/*
+==========================================================
+RESPONSIVE
+==========================================================
+*/
+
+@media (max-width: 1200px) {
+
+    .account-receivable-table-card .ar-col-document {
+
+        min-width: 220px;
+
+    }
+
+
+    .account-receivable-table-card .ar-col-customer {
+
+        min-width: 300px;
+
+    }
+
+
+    .account-receivable-table-card .ar-col-date-info {
+
+        min-width: 195px;
+
+    }
+
+
+    .account-receivable-table-card .ar-col-amount-status {
+
+        min-width: 225px;
+
+    }
+
+}
+
+
+/*
+==========================================================
+SMALL SCREEN
+KEEP HORIZONTAL TABLE SCROLL
+==========================================================
+*/
+
+@media (max-width: 768px) {
+
+    .account-receivable-table-card
+    .finova-table {
+
+        min-width: 1200px;
+
+    }
+
+}
+/* ==========================================================
+   AR PAYMENT SUMMARY
+   SAME AS ACCOUNT PAYABLE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-summary {
+
+    width: 100%;
+
+    padding: 14px 14px 16px 14px;
+
+    background: #F8F9FA;
+
+    border-radius: 6px;
+
+}
+
+
+/* ==========================================================
+   SUMMARY LINE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-summary-line {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    min-height: 28px;
+
+}
+
+
+/* ==========================================================
+   SUMMARY LABEL
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-summary-label {
+
+    color: #6B7280;
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+}
+
+
+/* ==========================================================
+   SUMMARY VALUE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-summary-value {
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   DIVIDER
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-summary-divider {
+
+    width: 100%;
+
+    height: 1px;
+
+    margin: 10px 0 14px 0;
+
+    background: #C9CDD3;
+
+}
+
+
+/* ==========================================================
+   PAYMENT AMOUNT
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-amount {
+
+    width: 100%;
+
+    height: 40px;
+
+    min-height: 40px;
+
+    padding-left: 12px;
+
+    padding-right: 12px;
+
+    color: #1F2937;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-description {
+
+    width: 100%;
+
+    min-height: 110px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE
+   VIEW PAYMENT
+   SAME AS ACCOUNT PAYABLE
+========================================================== */
+
+
+/* ==========================================================
+   MODAL
+========================================================== */
+
+#arPaymentHistoryModal .modal-dialog {
+
+    max-width: 1140px;
+
+}
+
+
+#arPaymentHistoryModal .modal-content {
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+#arPaymentHistoryModal .modal-header {
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid #DEE2E6;
+
+}
+
+
+#arPaymentHistoryModal .modal-title {
+
+    color: #1F3A5F;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+}
+
+
+#arPaymentHistoryModal .modal-header .small {
+
+    margin-top: 4px;
+
+    color: #6B7280;
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+#arPaymentHistoryModal .modal-body {
+
+    padding: 14px 18px;
+
+}
+
+
+/* ==========================================================
+   HEADER INFORMATION
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-info {
+
+    margin-bottom: 20px !important;
+
+}
+
+
+#arPaymentHistoryModal
+.form-label {
+
+    margin-bottom: 6px;
+
+    color: #1F3A5F;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+#arPaymentHistoryModal
+.form-control {
+
+    height: 36px;
+
+    min-height: 36px;
+
+    padding: 6px 10px;
+
+    font-size: 13px;
+
+    border: 1px solid #D7DDE5;
+
+    border-radius: 5px;
+
+}
+
+
+#arPaymentHistoryModal
+.form-control[readonly] {
+
+    background: #FFFFFF;
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   PAYMENT TABLE WRAPPER
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+/* ==========================================================
+   PAYMENT TABLE
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table {
+
+    width: 100%;
+
+    margin: 0;
+
+    table-layout: fixed;
+
+    border-collapse: collapse;
+
+}
+
+
+/* ==========================================================
+   COLUMN WIDTH
+   SAME AS ACCOUNT PAYABLE
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-col-no {
+    width: 6% !important;
+}
+
+#arPaymentHistoryModal
+.ar-payment-col-date {
+    width: 14% !important;
+}
+
+#arPaymentHistoryModal
+.ar-payment-col-account {
+    width: 40% !important;
+}
+
+#arPaymentHistoryModal
+.ar-payment-col-amount {
+    width: 17% !important;
+}
+
+#arPaymentHistoryModal
+.ar-payment-col-journal {
+    width: 23% !important;
+}
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table
+thead
+th {
+
+    height: 36px;
+
+    padding: 8px;
+
+    color: #111827;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    vertical-align: middle;
+
+    background: #FFFFFF;
+
+    border-color: #D9DEE5;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table
+tbody
+td {
+
+    padding: 8px;
+
+    color: #1F2937;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+
+    background: #FFFFFF;
+
+    border-color: #D9DEE5;
+
+}
+
+
+/* ==========================================================
+   NO
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-main-row
+td:first-child {
+
+    width: 52px !important;
+
+    min-width: 52px !important;
+
+    max-width: 52px !important;
+
+    padding-left: 4px !important;
+
+    padding-right: 4px !important;
+
+    text-align: center !important;
+
+    vertical-align: middle !important;
+
+}
+
+
+/* ==========================================================
+   PAYMENT DATE
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-main-row
+td:nth-child(2) {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   BANK / PAYMENT ACCOUNT
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-account-cell {
+
+    text-align: left;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-account {
+
+    width: 100%;
+
+    color: #1F2937;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    line-height: 1.4;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+
+
+/* ==========================================================
+   AMOUNT
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-amount-cell {
+
+    text-align: right;
+
+    color: #111827;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   JOURNAL
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-journal-cell {
+
+    text-align: center;
+
+    vertical-align: middle !important;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-journal-wrap {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    width: 100%;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-journal-no {
+
+    color: var(--text-primary);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    line-height: 1.35;
+
+    white-space: nowrap;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-journal-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 64px;
+
+    padding: 5px 10px;
+
+    border-radius: 6px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION ROW
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-row {
+
+    background: #FAFBFC;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-description-row:hover {
+
+    background: #FAFBFC !important;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION EMPTY
+   FOLLOW NO COLUMN WIDTH
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-empty {
+
+    width: 52px !important;
+
+    min-width: 52px !important;
+
+    max-width: 52px !important;
+
+    padding: 0 !important;
+
+    background: #FFFFFF !important;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION CELL
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-cell {
+
+    padding: 8px 12px !important;
+
+    vertical-align: top !important;
+
+    background: #FAFBFC !important;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION WRAPPER
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-wrap {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    width: 100%;
+
+    min-width: 0;
+
+    gap: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION LABEL
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-label {
+
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+
+    color: var(--text-secondary);
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION SEPARATOR
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-separator {
+
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION VALUE
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-description-value {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    margin: 0 !important;
+
+    color: var(--text-primary);
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+
+
+/* ==========================================================
+   TABLE FOOTER
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table
+tfoot
+th {
+
+    height: 36px;
+
+    padding: 8px;
+
+    color: #111827;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    vertical-align: middle;
+
+    background: #FFFFFF;
+
+    border-color: #D9DEE5;
+
+}
+
+
+/* ==========================================================
+   TOTAL PAID
+========================================================== */
+
+#arPaymentHistoryModal
+.ar-payment-history-table
+tfoot
+th:first-child {
+
+    text-align: right;
+
+}
+
+
+#arPaymentHistoryModal
+.ar-payment-history-table
+tfoot
+th:nth-child(2) {
+
+    text-align: right;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+========================================================== */
+
+#arPaymentHistoryModal
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 12px 18px;
+
+    border-top: 1px solid #DEE2E6;
+
+}
+
+
+#arPaymentHistoryModal
+.modal-footer
+.small {
+
+    color: #6B7280;
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================
+   CLOSE BUTTON
+========================================================== */
+
+#arPaymentHistoryModal
+.modal-footer
+.btn {
+
+    min-width: 62px;
+
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 12px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 991.98px) {
+
+    #arPaymentHistoryModal
+    .modal-dialog {
+
+        max-width: calc(100% - 24px);
+
+    }
+
+
+    #arPaymentHistoryModal
+    .ar-payment-history-table {
+
+        min-width: 900px;
+
+    }
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE MODAL
+   SAME LAYOUT AS ACCOUNT PAYABLE
+========================================================== */
+
+
+/* ==========================================================
+   MODAL DIALOG
+========================================================== */
+
+#accountReceivableModal
+.modal-dialog {
+
+    max-width: 1140px;
+
+}
+
+
+/* ==========================================================
+   MODAL CONTENT
+========================================================== */
+
+#accountReceivableModal
+.modal-content {
+
+    height: calc(100vh - 48px);
+
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   MODAL HEADER
+========================================================== */
+
+#accountReceivableModal
+.modal-header {
+
+    flex: 0 0 auto;
+
+    min-height: 64px;
+
+    padding: 10px 14px;
+
+    background: #FFFFFF;
+
+    border-bottom: 0;
+
+}
+
+
+/* ==========================================================
+   MODAL TITLE
+========================================================== */
+
+#accountReceivableModal
+.modal-title {
+
+    margin: 0;
+
+    color: #1F3A5F;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   MODAL SUBTITLE
+========================================================== */
+
+#accountReceivableModal
+.modal-header
+.text-muted {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================
+   MODAL BODY
+========================================================== */
+
+#accountReceivableModal
+.modal-body {
+
+    display: flex !important;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0 !important;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   TABS
+   SAME GREY AREA AS AP
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs {
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(0, 1fr)
+        );
+
+    flex: 0 0 auto;
+
+    gap: 5px;
+
+    width: 100%;
+
+    margin: 0 !important;
+
+    padding: 6px !important;
+
+    background: #F1F3F6 !important;
+
+    border: 0 !important;
+
+    border-top:
+        1px solid #E1E5EA !important;
+
+    border-bottom:
+        1px solid #DDE2E8 !important;
+
+}
+
+
+/* ==========================================================
+   TAB ITEM
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-item {
+
+    width: 100%;
+
+    min-width: 0;
+
+    margin: 0 !important;
+
+}
+
+
+/* ==========================================================
+   TAB BUTTON
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-link {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 100%;
+
+    min-height: 36px;
+
+    margin: 0 !important;
+
+    padding: 7px 14px !important;
+
+    background:
+        transparent !important;
+
+    border:
+        1px solid transparent !important;
+
+    border-radius:
+        8px !important;
+
+    color:
+        #344054 !important;
+
+    font-size:
+        13.5px !important;
+
+    font-weight:
+        600 !important;
+
+    white-space:
+        nowrap;
+
+    box-shadow:
+        none;
+
+}
+
+
+/* ==========================================================
+   ACTIVE TAB
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-link.active {
+
+    background:
+        #FFFFFF !important;
+
+    border-color:
+        #CFD7E2 !important;
+
+    color:
+        #0B5ED7 !important;
+
+    font-weight:
+        700 !important;
+
+    box-shadow:
+        0 2px 7px rgba(15, 23, 42, .11),
+        0 1px 2px rgba(15, 23, 42, .05),
+        0 0 0 1px rgba(13, 110, 253, .025)
+        !important;
+
+}
+
+
+/* ==========================================================
+   TAB CONTENT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    min-height: 0;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   HEADER INFO PANE
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+> .p-4 {
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   HEADER CARD
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card {
+
+    width: 100%;
+
+    background: #FFFFFF;
+
+    border: 1px solid #EEF0F3;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(
+            15,
+            23,
+            42,
+            .05
+        );
+
+}
+
+
+/* ==========================================================
+   HEADER CARD BODY
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card-body {
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   FORM ROW
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card-body
+> .row {
+
+    width: auto !important;
+
+    margin-right: -8px !important;
+
+    margin-left: -8px !important;
+
+    --bs-gutter-x: 16px;
+
+    --bs-gutter-y: 12px;
+
+}
+/* ==========================================================
+   FORM COLUMN
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card-body
+> .row
+> [class*="col-"] {
+
+    padding-left: 8px;
+
+    padding-right: 8px;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   LABEL
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.form-label {
+
+    margin-bottom: 6px;
+
+    color: #1F3A5F;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   INPUT
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.form-control,
+
+#accountReceivableModal
+#ar-header-info-pane
+.form-select {
+
+    width: 100%;
+
+    height: 36px;
+
+    min-height: 36px;
+
+    padding: 6px 10px;
+
+    font-size: 14px;
+
+    border:
+        1px solid #D7DDE5;
+
+    border-radius:
+        5px;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountReceivableModal
+#ar-form-description {
+
+    height: 54px !important;
+
+    min-height: 54px !important;
+
+    padding: 8px 10px;
+
+    line-height: 1.4;
+
+}
+
+
+/* ==========================================================
+   SUMMARY AREA
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-section {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin: 0 !important;
+
+    padding:
+        16px
+        20px
+        16px
+        20px;
+
+    background: #FFFFFF;
+
+    border-top:
+        1px solid #DEE2E6;
+
+}
+
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-card {
+
+    width: 360px;
+
+    max-width: 100%;
+
+    padding: 18px 20px;
+
+    background: #FFFFFF;
+
+    border:
+        1px solid #EEF0F3;
+
+    border-radius:
+        14px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(
+            15,
+            23,
+            42,
+            .05
+        );
+
+}
+
+
+/* ==========================================================
+   SUMMARY LINE
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-line {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    min-height: 26px;
+
+    color: #1F3A5F;
+
+    font-size: 14px;
+
+}
+
+
+/* ==========================================================
+   SUMMARY DIVIDER
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-divider {
+
+    width: 100%;
+
+    height: 1px;
+
+    margin: 12px 0;
+
+    background: #CBD5E1;
+
+}
+
+
+/* ==========================================================
+   TOTAL
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-total {
+
+    font-weight: 700;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+========================================================== */
+
+#accountReceivableModal
+.modal-footer {
+
+    flex: 0 0 auto;
+
+    min-height: 54px;
+
+    padding: 10px 14px;
+
+    background: #FFFFFF;
+
+    border-top:
+        1px solid #DEE2E6;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    #accountReceivableModal
+    #ar-modal-tabs {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+    }
+
+
+    #accountReceivableModal
+    .ar-summary-card {
+
+        width: 100%;
+
+    }
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE DETAIL MODAL
+   SAME STANDARD AS ACCOUNT PAYABLE
+========================================================== */
+
+
+/* ==========================================================
+   DETAIL MODAL DIALOG
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-dialog {
+
+    max-width: 800px;
+
+}
+
+
+/* ==========================================================
+   DETAIL MODAL CONTENT
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-content {
+
+    border: 0;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   MODAL HEADER
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-header {
+
+    display: flex;
+
+    align-items: center;
+
+    min-height: 62px;
+
+    padding: 12px 16px;
+
+    background: #FFFFFF;
+
+    border-bottom: 1px solid #DEE2E6;
+
+}
+
+
+/* ==========================================================
+   MODAL TITLE
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-title {
+
+    margin: 0;
+
+    color: #1F3A5F;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    line-height: 1.3;
+
+}
+
+
+/* ==========================================================
+   MODAL BODY
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-body {
+
+    padding: 18px 20px;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   FORM LABEL
+========================================================== */
+
+#accountReceivableDetailModal
+.form-label {
+
+    display: block;
+
+    margin-top: 0;
+
+    margin-bottom: 6px;
+
+    color: #1F3A5F;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.25;
+
+}
+
+
+/* ==========================================================
+   FORM CONTROL / SELECT
+========================================================== */
+
+#accountReceivableDetailModal
+.form-control,
+
+#accountReceivableDetailModal
+.form-select {
+
+    width: 100%;
+
+    min-height: 38px;
+
+    font-size: 14px;
+
+    border: 1px solid #D7DDE5;
+
+    border-radius: 5px;
+
+    box-shadow: none;
+
+}
+
+
+/* ==========================================================
+   FOCUS
+========================================================== */
+
+#accountReceivableDetailModal
+.form-control:focus,
+
+#accountReceivableDetailModal
+.form-select:focus {
+
+    border-color: #86B7FE;
+
+    box-shadow:
+        0 0 0 .2rem rgba(
+            13,
+            110,
+            253,
+            .15
+        );
+
+}
+
+
+/* ==========================================================
+   READONLY
+========================================================== */
+
+#accountReceivableDetailModal
+.form-control[readonly] {
+
+    background: #F8F9FA;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountReceivableDetailModal
+textarea.form-control {
+
+    min-height: 78px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+
+}
+
+
+/* ==========================================================
+   AMOUNT INPUT
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-amount,
+
+#accountReceivableDetailModal
+input[data-type="amount"] {
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT
+   COA SEARCHABLE DROPDOWN
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-wrapper {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT CONTROL
+
+   SAME AS AP
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    flex-wrap: nowrap !important;
+
+    width: 100% !important;
+
+    min-height: 38px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   SELECTED COA
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+.item {
+
+    flex: 0 1 auto !important;
+
+    min-width: 0;
+
+    max-width: calc(100% - 30px);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT SEARCH INPUT
+
+   IMPORTANT:
+   DO NOT USE WIDTH 100%
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+> input {
+
+    flex: 1 1 auto !important;
+
+    width: 1px !important;
+
+    min-width: 20px !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 0 0 4px !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+}
+
+
+/* ==========================================================
+   REMOVE FOCUS SHADOW
+   FROM TOM SELECT INTERNAL INPUT
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-control
+> input:focus {
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT DROPDOWN
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-dropdown {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT DROPDOWN CONTENT
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-dropdown-content {
+
+    max-height: 240px;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT OPTION
+========================================================== */
+
+#accountReceivableDetailModal
+.ts-dropdown
+.option {
+
+    padding: 8px 10px;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+}
+
+
+/* ==========================================================
+   CALCULATION / AMOUNT SECTION
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation {
+
+    width: 100%;
+
+    margin-top: 4px;
+
+    padding: 14px;
+
+    background: #F8F9FA;
+
+    border-radius: 6px;
+
+}
+
+
+/* ==========================================================
+   CALCULATION ROW
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    min-height: 28px;
+
+}
+
+
+/* ==========================================================
+   CALCULATION LABEL
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation-label {
+
+    color: #6B7280;
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+}
+
+
+/* ==========================================================
+   CALCULATION VALUE
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation-value {
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   DIVIDER
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation-divider {
+
+    width: 100%;
+
+    height: 1px;
+
+    margin: 10px 0;
+
+    background: #C9CDD3;
+
+}
+
+
+/* ==========================================================
+   TOTAL
+========================================================== */
+
+#accountReceivableDetailModal
+.ar-detail-calculation-total {
+
+    color: #1F3A5F;
+
+    font-weight: 700;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    min-height: 58px;
+
+    padding: 10px 16px;
+
+    background: #FFFFFF;
+
+    border-top: 1px solid #DEE2E6;
+
+}
+
+
+/* ==========================================================
+   FOOTER BUTTON
+========================================================== */
+
+#accountReceivableDetailModal
+.modal-footer
+.btn {
+
+    min-height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    #accountReceivableDetailModal
+    .modal-dialog {
+
+        max-width: calc(100% - 20px);
+
+        margin-left: auto;
+
+        margin-right: auto;
+
+    }
+
+
+    #accountReceivableDetailModal
+    .modal-body {
+
+        padding: 16px;
+
+    }
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE
+   INVOICE DETAIL TABLE
+========================================================== */
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table {
+
+    width: 100%;
+
+    margin-bottom: 0;
+
+    table-layout: fixed;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+thead
+th {
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   BODY CELL
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+tbody
+td {
+
+    vertical-align: top;
+
+}
+
+
+/* ==========================================================
+   NO
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(1),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(1) {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACCOUNT
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(2),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(2) {
+
+    text-align: left;
+
+}
+
+
+#accountReceivableModal
+.ar-detail-account-cell {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: normal;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(3),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(3) {
+
+    text-align: left;
+
+}
+
+
+#accountReceivableModal
+.ar-detail-description-cell {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    word-break: normal;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   QUANTITY
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(4),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(4) {
+
+    text-align: right;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   UNIT PRICE
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(5),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(5) {
+
+    text-align: right;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   AMOUNT
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(6),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(6) {
+
+    text-align: right;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACTION
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table
+th:nth-child(7),
+
+#accountReceivableModal
+.ar-invoice-detail-table
+td:nth-child(7) {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE MAIN MODAL
+   FINAL AP MATCH OVERRIDE
+========================================================== */
+
+
+/* ==========================================================
+   MODAL DIALOG
+========================================================== */
+
+#accountReceivableModal .modal-dialog {
+
+    max-width: 1140px;
+
+}
+
+
+/* ==========================================================
+   MODAL CONTENT
+========================================================== */
+
+#accountReceivableModal .modal-content {
+
+    height: auto !important;
+
+    max-height: calc(100vh - 48px) !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+}
+
+
+/* ==========================================================
+   MODAL HEADER
+========================================================== */
+
+#accountReceivableModal .modal-header {
+
+    flex: 0 0 auto !important;
+
+}
+
+
+/* ==========================================================
+   MODAL BODY
+========================================================== */
+
+#accountReceivableModal .modal-body {
+
+    display: block !important;
+
+    flex: 1 1 auto !important;
+
+    min-height: 0 !important;
+
+    padding: 0 !important;
+
+    overflow-y: auto !important;
+
+    overflow-x: hidden !important;
+
+}
+
+
+/* ==========================================================
+   TAB WRAPPER
+========================================================== */
+
+#accountReceivableModal
+.ap-modern-tabs-wrapper {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    flex: none !important;
+
+}
+
+
+/* ==========================================================
+   TAB NAVIGATION
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs {
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(0, 1fr)
+        ) !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+    padding: 6px !important;
+
+    gap: 5px !important;
+
+    background: #F1F3F6 !important;
+
+    border-top:
+        1px solid #E1E5EA !important;
+
+    border-bottom:
+        1px solid #DDE2E8 !important;
+
+}
+
+
+/* ==========================================================
+   TAB ITEM
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-item {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+}
+
+
+/* ==========================================================
+   TAB BUTTON
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-link {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    min-height: 36px !important;
+
+    padding: 7px 14px !important;
+
+    margin: 0 !important;
+
+    border-radius: 8px !important;
+
+}
+
+
+/* ==========================================================
+   ACTIVE TAB
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tabs
+.nav-link.active {
+
+    background: #FFFFFF !important;
+
+    border-color: #CFD7E2 !important;
+
+    color: #0B5ED7 !important;
+
+}
+
+
+/* ==========================================================
+   TAB CONTENT
+
+   IMPORTANT:
+   CONTENT MUST FOLLOW ACTIVE PANE HEIGHT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    flex: none !important;
+
+    overflow: visible !important;
+
+}
+
+
+/* ==========================================================
+   ALL TAB PANES
+
+   IMPORTANT:
+   DO NOT FORCE SAME HEIGHT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    flex: none !important;
+
+}
+
+
+/* ==========================================================
+   BOOTSTRAP HIDDEN PANE
+
+   MUST REALLY DISAPPEAR
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane:not(.active) {
+
+    display: none !important;
+
+}
+
+
+/* ==========================================================
+   ACTIVE PANE
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane.active {
+
+    display: block !important;
+
+}
+
+
+/* ==========================================================
+   PANE PADDING
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+> .p-4,
+
+#accountReceivableModal
+#ar-invoice-details-pane
+> .p-4,
+
+#accountReceivableModal
+#ar-tax-plus-pane
+> .p-4,
+
+#accountReceivableModal
+#ar-tax-minus-pane
+> .p-4 {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   TAB CARD
+
+   EACH TAB CARD MUST FOLLOW ITS OWN CONTENT
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card,
+
+#accountReceivableModal
+#ar-invoice-details-pane
+.finova-card,
+
+#accountReceivableModal
+#ar-tax-plus-pane
+.finova-card,
+
+#accountReceivableModal
+#ar-tax-minus-pane
+.finova-card {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    flex: none !important;
+
+    overflow: visible !important;
+
+}
+
+
+/* ==========================================================
+   TAB CARD BODY
+========================================================== */
+
+#accountReceivableModal
+#ar-header-info-pane
+.finova-card-body,
+
+#accountReceivableModal
+#ar-invoice-details-pane
+.finova-card-body,
+
+#accountReceivableModal
+#ar-tax-plus-pane
+.finova-card-body,
+
+#accountReceivableModal
+#ar-tax-minus-pane
+.finova-card-body {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    flex: none !important;
+
+    overflow: visible !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL TABLE WRAPPER
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table-wrapper {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: visible !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL TABLE
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    margin-bottom: 0 !important;
+
+    table-layout: fixed !important;
+
+}
+
+
+/* ==========================================================
+   TAX TABLE WRAPPER
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+.table-responsive,
+
+#accountReceivableModal
+#ar-tax-minus-pane
+.table-responsive {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: visible !important;
+
+}
+
+
+/* ==========================================================
+   TAX TABLE
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+table,
+
+#accountReceivableModal
+#ar-tax-minus-pane
+table {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    margin-bottom: 0 !important;
+
+}
+
+
+/* ==========================================================
+   SUMMARY SECTION
+
+   SUMMARY MUST FOLLOW CURRENT TAB CONTENT
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-section {
+
+    display: flex !important;
+
+    justify-content: flex-end !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+    padding:
+        16px
+        20px !important;
+
+    flex: none !important;
+
+    background: #FFFFFF !important;
+
+    border-top:
+        1px solid #DEE2E6 !important;
+
+}
+
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+#accountReceivableModal
+.ar-summary-card {
+
+    width: 360px !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    flex: none !important;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+========================================================== */
+
+#accountReceivableModal
+.modal-footer {
+
+    flex: 0 0 auto !important;
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    #accountReceivableModal
+    #ar-modal-tabs {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            ) !important;
+
+    }
+
+
+    #accountReceivableModal
+    .ar-summary-card {
+
+        width: 100% !important;
+
+    }
+
+}
+/* ==========================================================
+   FINOVA ACCOUNTING SYSTEM
+   ACCOUNT RECEIVABLE MODAL
+   REMOVE EMPTY SPACE BETWEEN TAB CONTENT AND SUMMARY
+========================================================== */
+
+
+/* ==========================================================
+   MAIN MODAL CONTENT
+========================================================== */
+
+#accountReceivableModal
+.modal-content {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+}
+
+
+/* ==========================================================
+   MODAL BODY
+========================================================== */
+
+#accountReceivableModal
+.modal-body {
+
+    display: block !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: calc(100vh - 150px) !important;
+
+    overflow-y: auto !important;
+
+}
+
+
+/* ==========================================================
+   TAB CONTENT
+   MUST FOLLOW ACTIVE TAB CONTENT HEIGHT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    flex: none !important;
+
+}
+
+
+/* ==========================================================
+   TAB PANE
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    flex: none !important;
+
+}
+
+
+/* ==========================================================
+   ACTIVE TAB
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane.active {
+
+    display: block !important;
+
+}
+
+
+/* ==========================================================
+   HIDDEN TAB
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
+.tab-pane:not(.active) {
+
+    display: none !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL PANE
+========================================================== */
+
+#accountReceivableModal
+#ar-invoice-details-pane {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL CONTENT
+========================================================== */
+
+#accountReceivableModal
+#ar-invoice-details-pane
+> .p-4 {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL CARD
+========================================================== */
+
+#accountReceivableModal
+#ar-invoice-details-pane
+.finova-card {
+
+    display: block !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    margin-bottom: 0 !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL CARD BODY
+========================================================== */
+
+#accountReceivableModal
+#ar-invoice-details-pane
+.finova-card-body {
+
+    display: block !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+}
+
+
+/* ==========================================================
+   INVOICE DETAIL TABLE WRAPPER
+========================================================== */
+
+#accountReceivableModal
+.ar-invoice-detail-table-wrapper {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    max-height: none !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: visible !important;
+
+}
+
+
+/* ==========================================================
+   TOTAL SUMMARY
+   DIRECTLY FOLLOW TAB CONTENT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
++ .border-top {
+
+    margin-top: 0 !important;
+
+    padding-top: 20px !important;
+
+    padding-bottom: 20px !important;
+
+}
+
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
++ .border-top
+.finova-card {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin-bottom: 0 !important;
+
+}
+/*
+==========================================================
+ACCOUNT RECEIVABLE
+MODAL SUBTITLE ALIGNMENT
+MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+#accountReceivableModal
+.modal-header
+.modal-subtitle {
+
+    margin-left: 0 !important;
+
+    padding-left: 0 !important;
+
+    text-indent: 0 !important;
+
+}
+/* ==========================================================
+   AR TAX TABLE
+   COLUMN ALIGNMENT
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane th:nth-child(2),
+#accountReceivableModal
+#ar-tax-plus-pane td:nth-child(2),
+
+#accountReceivableModal
+#ar-tax-minus-pane th:nth-child(2),
+#accountReceivableModal
+#ar-tax-minus-pane td:nth-child(2) {
+
+    white-space: nowrap;
+
+}
+/*
+==========================================================
+ACCOUNT RECEIVABLE
+TAX (+) / TAX (-)
+FINAL COLUMN ALIGNMENT
+==========================================================
+*/
+
+
+/* ==========================================================
+   TAX NAME
+   KEEP IN ONE LINE
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+tbody
+td:nth-child(2),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+tbody
+td:nth-child(2) {
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   NO COLUMN
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(1),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(1),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(1),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(1) {
+
+    width: 6% !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   TAX NAME
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(2),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(2),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(2),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(2) {
+
+    width: 34% !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   TAX ACCOUNT
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(3),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(3),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(3),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(3) {
+
+    width: 26% !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   TAX BASE
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(4),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(4),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(4),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(4) {
+
+    width: 14% !important;
+
+    text-align: right !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   RATE
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(5),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(5),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(5),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(5) {
+
+    width: 8% !important;
+
+    text-align: right !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   TAX AMOUNT
+========================================================== */
+
+#accountReceivableModal
+#ar-tax-plus-pane
+th:nth-child(6),
+
+#accountReceivableModal
+#ar-tax-plus-pane
+td:nth-child(6),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+th:nth-child(6),
+
+#accountReceivableModal
+#ar-tax-minus-pane
+td:nth-child(6) {
+
+    width: 12% !important;
+
+    text-align: right !important;
+
+    white-space: nowrap !important;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT RECEIVABLE
+ACCOUNTING PREVIEW
+FIXED 5 ROWS + SCROLL
+==========================================================
+*/
+
+
+/* ==========================================================
+   JOURNAL SCROLL AREA
+   SHOW APPROXIMATELY 5 ROWS
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll {
+
+    width: 100%;
+
+    max-height: 225px;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   KEEP TABLE HEADER VISIBLE
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+thead
+th {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 5;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   KEEP TOTAL ROW VISIBLE
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+tfoot
+td {
+
+    position: sticky;
+
+    bottom: 0;
+
+    z-index: 4;
+
+    background: #FFFFFF;
+
+}
+
+
+/* ==========================================================
+   PREVENT AMOUNT WRAPPING
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+th,
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+td {
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING SUMMARY
+   NEVER SCROLL WITH JOURNAL
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
++ .row {
+
+    flex: 0 0 auto;
+
+}
+
+
+/* ==========================================================
+   MODAL FOOTER
+   KEEP PERMANENT
+========================================================== */
+
+#accountReceivableModal
+.modal-footer {
+
+    flex: 0 0 auto;
+
+    background: #FFFFFF;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT RECEIVABLE
+ACCOUNTING PREVIEW
+FIXED MODAL + INNER JOURNAL SCROLL
+MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+
+/*
+==========================================================
+ACCOUNT RECEIVABLE
+MAIN MODAL HEIGHT
+MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+/*
+==========================================================
+ACCOUNT RECEIVABLE
+MAIN MODAL POSITION
+MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+#accountReceivableModal
+.modal-dialog {
+
+    width: calc(100% - 48px) !important;
+
+    max-width: 1140px !important;
+
+    height: auto !important;
+
+    max-height: none !important;
+
+    margin:
+
+        48px
+
+        auto !important;
+
+}
+
+
+#accountReceivableModal
+.modal-content {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    max-height: calc(100vh - 96px) !important;
+
+    min-height: 0 !important;
+
+    overflow: hidden !important;
+
+}
+
+
+/* ==========================================================
+   HEADER
+   NEVER SCROLL
+========================================================== */
+
+#accountReceivableModal
+.modal-header {
+
+    flex: 0 0 auto !important;
+
+}
+
+
+/* ==========================================================
+   MODAL BODY
+   IMPORTANT:
+   DISABLE MAIN MODAL SCROLL
+========================================================== */
+
+#accountReceivableModal
+.modal-body {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    flex: 1 1 auto !important;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    max-height: none !important;
+
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+}
+
+
+/* ==========================================================
+   TAB HEADER
+   NEVER SCROLL
+========================================================== */
+
+#accountReceivableModal
+.ap-modern-tabs-wrapper {
+
+    flex: 0 0 auto !important;
+
+    width: 100% !important;
+
+}
+
+
+/* ==========================================================
+   TAB CONTENT
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content {
+
+    display: block !important;
+
+    flex: 0 1 auto !important;
+
+    width: 100% !important;
+
+    min-height: 0 !important;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING PREVIEW PANE
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane {
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    padding: 0 !important;
+
+    overflow: visible !important;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING PREVIEW OUTER PADDING
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+> .p-4 {
+
+    padding: 20px !important;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING PREVIEW CARD
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.finova-card {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+}
+
+
+/* ==========================================================
+   CARD BODY
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.finova-card-body {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+}
+
+
+/* ==========================================================
+   JOURNAL TABLE SCROLL
+   ONLY THIS AREA SCROLLS
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    height: auto !important;
+
+    max-height: 225px !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: auto !important;
+
+    scrollbar-gutter: stable;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+table {
+
+    width: 100% !important;
+
+    margin-bottom: 0 !important;
+
+}
+
+
+/* ==========================================================
+   STICKY TABLE HEADER
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+thead
+th {
+
+    position: sticky !important;
+
+    top: 0 !important;
+
+    z-index: 5 !important;
+
+    background: #FFFFFF !important;
+
+}
+
+
+/* ==========================================================
+   STICKY TOTAL
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+tfoot
+td {
+
+    position: sticky !important;
+
+    bottom: 0 !important;
+
+    z-index: 4 !important;
+
+    background: #FFFFFF !important;
+
+}
+
+
+/* ==========================================================
+   PREVENT AMOUNT WRAP
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+th,
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
+td {
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   ACCOUNTING SUMMARY
+   TOTAL DEBIT / CREDIT / DIFFERENCE / STATUS
+   NEVER SCROLL
+========================================================== */
+
+#accountReceivableModal
+#ar-accounting-preview-pane
+.ar-accounting-preview-scroll
++ .row {
+
+    flex: 0 0 auto !important;
+
+    margin-top: 16px !important;
+
+}
+
+
+/* ==========================================================
+   TOTAL RECEIVABLE SECTION
+   NEVER SCROLL
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
++ .border-top {
+
+    flex: 0 0 auto !important;
+
+    margin-top: auto !important;
+
+    padding-top: 16px !important;
+
+    padding-bottom: 16px !important;
+
+    background: #FFFFFF !important;
+
+}
+
+
+/* ==========================================================
+   TOTAL RECEIVABLE CARD
+========================================================== */
+
+#accountReceivableModal
+#ar-modal-tab-content
++ .border-top
+.finova-card {
+
+    flex: 0 0 auto !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    margin-bottom: 0 !important;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+   CANCEL / SAVE CHANGES
+   ALWAYS VISIBLE
+========================================================== */
+
+#accountReceivableModal
+.modal-footer {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: flex-end !important;
+
+    flex: 0 0 auto !important;
+
+    min-height: 54px !important;
+
+    padding: 10px 14px !important;
+
+    background: #FFFFFF !important;
+
+    border-top: 1px solid #DEE2E6 !important;
+
+    position: relative !important;
+
+    z-index: 20 !important;
+
+}
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT RECEIVABLE
+MAIN MODAL FOOTER
+FINAL - MATCH ACCOUNT PAYABLE
+==========================================================
+*/
+
+
+/* ==========================================================
+   MAIN FOOTER
+========================================================== */
+
+#accountReceivableModal
+> .modal-dialog
+> .modal-content
+> .modal-footer {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: flex-end !important;
+
+    flex-wrap: nowrap !important;
+
+    flex: 0 0 58px !important;
+
+    width: 100% !important;
+
+    min-height: 58px !important;
+
+    height: 58px !important;
+
+    margin: 0 !important;
+
+    padding: 10px 14px !important;
+
+    gap: 8px !important;
+
+    box-sizing: border-box !important;
+
+    background: #FFFFFF !important;
+
+    border-top: 1px solid #DEE2E6 !important;
+
+    overflow: hidden !important;
+
+    position: relative !important;
+
+    z-index: 30 !important;
+
+}
+
+
+/* ==========================================================
+   FOOTER BUTTON
+========================================================== */
+
+#accountReceivableModal
+> .modal-dialog
+> .modal-content
+> .modal-footer
+> .btn {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    flex: 0 0 auto !important;
+
+    width: auto !important;
+
+    min-height: 34px !important;
+
+    height: 34px !important;
+
+    margin: 0 !important;
+
+    padding-top: 0 !important;
+
+    padding-bottom: 0 !important;
+
+    white-space: nowrap !important;
+
+}
+
+
+/* ==========================================================
+   CANCEL
+========================================================== */
+
+#accountReceivableModal
+> .modal-dialog
+> .modal-content
+> .modal-footer
+> .btn-light {
+
+    flex: 0 0 auto !important;
+
+}
+
+
+/* ==========================================================
+   SAVE DRAFT / SAVE CHANGES
+========================================================== */
+
+#accountReceivableModal
+> .modal-dialog
+> .modal-content
+> .modal-footer
+> #btn-save-ar-draft {
+
+    flex: 0 0 auto !important;
+
+}
+
+/* ==========================================================
+   AR PAYMENT — SAME VISUAL STRUCTURE AS AP PAYMENT
+========================================================== */
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+ACCOUNT PAYABLE
+BULK AR PAYMENT MODAL
+TAHAP 4
+==========================================================
+*/
+
+
+/* ==========================================================
+   MODAL SIZE
+========================================================== */
+
+#accountReceivablePaymentModal
+.modal-dialog {
+
+    width: calc(100% - 48px);
+
+    max-width: 1180px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+}
+
+
+/* ==========================================================
+   MODAL CONTENT
+========================================================== */
+
+#accountReceivablePaymentModal
+.modal-content {
+
+    border: 0;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+#accountReceivablePaymentModal
+.modal-header {
+
+    padding: 18px 22px;
+
+    background: #FFFFFF;
+
+    border-bottom: 1px solid #E5E7EB;
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+#accountReceivablePaymentModal
+.modal-body {
+
+    padding: 20px;
+
+    background: #F8FAFC;
+
+}
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-section {
+
+    width: 100%;
+
+    padding: 18px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   SECTION HEADER
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+
+}
+
+
+/* ==========================================================
+   SECTION TITLE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-section-title {
+
+    color: #111827;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    line-height: 1.35;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-section-subtitle {
+
+    margin-top: 2px;
+
+    color: #6B7280;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+}
+
+
+/* ==========================================================
+   FORM LABEL
+========================================================== */
+
+#accountReceivablePaymentModal
+.form-label {
+
+    margin-bottom: 6px;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   FORM CONTROL
+========================================================== */
+
+#accountReceivablePaymentModal
+.form-control,
+
+#accountReceivablePaymentModal
+.form-select {
+
+    min-height: 42px;
+
+    border-color: #DDE2E8;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+}
+
+
+#accountReceivablePaymentModal
+.form-control:focus,
+
+#accountReceivablePaymentModal
+.form-select:focus {
+
+    border-color: #86B7FE;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            13,
+            110,
+            253,
+            .10
+        );
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-description {
+
+    width: 100%;
+
+    min-height: 74px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   SELECT ALL
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-select-all-wrapper {
+
+    flex: 0 0 auto;
+
+    margin: 0;
+
+}
+
+
+/* ==========================================================
+   EMPTY / LOADING STATE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-empty {
+
+    display: flex;
+
+    min-height: 150px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    color: #374151;
+
+    border: 1px dashed #D8DEE7;
+
+    border-radius: 10px;
+
+    background: #FAFBFC;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-empty-icon {
+
+    display: flex;
+
+    width: 42px;
+
+    height: 42px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+    color: #6B7280;
+
+    font-size: 18px;
+
+    background: #F1F5F9;
+
+    border-radius: 50%;
+
+}
+
+
+/* ==========================================================
+   TABLE WRAPPER
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-invoice-table-wrapper {
+
+    width: 100%;
+
+    max-height: 330px;
+
+    overflow: auto;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 10px;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-invoice-table {
+
+    width: 100%;
+
+    min-width: 1040px;
+
+    margin: 0;
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-invoice-table
+thead
+th {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+
+    padding: 11px 10px;
+
+    color: #374151;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+    background: #F8FAFC;
+
+    border-bottom: 1px solid #DDE2E8;
+
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-invoice-table
+tbody
+td {
+
+    padding: 10px;
+
+    color: #374151;
+
+    vertical-align: middle;
+
+    border-bottom-color: #EEF2F6;
+
+}
+
+
+/* ==========================================================
+   CHECK COLUMN
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-col-check {
+
+    width: 46px;
+
+    min-width: 46px;
+
+}
+
+
+/* ==========================================================
+   PAYMENT INPUT INSIDE TABLE
+   USED ON TAHAP 5
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-input {
+
+    width: 145px;
+
+    min-height: 36px;
+
+    margin-left: auto;
+
+    text-align: right;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   SELECTED ROW
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-invoice-table
+tr.ar-bulk-row-selected
+td {
+
+    background: #F5F9FF;
+
+}
+
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-summary-card {
+
+    height: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 10px;
+
+    background: #FAFBFC;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-summary-label {
+
+    margin-bottom: 5px;
+
+    color: #6B7280;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .02em;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-summary-value {
+
+    color: #111827;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1.25;
+
+}
+
+
+/* ==========================================================
+   TOTAL PAYMENT
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-summary-card-total {
+
+    border-color: #BFD4F5;
+
+    background: #F5F9FF;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-summary-total {
+
+    color: #0D6EFD;
+
+}
+
+
+/* ==========================================================
+   VALIDATION MESSAGE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-payment-message {
+
+    margin-top: 14px;
+
+    padding: 10px 12px;
+
+    color: #92400E;
+
+    font-size: 12px;
+
+    border: 1px solid #FDE68A;
+
+    border-radius: 8px;
+
+    background: #FFFBEB;
+
+}
+
+
+/* ==========================================================
+   JOURNAL PREVIEW
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-payment-journal-preview {
+
+    padding: 16px 18px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 12px;
+
+}
+
+
+/* ==========================================================
+   JOURNAL LINE
+========================================================== */
+
+#accountReceivablePaymentModal
+.ar-bulk-journal-line {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 32px;
+
+    padding: 4px 0;
+
+    color: #374151;
+
+    font-size: 12px;
+
+}
+
+
+#accountReceivablePaymentModal
+.ar-bulk-journal-line
+> span:first-child {
+
+    width: 50px;
+
+    color: #6B7280;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+#accountReceivablePaymentModal
+.modal-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 14px 20px;
+
+    background: #FFFFFF;
+
+    border-top: 1px solid #E5E7EB;
+
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media
+(max-width: 991.98px) {
+
+    #accountReceivablePaymentModal
+    .modal-dialog {
+
+        width: calc(100% - 24px);
+
+    }
+
+
+    #accountReceivablePaymentModal
+    .modal-body {
+
+        padding: 14px;
+
+    }
+
+
+    #accountReceivablePaymentModal
+    .ar-bulk-payment-section {
+
+        padding: 14px;
+
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media
+(max-width: 767.98px) {
+
+    #accountReceivablePaymentModal
+    .modal-dialog {
+
+        width: calc(100% - 16px);
+
+        margin:
+            8px
+            auto;
+
+    }
+
+
+    #accountReceivablePaymentModal
+    .modal-footer
+    > .me-auto {
+
+        display: none;
+
+    }
+
+
+    #accountReceivablePaymentModal
+    .modal-footer {
+
+        justify-content: flex-end;
+
+    }
+
+
+    #accountReceivablePaymentModal
+    .ar-bulk-payment-section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+/* ==========================================================
+   FINOVA AR — INVOICE DETAIL INNER SCROLL (MATCH AP)
+   Keep modal header, tabs, detail heading and totals fixed.
+   The transaction list becomes scrollable when it exceeds
+   the available space (approximately five rows visible).
+========================================================== */
+@supports selector(#accountReceivableModal:has(#ar-invoice-details-pane.active)) {
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) {
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) > .modal-dialog {
+    height: calc(100dvh - 2rem) !important;
+    max-height: calc(100dvh - 2rem) !important;
+    margin: 1rem auto !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) > .modal-dialog > .modal-content {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-header {
+    flex: 0 0 auto !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) > .modal-dialog > .modal-content > .modal-body {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) .ap-modern-tabs-wrapper,
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-modal-tabs {
+    flex: 0 0 auto !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-modal-tab-content {
+    display: flex !important;
+    flex: 1 1 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane.active,
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane.active.show {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane.active > .p-4,
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane.active.show > .p-4 {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 1rem !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .finova-card {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .finova-card-body {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .finova-card-body > .d-flex.justify-content-between {
+    flex: 0 0 auto !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .ar-invoice-detail-table-wrapper {
+    display: block !important;
+    flex: 1 1 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .ar-invoice-detail-table {
+    height: auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .ar-invoice-detail-table > thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background: #f8fafc !important;
+  }
+
+  #accountReceivableModal:has(#ar-invoice-details-pane.active) #ar-invoice-details-pane .ar-invoice-detail-table > tfoot td {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    background: #fff;
+  }
+}
+
+
+
+
+/* PHASE III(10): Invoice Detail shows a compact initial view and scrolls long detail lists. */
+#ar-invoice-details-pane .table-responsive {
+    max-height: 290px;
+    overflow: auto;
+}
+
+#ar-invoice-details-pane .table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bs-body-bg, #fff);
+}
+
+
+/* FIX 2026-10-24: compact AR modal when Invoice Details has no rows.
+   Remove inherited fixed/flex heights from every wrapper causing the blank area. */
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) .modal-dialog,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) .modal-content,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) .modal-body,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-modal-tab-content,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane > .p-4,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .finova-card,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .finova-card-body {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) .modal-body,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-modal-tab-content,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane > .p-4,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .finova-card,
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .finova-card-body {
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+}
+#accountReceivableModal:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .ar-invoice-detail-table-wrapper {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Root-cause fix: the modal has explicit viewport-height/flex rules for the
+   detail tab. JS toggles this class based on the actual detail row count. */
+#accountReceivableModal.ar-invoice-details-empty .modal-dialog,
+#accountReceivableModal.ar-invoice-details-empty .modal-content {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+#accountReceivableModal.ar-invoice-details-empty .modal-content {
+  display: flex !important;
+  flex-direction: column !important;
+}
+#accountReceivableModal.ar-invoice-details-empty > .modal-dialog > .modal-content > .modal-body {
+  display: block !important;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+#accountReceivableModal.ar-invoice-details-empty #ar-modal-tab-content,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane.active,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane.active.show,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane > .p-4,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane.active > .p-4,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane .finova-card,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane .finova-card-body,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane .ar-invoice-detail-table-wrapper,
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane .table-responsive {
+  display: block !important;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+#accountReceivableModal.ar-invoice-details-empty #ar-invoice-details-pane .ar-invoice-detail-table {
+  height: auto !important;
+  margin-bottom: 0 !important;
+}
+#accountReceivableModal.ar-invoice-details-empty .ar-total-summary-footer,
+#accountReceivableModal.ar-invoice-details-empty .modal-footer {
+  flex: 0 0 auto !important;
+}
+
+/* FIX 2026-10-27: align AR modal to the top of the viewport */
+#accountReceivableModal.modal,
+#accountReceivableModal {
+  align-items: flex-start !important;
+}
+#accountReceivableModal > .modal-dialog,
+#accountReceivableModal.modal .modal-dialog,
+#accountReceivableModal .modal-dialog {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* FINOVA FIX 2026-10-28: keep the complete AP/AR modal header visible at the top.
+   Remove the Bootstrap scrollable-dialog height cap that was clipping the top/header.
+   Long content scrolls inside the modal body instead of cutting off the modal header. */
+#accountReceivableModal.modal {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+#accountReceivableModal > .modal-dialog,
+#accountReceivableModal.modal .modal-dialog,
+#accountReceivableModal .modal-dialog {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+}
+#accountReceivableModal > .modal-dialog > .modal-content,
+#accountReceivableModal .modal-content {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+}
+#accountReceivableModal .modal-header {
+    position: relative !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    z-index: 2 !important;
+}
+#accountReceivableModal .modal-body {
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+#accountReceivableModal .modal-footer {
+    position: relative !important;
+    flex: 0 0 auto !important;
+}
+
+
+/* FINAL FIX 2026-10-28: keep the empty AR detail row visible after modal/tab layout.
+   Higher-specificity selectors override the active-tab wrapper's height:0/flex rules. */
+#accountReceivableModal.ar-invoice-details-empty:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .table-responsive,
+#accountReceivableModal.ar-invoice-details-empty:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .ar-invoice-detail-table-wrapper {
+    display: block !important;
+    position: relative !important;
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+#accountReceivableModal.ar-invoice-details-empty:has(#ar-detail-body > #ar-detail-empty) #ar-invoice-details-pane .ar-invoice-detail-table {
+    display: table !important;
+    width: 100% !important;
+    height: auto !important;
+    visibility: visible !important;
+    margin-bottom: 0 !important;
+}
+#accountReceivableModal.ar-invoice-details-empty:has(#ar-detail-body > #ar-detail-empty) #ar-detail-body > #ar-detail-empty {
+    display: table-row !important;
+    visibility: visible !important;
+    height: auto !important;
+}
+#accountReceivableModal.ar-invoice-details-empty:has(#ar-detail-body > #ar-detail-empty) #ar-detail-body > #ar-detail-empty > td {
+    display: table-cell !important;
+    visibility: visible !important;
+    height: auto !important;
+    min-height: 48px !important;
+    padding: 1rem !important;
+    text-align: center !important;
+}

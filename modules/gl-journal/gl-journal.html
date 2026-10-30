@@ -1,0 +1,601 @@
+<!--
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+General Journal
+Version : 2.0 Enterprise
+==========================================================
+-->
+
+<div class="gl-journal-page">
+
+
+    <!-- ==========================================================
+         PAGE HEADER
+    =========================================================== -->
+
+    <div class="finova-page-header">
+
+
+        <!-- LEFT -->
+
+        <div class="finova-page-header-left">
+
+            <h1 class="finova-page-title">
+                General Journal
+            </h1>
+
+            <p class="finova-page-subtitle">
+                Accounting / General Journal
+            </p>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="finova-page-header-right">
+
+            <button
+                id="btn-add-journal"
+                class="btn btn-primary finova-btn">
+
+                <i class="fas fa-plus"></i>
+
+                Add Journal
+
+            </button>
+
+
+            <button
+                id="btn-download-journal"
+                class="btn btn-outline-success finova-btn">
+
+                <i class="fas fa-file-excel"></i>
+
+                Download Excel
+
+            </button>
+
+
+            <button
+                id="btn-preview-journal"
+                class="btn btn-outline-primary finova-btn">
+
+                <i class="fas fa-print"></i>
+
+                Preview HTML
+
+            </button>
+
+
+            <button
+                id="btn-refresh-journal"
+                class="btn btn-outline-secondary finova-btn">
+
+                <i class="fas fa-rotate-right"></i>
+
+                Refresh
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==========================================================
+         FILTER CARD
+    =========================================================== -->
+
+    <div class="finova-card gl-journal-filter-card">
+
+        <div class="finova-card-body">
+
+            <div class="row g-3 align-items-end">
+
+
+                <!-- ==========================================
+                     ACCOUNTING DATE FROM
+                =========================================== -->
+
+                <div class="col-xl-2 col-lg-3 col-md-6">
+
+                    <label
+                        for="filter-date-from"
+                        class="form-label">
+
+                        Accounting Date From
+
+                    </label>
+
+
+                    <input
+                        id="filter-date-from"
+                        type="date"
+                        class="form-control">
+
+                </div>
+
+
+                <!-- ==========================================
+                     ACCOUNTING DATE TO
+                =========================================== -->
+
+                <div class="col-xl-2 col-lg-3 col-md-6">
+
+                    <label
+                        for="filter-date-to"
+                        class="form-label">
+
+                        Accounting Date To
+
+                    </label>
+
+
+                    <input
+                        id="filter-date-to"
+                        type="date"
+                        class="form-control">
+
+                </div>
+
+
+                <!-- ==========================================
+                     JOURNAL STATUS
+                =========================================== -->
+
+                <div class="col-xl-2 col-lg-3 col-md-6">
+
+                    <label
+                        for="filter-status"
+                        class="form-label">
+
+                        Journal Status
+
+                    </label>
+
+
+                    <select
+                        id="filter-status"
+                        class="form-select">
+
+                        <option value="all">
+
+                            Show All Data
+
+                        </option>
+
+
+                        <option value="Draft">
+
+                            Show Draft Only
+
+                        </option>
+
+
+                        <option value="Posted">
+
+                            Show Posted Only
+
+                        </option>
+
+
+                        <option value="Void">
+
+                            Show Void Only
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ==========================================
+                     FIND BY
+                =========================================== -->
+
+                <div class="col-xl-2 col-lg-3 col-md-6">
+
+                    <label
+                        for="filter-find-by"
+                        class="form-label">
+
+                        Find By
+
+                    </label>
+
+
+                    <select
+                        id="filter-find-by"
+                        class="form-select">
+
+                        <option value="journal_no">
+
+                            Journal No
+
+                        </option>
+
+
+                        <option value="description">
+
+                            Description
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ==========================================
+                     KEYWORD
+                =========================================== -->
+
+                <div class="col-xl-4 col-lg-6 col-md-12">
+
+                    <label
+                        for="filter-keyword"
+                        class="form-label">
+
+                        Keyword
+
+                    </label>
+
+
+                    <div class="input-group">
+
+                        <input
+                            id="filter-keyword"
+                            type="text"
+                            class="form-control"
+                            placeholder="Search Journal No or Description...">
+
+
+                        <button
+                            id="btn-find-journal"
+                            type="button"
+                            class="btn btn-primary">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            Find
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================================
+         TABLE CARD
+    =========================================================== -->
+
+    <div class="finova-card finova-table-card">
+
+        <div class="finova-card-body no-padding">
+
+            <div class="finova-table-container">
+
+
+                <!-- ==================================================
+                     TABLE
+                =================================================== -->
+
+                <div
+                    id="gl-journal-table-wrapper"
+                    class="table-responsive">
+
+
+                    <table
+                        id="gl-journal-table"
+                        class="
+                            table
+                            finova-table
+                            finova-table-bordered
+                            table-hover
+                            gl-journal-main-table
+                        ">
+
+
+                        <!-- ==========================================
+                             COLUMN WIDTH
+                        =========================================== -->
+
+                        <colgroup>
+
+
+                            <!-- NO -->
+
+                            <col class="gl-col-no">
+
+
+                            <!-- DATE -->
+
+                            <col class="gl-col-date">
+
+
+                            <!-- JOURNAL INFORMATION -->
+
+                            <col class="gl-col-information">
+
+
+                            <!-- SOURCE -->
+
+                            <col class="gl-col-source">
+
+
+                            <!-- AMOUNT -->
+
+                            <col class="gl-col-amount">
+
+
+                            <!-- CREATED -->
+
+                            <col class="gl-col-created">
+
+
+                            <!-- STATUS -->
+
+                            <col class="gl-col-status">
+
+
+                            <!-- ACTION -->
+
+                            <col class="gl-col-action">
+
+
+                        </colgroup>
+
+
+                        <!-- ==========================================
+                             TABLE HEADER
+                        =========================================== -->
+
+                        <thead class="finova-table-header">
+
+                            <tr>
+
+
+                                <!-- NO -->
+
+                                <th class="text-center">
+
+                                    No
+
+                                </th>
+
+
+                                <!-- DATE -->
+
+                                <th class="text-center">
+
+                                    Date
+
+                                </th>
+
+
+                                <!-- JOURNAL INFORMATION -->
+
+                                <th>
+
+                                    Journal Information
+
+                                </th>
+
+
+                                <!-- SOURCE -->
+
+                                <th class="gl-journal-source-cell">
+                                    Source
+                                </th>
+
+
+                                <!-- AMOUNT -->
+
+                                <th>
+
+                                    Amount
+
+                                </th>
+
+
+                                <!-- CREATED -->
+
+                                <th class="text-center">
+
+                                    Created
+
+                                </th>
+
+
+                                <!-- STATUS -->
+
+                                <th class="text-center">
+
+                                    Status
+
+                                </th>
+
+
+                                <!-- ACTION -->
+
+                                <th class="text-center">
+
+                                </th>
+
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- ==========================================
+                             TABLE BODY
+                        =========================================== -->
+
+                        <tbody id="gl-journal-tbody">
+
+                            <!-- Render By JavaScript -->
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+                <!-- ==================================================
+                     PAGINATION
+                =================================================== -->
+
+                <div class="finova-pagination-wrapper">
+
+
+                    <!-- LEFT -->
+
+                    <div class="finova-pagination-left">
+
+
+                        <!-- FIRST -->
+
+                        <button
+                            type="button"
+                            id="btn-first-page"
+                            class="finova-pagination-btn"
+                            title="First Page">
+
+                            <i class="fa-solid fa-backward-step"></i>
+
+                        </button>
+
+
+                        <!-- PREVIOUS -->
+
+                        <button
+                            type="button"
+                            id="btn-prev-page"
+                            class="finova-pagination-btn"
+                            title="Previous Page">
+
+                            <i class="fa-solid fa-chevron-left"></i>
+
+                        </button>
+
+
+                        <!-- PAGE LABEL -->
+
+                        <span class="finova-pagination-label">
+
+                            Page
+
+                        </span>
+
+
+                        <!-- CURRENT PAGE -->
+
+                        <input
+                            type="number"
+                            id="current-page"
+                            value="1"
+                            min="1"
+                            class="form-control finova-pagination-input"
+                            aria-label="Current Page">
+
+
+                        <!-- OF -->
+
+                        <span class="finova-pagination-label">
+
+                            of
+
+                        </span>
+
+
+                        <!-- TOTAL PAGE -->
+
+                        <span
+                            id="total-pages"
+                            class="finova-pagination-total">
+
+                            1
+
+                        </span>
+
+
+                        <!-- NEXT -->
+
+                        <button
+                            type="button"
+                            id="btn-next-page"
+                            class="finova-pagination-btn"
+                            title="Next Page">
+
+                            <i class="fa-solid fa-chevron-right"></i>
+
+                        </button>
+
+
+                        <!-- LAST -->
+
+                        <button
+                            type="button"
+                            id="btn-last-page"
+                            class="finova-pagination-btn"
+                            title="Last Page">
+
+                            <i class="fa-solid fa-forward-step"></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                    <!-- RECORD INFO -->
+
+                    <div
+                        id="display-record"
+                        class="finova-pagination-info">
+
+                        Records 0 - 0 of 0
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================================
+         MODAL CONTAINER
+    =========================================================== -->
+
+    <div id="gl-journal-modal-container"></div>
+
+
+    <!-- ==========================================================
+         JOURNAL DETAIL MODAL CONTAINER
+    =========================================================== -->
+
+    <div id="journal-detail-modal-container"></div>
+
+
+</div>

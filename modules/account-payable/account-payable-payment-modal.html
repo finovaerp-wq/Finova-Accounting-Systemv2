@@ -1,0 +1,996 @@
+<!--
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE    : ACCOUNT PAYABLE
+COMPONENT : BULK PAYMENT MODAL
+VERSION   : BULK PAYMENT 1.0
+==========================================================
+
+ARCHITECTURE:
+
+1 BANK TRANSFER
+      ↓
+1 AP PAYMENT BATCH
+      ↓
+MULTIPLE AP INVOICE ALLOCATIONS
+
+IMPORTANT:
+- Legacy IDs are retained as hidden compatibility fields.
+- Bulk save logic will be connected in next stage.
+==========================================================
+-->
+
+
+<div
+    class="modal fade"
+    id="accountPayablePaymentModal"
+    tabindex="-1"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+>
+
+    <div
+        class="
+            modal-dialog
+            modal-xl
+            modal-dialog-centered
+            modal-dialog-scrollable
+        "
+    >
+
+        <div class="modal-content">
+
+
+            <!-- ==================================================
+                 HEADER
+            =================================================== -->
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5
+                        class="
+                            modal-title
+                            fw-semibold
+                        "
+                    >
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-money-bill-transfer
+                                me-2
+                            "
+                        ></i>
+
+                        AP Payment
+
+                    </h5>
+
+
+                    <div
+                        class="
+                            text-muted
+                            small
+                            mt-1
+                        "
+                    >
+
+                        Create one payment for multiple outstanding
+                        Account Payable invoices
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                >
+                </button>
+
+            </div>
+
+
+            <!-- ==================================================
+                 BODY
+            =================================================== -->
+
+            <div class="modal-body">
+
+
+                <!-- ==================================================
+                     LEGACY COMPATIBILITY
+
+                     KEEP THESE IDS.
+                     CURRENT AP JS STILL REFERENCES THEM.
+
+                     WILL BE REFACTORED IN NEXT STAGE.
+                =================================================== -->
+
+                <div class="d-none">
+
+                    <input
+                        type="hidden"
+                        id="ap-payment-ap-id"
+                    >
+
+
+                    <input
+                        type="text"
+                        id="ap-payment-invoice-no"
+                        readonly
+                    >
+
+
+                    <input
+                        type="text"
+                        id="ap-payment-po-no"
+                        readonly
+                    >
+
+
+                    <input
+                        type="text"
+                        id="ap-payment-vendor"
+                        readonly
+                    >
+
+
+                    <strong id="ap-payment-dpp">
+                        0
+                    </strong>
+
+
+                    <strong id="ap-payment-tax-plus">
+                        0
+                    </strong>
+
+
+                    <strong id="ap-payment-tax-minus">
+                        0
+                    </strong>
+
+
+                    <input
+                        type="text"
+                        id="ap-payment-amount"
+                        value="0"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- ==================================================
+                     PAYMENT INFORMATION
+                =================================================== -->
+
+                <div class="ap-bulk-payment-section">
+
+                    <div class="ap-bulk-payment-section-header">
+
+                        <div>
+
+                            <div class="ap-bulk-payment-section-title">
+
+                                Payment Information
+
+                            </div>
+
+
+                            <div class="ap-bulk-payment-section-subtitle">
+
+                                Bank transaction information for this
+                                payment batch
+
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="
+                                badge
+                                text-bg-light
+                                border
+                            "
+                            id="ap-payment-batch-status"
+                        >
+
+                            Draft
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                        <!-- ==========================================
+                             PAYMENT NO
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                for="ap-payment-batch-no"
+                                class="form-label"
+                            >
+
+                                Payment No
+
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="ap-payment-batch-no"
+                                class="form-control"
+                                placeholder="AUTO"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             PAYMENT DATE
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                for="ap-payment-date"
+                                class="form-label"
+                            >
+
+                                Payment Date
+
+                                <span class="text-danger">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <input
+                                type="date"
+                                id="ap-payment-date"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             VENDOR
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <label
+                                for="ap-payment-bulk-vendor"
+                                class="form-label"
+                            >
+
+                                Vendor
+
+                                <span class="text-danger">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <select
+                                id="ap-payment-bulk-vendor"
+                                class="form-select"
+                            >
+
+                                <option value="">
+                                    Select Vendor
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             BANK ACCOUNT
+                        =========================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="ap-payment-bank-account"
+                                class="form-label"
+                            >
+
+                                Bank Account
+
+                                <span class="text-danger">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <select
+                                id="ap-payment-bank-account"
+                                class="form-select"
+                            >
+
+                                <option value="">
+                                    Select Bank Account
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             REFERENCE NO
+                        =========================================== -->
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="ap-payment-reference-no"
+                                class="form-label"
+                            >
+
+                                Reference No
+
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="ap-payment-reference-no"
+                                class="form-control"
+                                placeholder="Transfer / bank reference"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             DESCRIPTION
+                        =========================================== -->
+
+                        <div class="col-12">
+
+                            <label
+                                for="ap-payment-description"
+                                class="form-label"
+                            >
+
+                                Description
+
+                            </label>
+
+
+                            <textarea
+                                id="ap-payment-description"
+                                class="
+                                    form-control
+                                    ap-payment-description
+                                "
+                                rows="2"
+                                placeholder="Payment description"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     OUTSTANDING INVOICES
+                =================================================== -->
+
+                <div
+                    class="
+                        ap-bulk-payment-section
+                        mt-3
+                    "
+                >
+
+                    <div class="ap-bulk-payment-section-header">
+
+                        <div>
+
+                            <div class="ap-bulk-payment-section-title">
+
+                                Outstanding Invoices
+
+                            </div>
+
+
+                            <div class="ap-bulk-payment-section-subtitle">
+
+                                Select one or more invoices to allocate
+                                this payment
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             SELECT ALL
+                        =========================================== -->
+
+                        <div
+                            class="
+                                form-check
+                                ap-bulk-select-all-wrapper
+                            "
+                        >
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="ap-payment-select-all"
+                                disabled
+                            >
+
+
+                            <label
+                                class="
+                                    form-check-label
+                                    fw-semibold
+                                "
+                                for="ap-payment-select-all"
+                            >
+
+                                Select All
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         EMPTY / INFO STATE
+                    =================================================== -->
+
+                    <div
+                        id="ap-payment-invoice-empty"
+                        class="ap-bulk-payment-empty"
+                    >
+
+                        <div class="ap-bulk-payment-empty-icon">
+
+                            <i
+                                class="
+                                    fa-solid
+                                    fa-file-invoice-dollar
+                                "
+                            ></i>
+
+                        </div>
+
+
+                        <div class="fw-semibold">
+
+                            Select Vendor
+
+                        </div>
+
+
+                        <div
+                            class="
+                                small
+                                text-muted
+                                mt-1
+                            "
+                        >
+
+                            Outstanding invoices will appear here
+                            after a vendor is selected.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         LOADING STATE
+                    =================================================== -->
+
+                    <div
+                        id="ap-payment-invoice-loading"
+                        class="
+                            ap-bulk-payment-empty
+                            d-none
+                        "
+                    >
+
+                        <div
+                            class="
+                                spinner-border
+                                spinner-border-sm
+                                mb-2
+                            "
+                            role="status"
+                        >
+                        </div>
+
+
+                        <div class="small text-muted">
+
+                            Loading outstanding invoices...
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         INVOICE TABLE
+                    =================================================== -->
+
+                    <div
+                        id="ap-payment-invoice-table-wrapper"
+                        class="
+                            ap-bulk-invoice-table-wrapper
+                            d-none
+                        "
+                    >
+
+                        <div class="table-responsive">
+
+                            <table
+                                class="
+                                    table
+                                    table-hover
+                                    align-middle
+                                    mb-0
+                                    ap-bulk-invoice-table
+                                "
+                            >
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th
+                                            class="
+                                                text-center
+                                                ap-bulk-col-check
+                                            "
+                                        >
+
+                                            <i
+                                                class="
+                                                    fa-solid
+                                                    fa-check
+                                                "
+                                            ></i>
+
+                                        </th>
+
+
+                                        <th>
+                                            Invoice
+                                        </th>
+
+
+                                        <th>
+                                            Invoice Date
+                                        </th>
+
+
+                                        <th>
+                                            Due Date
+                                        </th>
+
+
+                                        <th class="text-end">
+                                            Total
+                                        </th>
+
+
+                                        <th class="text-end">
+                                            Paid
+                                        </th>
+
+
+                                        <th class="text-end">
+                                            Outstanding
+                                        </th>
+
+
+                                        <th class="text-end">
+                                            Payment Amount
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody
+                                    id="ap-payment-invoice-body"
+                                >
+
+                                    <!--
+                                    ======================================
+                                    ROWS GENERATED BY JS
+                                    TAHAP 5
+                                    ======================================
+                                    -->
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     PAYMENT SUMMARY
+                =================================================== -->
+
+                <div
+                    class="
+                        ap-bulk-payment-section
+                        mt-3
+                    "
+                >
+
+                    <div class="ap-bulk-payment-section-header">
+
+                        <div>
+
+                            <div class="ap-bulk-payment-section-title">
+
+                                Payment Summary
+
+                            </div>
+
+
+                            <div class="ap-bulk-payment-section-subtitle">
+
+                                Summary of selected invoice allocations
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                        <!-- ==========================================
+                             SELECTED INVOICES
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <div class="ap-bulk-summary-card">
+
+                                <div class="ap-bulk-summary-label">
+
+                                    Selected Invoices
+
+                                </div>
+
+
+                                <div
+                                    class="ap-bulk-summary-value"
+                                    id="ap-payment-selected-count"
+                                >
+
+                                    0
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             SELECTED OUTSTANDING
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <div class="ap-bulk-summary-card">
+
+                                <div class="ap-bulk-summary-label">
+
+                                    Selected Outstanding
+
+                                </div>
+
+
+                                <div
+                                    class="ap-bulk-summary-value"
+                                    id="ap-payment-selected-outstanding"
+                                >
+
+                                    0
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             TOTAL PAYMENT
+                        =========================================== -->
+
+                        <div class="col-md-4">
+
+                            <div
+                                class="
+                                    ap-bulk-summary-card
+                                    ap-bulk-summary-card-total
+                                "
+                            >
+
+                                <div class="ap-bulk-summary-label">
+
+                                    Total Payment
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        ap-bulk-summary-value
+                                        ap-bulk-summary-total
+                                    "
+                                    id="ap-payment-total-allocation"
+                                >
+
+                                    0
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         VALIDATION MESSAGE
+                    =================================================== -->
+
+                    <div
+                        id="ap-payment-allocation-message"
+                        class="
+                            ap-bulk-payment-message
+                            d-none
+                        "
+                    >
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     JOURNAL PREVIEW
+                =================================================== -->
+
+                <div
+                    class="
+                        ap-payment-journal-preview
+                        mt-3
+                    "
+                >
+
+                    <div
+                        class="
+                            d-flex
+                            align-items-center
+                            gap-2
+                            mb-2
+                        "
+                    >
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-book
+                                text-primary
+                            "
+                        ></i>
+
+
+                        <div class="fw-semibold">
+
+                            Journal Preview
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="small text-muted">
+
+                        One GL Journal will be generated for this
+                        payment batch.
+
+                    </div>
+
+
+                    <div
+                        class="
+                            ap-bulk-journal-line
+                            mt-2
+                        "
+                    >
+
+                        <span>
+
+                            Debit
+
+                        </span>
+
+
+                        <strong>
+
+                            Hutang Usaha
+
+                        </strong>
+
+
+                        <span
+                            id="ap-payment-preview-debit"
+                            class="ms-auto"
+                        >
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="ap-bulk-journal-line">
+
+                        <span>
+
+                            Credit
+
+                        </span>
+
+
+                        <strong>
+
+                            Bank
+
+                        </strong>
+
+
+                        <span
+                            id="ap-payment-preview-credit"
+                            class="ms-auto"
+                        >
+
+                            0
+
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            small
+                            text-muted
+                            mt-2
+                        "
+                    >
+
+                        Detailed DPP / Tax (+) / Tax (-) journal
+                        allocation will continue to follow FINOVA AP
+                        Payment accounting logic.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 FOOTER
+            =================================================== -->
+
+            <div class="modal-footer">
+
+
+                <div
+                    class="
+                        me-auto
+                        small
+                        text-muted
+                    "
+                >
+
+                    <i
+                        class="
+                            fa-solid
+                            fa-circle-info
+                            me-1
+                        "
+                    ></i>
+
+                    One bank transaction can settle multiple invoices.
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal"
+                >
+
+                    Cancel
+
+                </button>
+
+
+                <!--
+                ==================================================
+                KEEP SAME ID FOR JS COMPATIBILITY.
+
+                DISABLED UNTIL TAHAP 5 JS IS CONNECTED.
+                ==================================================
+                -->
+
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    id="btn-save-ap-payment"
+                >
+
+                    <i
+                        class="
+                            fa-solid
+                            fa-money-bill-wave
+                            me-1
+                        "
+                    ></i>
+
+                    Save Payment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

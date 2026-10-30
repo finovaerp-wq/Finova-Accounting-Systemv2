@@ -1,0 +1,7 @@
+{
+    "liveServer.settings.port": 5502,
+    "deno.enable": false,
+    "deno.enablePaths": [
+        "FINOVA-PRODUCTION PHASE IV/supabase/functions"
+    ]
+}

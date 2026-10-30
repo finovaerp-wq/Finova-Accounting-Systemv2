@@ -1,0 +1,5460 @@
+/*
+======================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : TAX MASTER
+======================================================
+*/
+
+import { applyMasterViewOnlyForStaff } from "../../service/master-view-access.js";
+import {
+    TaxService
+} from "../../service/tax-service.js";
+
+import {
+    supabase,
+    TABLE
+} from "../../assets/js/core/supabase.js";
+import {
+    ExcelExportService
+} from "../../service/excel-export.service.js";
+
+import {
+    PreviewService
+} from "../../service/preview.service.js";
+
+
+/*
+======================================================
+TAX MASTER
+======================================================
+*/
+
+export class Tax {
+
+    constructor() {
+
+        console.log(
+            "Tax module constructor..."
+        );
+
+        /*
+        ==============================================
+        SERVICE
+        ==============================================
+        */
+
+        this.service =
+            new TaxService();
+
+
+        /*
+        ==============================================
+        DATA
+        ==============================================
+        */
+
+        this.taxes = [];
+
+        this.currentTax = null;
+
+        this.currentTaxId = null;
+
+
+        /*
+        ==============================================
+        MODE
+        ==============================================
+        */
+
+        this.currentMode = "add";
+
+
+       /*
+======================================================
+PAGINATION
+======================================================
+*/
+
+this.currentPage = 1;
+
+this.pageSize = 10;
+
+
+        /*
+        ==============================================
+        FILTER
+        ==============================================
+        */
+
+        this.keyword = "";
+
+        this.taxType = "";
+
+        this.status = "";
+
+/*
+==============================================
+INITIALIZE
+==============================================
+*/
+
+this.init();
+
+}
+
+
+    /*
+======================================================
+CACHE DOM
+======================================================
+*/
+
+cacheDOM() {
+
+    /*
+    ==================================================
+    TABLE
+    ==================================================
+    */
+
+    this.tableBody =
+        document.getElementById(
+            "tax-table-body"
+        );
+
+
+    /*
+    ==================================================
+    FILTER
+    ==================================================
+    */
+
+    this.keywordInput =
+        document.getElementById(
+            "tax-filter-keyword"
+        );
+
+    this.typeFilter =
+        document.getElementById(
+            "tax-filter-type"
+        );
+
+    this.statusFilter =
+        document.getElementById(
+            "tax-filter-status"
+        );
+
+
+    /*
+    ==================================================
+    HEADER BUTTON
+    ==================================================
+    */
+
+    this.btnAdd =
+        document.getElementById(
+            "btn-add-tax"
+        );
+
+    this.btnExport =
+        document.getElementById(
+            "btn-export-tax"
+        );
+
+    this.btnPreview =
+        document.getElementById(
+            "btn-preview-tax"
+        );
+
+    this.btnRefresh =
+        document.getElementById(
+            "btn-refresh-tax"
+        );
+
+
+    /*
+    ==================================================
+    PAGINATION
+    ==================================================
+    */
+
+    this.btnFirst =
+        document.getElementById(
+            "tax-pagination-first"
+        );
+
+    this.btnPrev =
+        document.getElementById(
+            "tax-pagination-prev"
+        );
+
+    this.btnNext =
+        document.getElementById(
+            "tax-pagination-next"
+        );
+
+    this.btnLast =
+        document.getElementById(
+            "tax-pagination-last"
+        );
+
+    this.txtPage =
+        document.getElementById(
+            "tax-pagination-page-input"
+        );
+
+    this.lblTotalPages =
+        document.getElementById(
+            "tax-pagination-total-pages"
+        );
+
+    this.lblPaginationInfo =
+        document.getElementById(
+            "tax-pagination-info"
+        );
+
+
+    /*
+    ==================================================
+    MODAL
+    ==================================================
+    */
+
+    this.taxModal =
+        document.getElementById(
+            "taxModal"
+        );
+
+    this.taxForm =
+        document.getElementById(
+            "tax-form"
+        );
+
+    this.taxId =
+        document.getElementById(
+            "tax-form-id"
+        );
+
+    this.taxCode =
+        document.getElementById(
+            "tax-form-code"
+        );
+
+    this.taxName =
+        document.getElementById(
+            "tax-form-name"
+        );
+
+    this.taxTypeInput =
+        document.getElementById(
+            "tax-form-type"
+        );
+
+    this.taxRate =
+        document.getElementById(
+            "tax-form-rate"
+        );
+
+    this.taxAccount =
+        document.getElementById(
+            "tax-form-account"
+        );
+
+    this.offsetAccount =
+        document.getElementById(
+            "tax-form-offset-account"
+        );
+
+    this.taxAccountSearch = document.getElementById("tax-form-account-search");
+    this.taxAccountResults = document.getElementById("tax-form-account-results");
+    this.offsetAccountSearch = document.getElementById("tax-form-offset-account-search");
+    this.offsetAccountResults = document.getElementById("tax-form-offset-account-results");
+
+    this.description =
+        document.getElementById(
+            "tax-form-description"
+        );
+
+    this.statusInput =
+        document.getElementById(
+            "tax-form-status"
+        );
+
+    this.btnSave =
+        document.getElementById(
+            "btn-save-tax"
+        );
+
+    this.modalTitle =
+        document.getElementById(
+            "taxModalLabel"
+        );
+
+    /* ==================================================
+   ACTION CONFIRMATION MODAL
+================================================== */
+
+this.taxActionConfirmModal =
+    document.getElementById(
+        "taxActionConfirmModal"
+    );
+
+this.taxActionConfirmIcon =
+    document.getElementById(
+        "tax-action-confirm-icon"
+    );
+
+this.taxActionConfirmLargeIcon =
+    document.getElementById(
+        "tax-action-confirm-large-icon"
+    );
+
+this.taxActionConfirmMessage =
+    document.getElementById(
+        "tax-action-confirm-message"
+    );
+
+this.taxActionConfirmDetail =
+    document.getElementById(
+        "tax-action-confirm-detail"
+    );
+
+this.btnConfirmTaxAction =
+    document.getElementById(
+        "btn-confirm-tax-action"
+    );
+
+this.pendingTaxAction =
+    null;
+
+this.pendingTaxId =
+    null;
+
+}
+    /*
+======================================================
+INIT
+======================================================
+*/
+
+async init() {
+
+    try {
+
+        console.log(
+            "Tax Master initializing..."
+        );
+
+
+        /*
+        ==================================================
+        CACHE DOM FIRST
+        ==================================================
+        */
+
+        this.cacheDOM();
+
+        await applyMasterViewOnlyForStaff("Tax Master", ["btn-add-tax"]);
+
+
+        /*
+        ==================================================
+        BIND EVENTS
+        ==================================================
+        */
+
+        this.bindEvents();
+
+
+        /*
+        ==================================================
+        LOAD COA
+        ==================================================
+        */
+
+        await this.loadCOA();
+
+
+        /*
+        ==================================================
+        LOAD DATA
+        ==================================================
+        */
+
+        await this.loadData(
+            true,
+            true
+        );
+
+
+        console.log(
+            "Tax Master initialized."
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Tax.init:",
+            error
+        );
+
+
+        this.showError(
+            error?.message
+            ||
+            "Failed to initialize Tax Master."
+        );
+
+    }
+
+}
+
+
+    /*
+======================================================
+BIND EVENTS
+======================================================
+*/
+
+bindEvents() {
+
+    /*
+    ==================================================
+    ADD
+    ==================================================
+    */
+
+    this.btnAdd?.addEventListener(
+        "click",
+        () => {
+
+            this.openAddModal();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    REALTIME SEARCH
+    ==================================================
+    */
+
+    this.keywordInput?.addEventListener(
+        "input",
+        () => {
+
+            this.search();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    TYPE FILTER
+    ==================================================
+    */
+
+    this.typeFilter?.addEventListener(
+        "change",
+        () => {
+
+            this.search();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    STATUS FILTER
+    ==================================================
+    */
+
+    this.statusFilter?.addEventListener(
+        "change",
+        () => {
+
+            this.search();
+
+        }
+    );
+
+
+    /*
+==================================================
+REFRESH
+==================================================
+*/
+
+this.btnRefresh?.addEventListener(
+    "click",
+    () => {
+
+        this.refresh();
+
+    }
+);
+
+
+    /*
+    ==================================================
+    EXPORT
+    ==================================================
+    */
+
+    this.btnExport?.addEventListener(
+        "click",
+        () => {
+
+            this.exportExcel();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    PREVIEW
+    ==================================================
+    */
+
+    this.btnPreview?.addEventListener(
+        "click",
+        () => {
+
+            this.preview();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    SAVE
+    ==================================================
+    */
+
+    this.btnSave?.addEventListener(
+        "click",
+        () => {
+
+            this.save();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    TABLE ACTION
+    ==================================================
+    */
+
+    this.tableBody?.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "[data-tax-action]"
+                );
+
+            if (!button) {
+
+                return;
+
+            }
+
+            const action =
+                button.dataset.taxAction;
+
+            const id =
+                button.dataset.taxId;
+
+            this.handleAction(
+                action,
+                id
+            );
+
+        }
+    );
+
+        /* ==================================================
+   CONFIRM TAX ACTION
+================================================== */
+
+this.btnConfirmTaxAction?.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            !this.pendingTaxAction
+            ||
+            !this.pendingTaxId
+        ) {
+
+            return;
+
+        }
+
+        const action =
+            this.pendingTaxAction;
+
+        const id =
+            this.pendingTaxId;
+
+
+        /*
+        ==========================================
+        CLOSE CONFIRMATION MODAL
+        ==========================================
+        */
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                this.taxActionConfirmModal
+            );
+
+        modal?.hide();
+
+
+        /*
+        ==========================================
+        CLEAR STATE
+        ==========================================
+        */
+
+        this.pendingTaxAction =
+            null;
+
+        this.pendingTaxId =
+            null;
+
+
+        /*
+        ==========================================
+        EXECUTE ACTION
+        ==========================================
+        */
+
+        if (
+            action === "active"
+        ) {
+
+            await this.changeTaxStatus(
+                id,
+                true
+            );
+
+        }
+
+        else if (
+            action === "inactive"
+        ) {
+
+            await this.changeTaxStatus(
+                id,
+                false
+            );
+
+        }
+
+        else if (
+            action === "delete"
+        ) {
+
+            await this.deleteTax(
+                id
+            );
+
+        }
+
+    }
+);
+    /*
+    ==================================================
+    PAGINATION FIRST
+    ==================================================
+    */
+
+    this.btnFirst?.addEventListener(
+        "click",
+        () => {
+
+            this.currentPage = 1;
+
+            this.render();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    PAGINATION PREVIOUS
+    ==================================================
+    */
+
+    this.btnPrev?.addEventListener(
+        "click",
+        () => {
+
+            if (
+                this.currentPage > 1
+            ) {
+
+                this.currentPage--;
+
+                this.render();
+
+            }
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    PAGINATION NEXT
+    ==================================================
+    */
+
+    this.btnNext?.addEventListener(
+        "click",
+        () => {
+
+            const totalPages =
+                this.getTotalPages();
+
+            if (
+                this.currentPage <
+                totalPages
+            ) {
+
+                this.currentPage++;
+
+                this.render();
+
+            }
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    PAGINATION LAST
+    ==================================================
+    */
+
+    this.btnLast?.addEventListener(
+        "click",
+        () => {
+
+            this.currentPage =
+                this.getTotalPages();
+
+            this.render();
+
+        }
+    );
+
+
+    /*
+    ==================================================
+    PAGE INPUT
+    ==================================================
+    */
+
+    this.txtPage?.addEventListener(
+        "change",
+        () => {
+
+            const totalPages =
+                this.getTotalPages();
+
+            let page =
+                parseInt(
+                    this.txtPage.value,
+                    10
+                );
+
+            if (
+                Number.isNaN(page)
+            ) {
+
+                page = 1;
+
+            }
+
+            page =
+                Math.min(
+                    Math.max(
+                        page,
+                        1
+                    ),
+                    totalPages
+                );
+
+            this.currentPage =
+                page;
+
+            this.render();
+
+        }
+    );
+
+
+    this.bindCOASearch(this.taxAccountSearch, this.taxAccount, this.taxAccountResults, true);
+    this.bindCOASearch(this.offsetAccountSearch, this.offsetAccount, this.offsetAccountResults, false);
+
+}
+/*
+======================================================
+GET TOTAL PAGES
+======================================================
+*/
+
+getTotalPages() {
+
+    const totalRecords =
+        this.getFilteredData().length;
+
+    return Math.max(
+        1,
+        Math.ceil(
+            totalRecords /
+            this.pageSize
+        )
+    );
+
+}
+
+
+   /*
+======================================================
+LOAD DATA
+======================================================
+*/
+
+async loadData(
+    resetPage = true,
+    showLoading = true
+) {
+
+    try {
+
+        /*
+        ==================================================
+        RE-CACHE ACTIVE TABLE BODY
+        ==================================================
+        */
+
+        const activeTableBody =
+            document.getElementById(
+                "tax-table-body"
+            );
+
+
+        if (
+            activeTableBody
+        ) {
+
+            this.tableBody =
+                activeTableBody;
+
+        }
+
+
+        /*
+        ==================================================
+        TABLE BODY NOT FOUND
+        ==================================================
+        */
+
+        if (
+            !this.tableBody
+        ) {
+
+            console.warn(
+                "Tax.loadData: active table body not found."
+            );
+
+            return;
+
+        }
+
+
+        /*
+        ==================================================
+        LOADING
+        ONLY INITIAL LOAD / REFRESH
+        SAME AS ACCOUNT PAYABLE
+        ==================================================
+        */
+
+        if (
+            showLoading
+            &&
+            this.tableBody
+        ) {
+
+            this.tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="text-center py-5"
+                    >
+
+                        <div
+                            class="
+                                d-flex
+                                flex-column
+                                align-items-center
+                                justify-content-center
+                                gap-2
+                            "
+                        >
+
+                            <div
+                                class="
+                                    spinner-border
+                                    spinner-border-sm
+                                    text-primary
+                                "
+                                role="status"
+                            >
+
+                                <span
+                                    class="visually-hidden"
+                                >
+                                    Loading...
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    text-muted
+                                    small
+                                "
+                            >
+
+                                Loading Tax Master...
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+            /*
+==================================================
+ALLOW BROWSER TO PAINT LOADING STATE
+BEFORE DATABASE REQUEST
+==================================================
+*/
+
+await new Promise(
+    resolve => {
+
+        requestAnimationFrame(
+            () => {
+
+                requestAnimationFrame(
+                    resolve
+                );
+
+            }
+        );
+
+    }
+);
+
+        }
+
+
+        /*
+        ==================================================
+        LOAD TAX MASTER
+        ==================================================
+        */
+
+        const data =
+            await this.service.getAll();
+
+
+        /*
+        ==================================================
+        NORMALIZE DATA
+        ==================================================
+        */
+
+        this.taxes =
+            Array.isArray(
+                data
+            )
+                ? data
+                : [];
+
+
+        /*
+        ==================================================
+        RESET PAGE
+        ==================================================
+        */
+
+        if (
+            resetPage
+        ) {
+
+            this.currentPage = 1;
+
+        }
+
+
+        /*
+        ==================================================
+        RENDER
+        ==================================================
+        */
+
+        this.render();
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Tax.loadData:",
+            error
+        );
+
+
+        /*
+        ==================================================
+        SHOW LOAD ERROR
+        ==================================================
+        */
+
+        if (
+            this.tableBody
+        ) {
+
+            this.tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="text-center py-5 text-danger"
+                    >
+
+                        Failed to load Tax Master.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        throw error;
+
+    }
+
+}
+
+    /*
+    ==================================================
+    SEARCH
+    ==================================================
+    */
+
+    search() {
+
+        this.keyword =
+            this.keywordInput?.value
+            ?.trim()
+            .toLowerCase()
+            || "";
+
+
+        this.taxType =
+            this.typeFilter?.value
+            || "";
+
+
+        this.status =
+            this.statusFilter?.value
+            || "";
+
+
+        this.currentPage =
+            1;
+
+
+        this.render();
+
+    }
+
+
+    /*
+    ==================================================
+    GET FILTERED DATA
+    ==================================================
+    */
+
+    getFilteredData() {
+
+        return this.taxes.filter(
+            tax => {
+
+                /*
+                ======================================
+                KEYWORD
+                ======================================
+                */
+
+                if (
+                    this.keyword
+                ) {
+
+                    const text =
+                        [
+                            tax.tax_code,
+                            tax.tax_name,
+                            tax.description
+                        ]
+                        .join(" ")
+                        .toLowerCase();
+
+
+                    if (
+                        !text.includes(
+                            this.keyword
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                /*
+                ======================================
+                TYPE
+                ======================================
+                */
+
+                if (
+                    this.taxType
+                    &&
+                    tax.tax_type
+                    !==
+                    this.taxType
+                ) {
+
+                    return false;
+
+                }
+
+
+                /*
+                ======================================
+                STATUS
+                ======================================
+                */
+
+                if (
+                    this.status !== ""
+                    &&
+                    String(
+                        tax.is_active
+                    )
+                    !==
+                    this.status
+                ) {
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            }
+        );
+
+    }
+
+
+    /*
+======================================================
+RENDER
+======================================================
+*/
+
+render() {
+
+    if (!this.tableBody) {
+
+        return;
+
+    }
+
+
+    const filtered =
+        this.getFilteredData();
+
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                filtered.length /
+                this.pageSize
+            )
+        );
+
+
+    /*
+    ==================================================
+    KEEP PAGE VALID
+    ==================================================
+    */
+
+    if (
+        this.currentPage >
+        totalPages
+    ) {
+
+        this.currentPage =
+            totalPages;
+
+    }
+
+
+    const start =
+        (
+            this.currentPage - 1
+        )
+        *
+        this.pageSize;
+
+
+    const end =
+        start +
+        this.pageSize;
+
+
+    const rows =
+        filtered.slice(
+            start,
+            end
+        );
+
+
+    /*
+    ==================================================
+    EMPTY
+    ==================================================
+    */
+
+    if (!rows.length) {
+
+        this.tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="9">
+
+                    <div class="finova-empty">
+
+                        <i class="fas fa-folder-open"></i>
+
+                        <h5>
+                            No Tax Data Found
+                        </h5>
+
+                        <p>
+                            Click
+                            <strong>Add Tax</strong>
+                            to create your first Tax.
+                        </p>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        this.updatePagination(
+            filtered.length
+        );
+
+        return;
+
+    }
+
+
+    /*
+    ==================================================
+    ROWS
+    ==================================================
+    */
+
+    this.tableBody.innerHTML =
+        rows.map(
+            (tax, index) => {
+
+                const number =
+                    start +
+                    index +
+                    1;
+
+
+                /*
+                ==========================================
+                TYPE
+                ==========================================
+                */
+
+                const typeBadge =
+                    tax.tax_type
+                    ===
+                    "PLUS"
+
+                        ? `
+                            <span class="badge bg-success">
+                                PLUS
+                            </span>
+                          `
+
+                        : `
+                            <span class="badge bg-warning text-dark">
+                                MINUS
+                            </span>
+                          `;
+
+
+                /*
+                ==========================================
+                STATUS
+                ==========================================
+                */
+
+                const statusBadge =
+    tax.is_active
+
+        ? `
+            <span class="tax-status-badge tax-status-active">
+                <i class="fa-solid fa-circle-check"></i>
+                Active
+            </span>
+          `
+
+        : `
+            <span class="tax-status-badge tax-status-inactive">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Inactive
+            </span>
+          `;
+                /*
+==========================================
+STATUS ACTION
+==========================================
+*/
+
+const statusAction =
+    tax.is_active
+
+        ? `
+            <button
+                type="button"
+                class="tax-action-btn tax-action-inactive"
+                title="Set Inactive"
+                data-tax-action="inactive"
+                data-tax-id="${tax.id}">
+
+                <i class="fa-solid fa-ban"></i>
+
+            </button>
+          `
+
+        : `
+            <button
+                type="button"
+                class="tax-action-btn tax-action-active"
+                title="Set Active"
+                data-tax-action="active"
+                data-tax-id="${tax.id}">
+
+                <i class="fa-solid fa-check"></i>
+
+            </button>
+          `;
+                /*
+                ==========================================
+                TAX ACCOUNT
+                ==========================================
+                */
+
+                const taxAccount =
+                    tax.tax_account
+
+                        ? `
+                            ${tax.tax_account.account_code}
+                            -
+                            ${tax.tax_account.account_name}
+                          `
+
+                        : "-";
+
+
+                /*
+                ==========================================
+                OFFSET ACCOUNT
+                ==========================================
+                */
+
+                const offsetAccount =
+                    tax.offset_account
+
+                        ? `
+                            ${tax.offset_account.account_code}
+                            -
+                            ${tax.offset_account.account_name}
+                          `
+
+                        : "-";
+
+
+                return `
+
+                    <tr>
+
+                        <td class="text-center">
+
+                            ${number}
+
+                        </td>
+
+
+                        <td>
+
+                            ${tax.tax_code || "-"}
+
+                        </td>
+
+
+                        <td>
+
+                            ${tax.tax_name || "-"}
+
+                        </td>
+
+
+                        <td class="text-center">
+
+                            ${typeBadge}
+
+                        </td>
+
+
+                        <td class="text-end">
+
+                            ${this.formatRate(
+                                tax.rate
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${taxAccount}
+
+                        </td>
+
+
+                        <td>
+
+                            ${offsetAccount}
+
+                        </td>
+
+
+                        <td class="text-center">
+
+                            ${statusBadge}
+
+                        </td>
+
+
+                        <td class="text-center">
+
+    <div class="tax-action-group">
+
+        <!-- EDIT -->
+
+        <button
+            type="button"
+            class="tax-action-btn tax-action-edit"
+            title="Edit"
+            data-tax-action="edit"
+            data-tax-id="${tax.id}">
+
+            <i class="fa-solid fa-pen"></i>
+
+        </button>
+
+
+        <!-- ACTIVE / INACTIVE -->
+
+        ${statusAction}
+
+
+        <!-- DELETE -->
+
+        <button
+            type="button"
+            class="tax-action-btn tax-action-delete"
+            title="Delete"
+            data-tax-action="delete"
+            data-tax-id="${tax.id}">
+
+            <i class="fa-solid fa-trash"></i>
+
+        </button>
+
+    </div>
+
+</td>
+
+                    </tr>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+    this.updatePagination(
+        filtered.length
+    );
+
+}
+    /*
+======================================================
+UPDATE PAGINATION
+======================================================
+*/
+
+updatePagination(
+    totalRecords
+) {
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                totalRecords /
+                this.pageSize
+            )
+        );
+
+
+    /*
+    ==================================================
+    CURRENT PAGE
+    ==================================================
+    */
+
+    if (
+        this.currentPage >
+        totalPages
+    ) {
+
+        this.currentPage =
+            totalPages;
+
+    }
+
+
+    /*
+    ==================================================
+    PAGE INPUT
+    ==================================================
+    */
+
+    if (this.txtPage) {
+
+        this.txtPage.value =
+            this.currentPage;
+
+        this.txtPage.max =
+            totalPages;
+
+    }
+
+
+    /*
+    ==================================================
+    TOTAL PAGE
+    ==================================================
+    */
+
+    if (
+        this.lblTotalPages
+    ) {
+
+        this.lblTotalPages.textContent =
+            totalPages;
+
+    }
+
+
+    /*
+    ==================================================
+    RECORD RANGE
+    ==================================================
+    */
+
+    const startRecord =
+        totalRecords === 0
+
+            ? 0
+
+            : (
+                (
+                    this.currentPage - 1
+                )
+                *
+                this.pageSize
+            )
+            +
+            1;
+
+
+    const endRecord =
+        totalRecords === 0
+
+            ? 0
+
+            : Math.min(
+                this.currentPage *
+                this.pageSize,
+                totalRecords
+            );
+
+
+    /*
+    ==================================================
+    RECORD INFO
+    ==================================================
+    */
+
+    if (
+        this.lblPaginationInfo
+    ) {
+
+        this.lblPaginationInfo.textContent =
+            `Displaying Record ${startRecord} - ${endRecord} of ${totalRecords}`;
+
+    }
+
+
+    /*
+    ==================================================
+    BUTTON STATE
+    ==================================================
+    */
+
+    const isFirst =
+        this.currentPage <= 1;
+
+    const isLast =
+        this.currentPage >=
+        totalPages;
+
+
+    if (this.btnFirst) {
+
+        this.btnFirst.disabled =
+            isFirst;
+
+    }
+
+
+    if (this.btnPrev) {
+
+        this.btnPrev.disabled =
+            isFirst;
+
+    }
+
+
+    if (this.btnNext) {
+
+        this.btnNext.disabled =
+            isLast;
+
+    }
+
+
+    if (this.btnLast) {
+
+        this.btnLast.disabled =
+            isLast;
+
+    }
+
+}
+/*
+======================================================
+PREVIEW TAX MASTER
+
+FINAL :
+- NEW TAB
+- TAHOMA FONT
+- LONG TEXT NO WRAP
+- FIXED HORIZONTAL SCROLLBAR
+- SCROLLBAR ALWAYS AVAILABLE AT BOTTOM OF BROWSER
+- SYNCHRONIZED WITH TABLE
+======================================================
+*/
+
+preview() {
+
+    try {
+
+        /*
+        ==================================================
+        FILTERED DATA
+        ==================================================
+        */
+
+        const taxes =
+            this.getFilteredData();
+
+
+        /*
+        ==================================================
+        VALIDATE DATA
+        ==================================================
+        */
+
+        if (
+            !Array.isArray(taxes)
+            ||
+            taxes.length === 0
+        ) {
+
+            this.showError(
+                "No Tax data available to preview."
+            );
+
+            return;
+
+        }
+
+
+        /*
+        ==================================================
+        OPEN NEW TAB
+        ==================================================
+        */
+
+        const previewWindow =
+            window.open(
+                "",
+                "_blank"
+            );
+
+
+        if (
+            !previewWindow
+        ) {
+
+            this.showError(
+                "Preview tab was blocked by the browser."
+            );
+
+            return;
+
+        }
+
+
+        /*
+        ==================================================
+        PREVIEW DATE
+        ==================================================
+        */
+
+        const previewDate =
+            new Date()
+                .toLocaleString(
+                    "id-ID"
+                );
+
+
+        /*
+        ==================================================
+        ESCAPE HTML
+        ==================================================
+        */
+
+        const escapeHTML =
+            value => {
+
+                return String(
+                    value ?? ""
+                )
+                    .replaceAll(
+                        "&",
+                        "&amp;"
+                    )
+                    .replaceAll(
+                        "<",
+                        "&lt;"
+                    )
+                    .replaceAll(
+                        ">",
+                        "&gt;"
+                    )
+                    .replaceAll(
+                        '"',
+                        "&quot;"
+                    )
+                    .replaceAll(
+                        "'",
+                        "&#039;"
+                    );
+
+            };
+
+
+        /*
+        ==================================================
+        ROWS
+        ==================================================
+        */
+
+        const rows =
+            taxes
+                .map(
+                    (
+                        tax,
+                        index
+                    ) => {
+
+                        /*
+                        ======================================
+                        TAX ACCOUNT
+                        ======================================
+                        */
+
+                        const taxAccount =
+                            tax.tax_account
+
+                                ? `${
+                                    tax.tax_account.account_code
+                                } - ${
+                                    tax.tax_account.account_name
+                                }`
+
+                                : "-";
+
+
+                        /*
+                        ======================================
+                        OFFSET ACCOUNT
+                        ======================================
+                        */
+
+                        const offsetAccount =
+                            tax.offset_account
+
+                                ? `${
+                                    tax.offset_account.account_code
+                                } - ${
+                                    tax.offset_account.account_name
+                                }`
+
+                                : "-";
+
+
+                        /*
+                        ======================================
+                        STATUS
+                        ======================================
+                        */
+
+                        const status =
+                            tax.is_active
+                                ? "Active"
+                                : "Inactive";
+
+
+                        /*
+                        ======================================
+                        RETURN ROW
+                        ======================================
+                        */
+
+                        return `
+
+                            <tr>
+
+                                <td class="center">
+
+                                    ${index + 1}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${
+                                        escapeHTML(
+                                            tax.tax_code
+                                            ||
+                                            "-"
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    ${
+                                        escapeHTML(
+                                            tax.tax_name
+                                            ||
+                                            "-"
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td class="center">
+
+                                    ${
+                                        escapeHTML(
+                                            tax.tax_type
+                                            ||
+                                            "-"
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td class="right">
+
+                                    ${
+                                        escapeHTML(
+                                            this.formatRate(
+                                                tax.rate
+                                            )
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    ${
+                                        escapeHTML(
+                                            taxAccount
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    ${
+                                        escapeHTML(
+                                            offsetAccount
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td class="description">
+
+                                    ${
+                                        escapeHTML(
+                                            tax.description
+                                            ||
+                                            "-"
+                                        )
+                                    }
+
+                                </td>
+
+
+                                <td class="center">
+
+                                    ${
+                                        escapeHTML(
+                                            status
+                                        )
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+
+        /*
+        ==================================================
+        HTML
+        ==================================================
+        */
+
+        const html = `
+
+            <!DOCTYPE html>
+
+            <html lang="id">
+
+            <head>
+
+                <meta charset="UTF-8">
+
+                <meta
+                    name="viewport"
+                    content="
+                        width=device-width,
+                        initial-scale=1.0
+                    "
+                >
+
+
+                <title>
+                    Tax Master - Preview
+                </title>
+
+
+                <style>
+
+                    /*
+                    ==========================================
+                    RESET
+                    ==========================================
+                    */
+
+                    * {
+
+                        box-sizing:
+                            border-box;
+
+                    }
+
+
+                    html,
+                    body {
+
+                        margin:
+                            0;
+
+                        padding:
+                            0;
+
+                        width:
+                            100%;
+
+                        min-height:
+                            100%;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    BODY
+                    ==========================================
+                    */
+
+                    body {
+
+                        padding:
+                            28px 32px 42px 32px;
+
+                        background:
+                            #ffffff;
+
+                        color:
+                            #1f2937;
+
+                        font-family:
+                            Tahoma,
+                            Arial,
+                            sans-serif;
+
+                        font-size:
+                            12px;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    REPORT
+                    ==========================================
+                    */
+
+                    .report {
+
+                        display:
+                            block;
+
+                        width:
+                            100%;
+
+                        max-width:
+                            100%;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    HEADER
+                    ==========================================
+                    */
+
+                    .report-header {
+
+                        width:
+                            100%;
+
+                        padding-bottom:
+                            16px;
+
+                        margin-bottom:
+                            20px;
+
+                        border-bottom:
+                            2px solid #244494;
+
+                    }
+
+
+                    .report-title {
+
+                        margin:
+                            0;
+
+                        font-size:
+                            22px;
+
+                        font-weight:
+                            700;
+
+                    }
+
+
+                    .report-subtitle {
+
+                        margin-top:
+                            6px;
+
+                        font-size:
+                            16px;
+
+                        font-weight:
+                            700;
+
+                        color:
+                            #244494;
+
+                    }
+
+
+                    .report-description {
+
+                        margin-top:
+                            5px;
+
+                        color:
+                            #6b7280;
+
+                    }
+
+
+                    .report-date {
+
+                        margin-top:
+                            6px;
+
+                        font-size:
+                            11px;
+
+                        color:
+                            #6b7280;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    TABLE CONTAINER
+                    ==========================================
+                    */
+
+                    .table-container {
+
+                        display:
+                            block;
+
+                        width:
+                            100%;
+
+                        max-width:
+                            100%;
+
+                        border:
+                            1px solid #d1d5db;
+
+                        border-radius:
+                            4px;
+
+                        overflow:
+                            hidden;
+
+                        background:
+                            #ffffff;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    TABLE WRAPPER
+                    NATIVE SCROLLBAR HIDDEN
+                    ==========================================
+                    */
+
+                    .table-wrapper {
+
+                        display:
+                            block;
+
+                        width:
+                            100%;
+
+                        max-width:
+                            100%;
+
+                        overflow-x:
+                            auto;
+
+                        overflow-y:
+                            visible;
+
+                        scrollbar-width:
+                            none;
+
+                    }
+
+
+                    .table-wrapper::-webkit-scrollbar {
+
+                        display:
+                            none;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    TABLE
+                    ==========================================
+                    */
+
+                    table {
+
+                        width:
+                            max-content;
+
+                        min-width:
+                            100%;
+
+                        margin:
+                            0;
+
+                        border-collapse:
+                            collapse;
+
+                        border-spacing:
+                            0;
+
+                        table-layout:
+                            auto;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    TABLE HEADER
+                    ==========================================
+                    */
+
+                    thead th {
+
+                        padding:
+                            10px 9px;
+
+                        background:
+                            #244494;
+
+                        color:
+                            #ffffff;
+
+                        border-right:
+                            1px solid #d1d5db;
+
+                        border-bottom:
+                            1px solid #d1d5db;
+
+                        font-size:
+                            11px;
+
+                        font-weight:
+                            700;
+
+                        text-align:
+                            center;
+
+                        vertical-align:
+                            middle;
+
+                        white-space:
+                            nowrap;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    TABLE BODY
+                    ==========================================
+                    */
+
+                    tbody td {
+
+                        padding:
+                            9px;
+
+                        border-right:
+                            1px solid #d1d5db;
+
+                        border-bottom:
+                            1px solid #d1d5db;
+
+                        vertical-align:
+                            middle;
+
+                        background:
+                            #ffffff;
+
+                        color:
+                            #1f2937;
+
+                        font-size:
+                            12px;
+
+                        font-weight:
+                            400;
+
+                        white-space:
+                            nowrap;
+
+                    }
+
+
+                    thead th:last-child,
+                    tbody td:last-child {
+
+                        border-right:
+                            0;
+
+                    }
+
+
+                    tbody tr:last-child td {
+
+                        border-bottom:
+                            0;
+
+                    }
+
+
+                    tbody tr:nth-child(even) td {
+
+                        background:
+                            #f8fafc;
+
+                    }
+
+
+                    tbody tr:hover td {
+
+                        background:
+                            #f1f5f9;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    ALIGNMENT
+                    ==========================================
+                    */
+
+                    .center {
+
+                        text-align:
+                            center;
+
+                    }
+
+
+                    .right {
+
+                        text-align:
+                            right;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    COLUMN WIDTH
+                    ==========================================
+                    */
+
+                    .col-no {
+
+                        width:
+                            45px;
+
+                        min-width:
+                            45px;
+
+                    }
+
+
+                    .col-code {
+
+                        min-width:
+                            130px;
+
+                    }
+
+
+                    .col-name {
+
+                        min-width:
+                            220px;
+
+                    }
+
+
+                    .col-type {
+
+                        min-width:
+                            100px;
+
+                    }
+
+
+                    .col-rate {
+
+                        min-width:
+                            100px;
+
+                    }
+
+
+                    .col-tax-account {
+
+                        min-width:
+                            300px;
+
+                    }
+
+
+                    .col-offset-account {
+
+                        min-width:
+                            300px;
+
+                    }
+
+
+                    .col-description {
+
+                        min-width:
+                            360px;
+
+                    }
+
+
+                    .col-status {
+
+                        min-width:
+                            100px;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    DESCRIPTION
+                    ==========================================
+                    */
+
+                    .description {
+
+                        min-width:
+                            360px;
+
+                        text-align:
+                            left;
+
+                        white-space:
+                            nowrap;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    FOOTER
+                    ==========================================
+                    */
+
+                    .report-footer {
+
+                        display:
+                            flex;
+
+                        justify-content:
+                            space-between;
+
+                        align-items:
+                            center;
+
+                        width:
+                            100%;
+
+                        margin-top:
+                            18px;
+
+                        padding-top:
+                            12px;
+
+                        border-top:
+                            1px solid #e5e7eb;
+
+                        color:
+                            #6b7280;
+
+                        font-size:
+                            11px;
+
+                        white-space:
+                            nowrap;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    FIXED BOTTOM SCROLLBAR
+                    ==========================================
+                    */
+
+                    .fixed-horizontal-scroll {
+
+                        position:
+                            fixed;
+
+                        left:
+                            0;
+
+                        right:
+                            0;
+
+                        bottom:
+                            0;
+
+                        z-index:
+                            99999;
+
+                        width:
+                            100%;
+
+                        height:
+                            22px;
+
+                        padding:
+                            0 32px;
+
+                        overflow:
+                            hidden;
+
+                        background:
+                            #f8fafc;
+
+                        border-top:
+                            1px solid #d1d5db;
+
+                        box-shadow:
+                            0 -2px 6px
+                            rgba(
+                                0,
+                                0,
+                                0,
+                                0.08
+                            );
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    FIXED SCROLL INNER
+                    ==========================================
+                    */
+
+                    .fixed-horizontal-scroll-inner {
+
+                        width:
+                            100%;
+
+                        height:
+                            21px;
+
+                        overflow-x:
+                            auto;
+
+                        overflow-y:
+                            hidden;
+
+                        scrollbar-width:
+                            auto;
+
+                        scrollbar-color:
+                            #9aa5b3
+                            #eef1f4;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    SCROLL WIDTH CONTENT
+                    ==========================================
+                    */
+
+                    .fixed-horizontal-scroll-content {
+
+                        width:
+                            100%;
+
+                        height:
+                            1px;
+
+                        min-height:
+                            1px;
+
+                    }
+
+
+                    /*
+                    ==========================================
+                    CHROME / EDGE SCROLLBAR
+                    ==========================================
+                    */
+
+                    .fixed-horizontal-scroll-inner::-webkit-scrollbar {
+
+                        height:
+                            16px;
+
+                    }
+
+
+                    .fixed-horizontal-scroll-inner::-webkit-scrollbar-track {
+
+                        background:
+                            #eef1f4;
+
+                    }
+
+
+                    .fixed-horizontal-scroll-inner::-webkit-scrollbar-thumb {
+
+                        background:
+                            #9aa5b3;
+
+                        border-radius:
+                            10px;
+
+                        border:
+                            3px solid #eef1f4;
+
+                    }
+
+
+                    .fixed-horizontal-scroll-inner::-webkit-scrollbar-thumb:hover {
+
+                        background:
+                            #7e8997;
+
+                    }
+
+                </style>
+
+            </head>
+
+
+            <body>
+
+
+                <div class="report">
+
+
+                    <!-- ==================================
+                         HEADER
+                    =================================== -->
+
+                    <div class="report-header">
+
+                        <h1 class="report-title">
+
+                            FINOVA ACCOUNTING SYSTEM
+
+                        </h1>
+
+
+                        <div class="report-subtitle">
+
+                            Tax Master
+
+                        </div>
+
+
+                        <div class="report-description">
+
+                            Tax Master Data
+
+                        </div>
+
+
+                        <div class="report-date">
+
+                            Preview Date :
+                            ${previewDate}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         TABLE
+                    =================================== -->
+
+                    <div class="table-container">
+
+
+                        <div
+                            class="table-wrapper"
+                            id="tax-table-scroll"
+                        >
+
+
+                            <table
+                                id="tax-preview-table"
+                            >
+
+
+                                <colgroup>
+
+                                    <col class="col-no">
+
+                                    <col class="col-code">
+
+                                    <col class="col-name">
+
+                                    <col class="col-type">
+
+                                    <col class="col-rate">
+
+                                    <col class="col-tax-account">
+
+                                    <col class="col-offset-account">
+
+                                    <col class="col-description">
+
+                                    <col class="col-status">
+
+                                </colgroup>
+
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            No
+                                        </th>
+
+                                        <th>
+                                            Tax Code
+                                        </th>
+
+                                        <th>
+                                            Tax Name
+                                        </th>
+
+                                        <th>
+                                            Type
+                                        </th>
+
+                                        <th>
+                                            Rate
+                                        </th>
+
+                                        <th>
+                                            Tax Account
+                                        </th>
+
+                                        <th>
+                                            Offset Account
+                                        </th>
+
+                                        <th>
+                                            Description
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    ${rows}
+
+                                </tbody>
+
+
+                            </table>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ==================================
+                         FOOTER
+                    =================================== -->
+
+                    <div class="report-footer">
+
+                        <div>
+
+                            Total Record :
+                            ${taxes.length}
+
+                        </div>
+
+
+                        <div>
+
+                            Generated by FINOVA Accounting System
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ==================================
+                     FIXED BOTTOM SCROLLBAR
+                =================================== -->
+
+                <div
+                    class="fixed-horizontal-scroll"
+                    id="tax-fixed-scroll-container"
+                >
+
+                    <div
+                        class="fixed-horizontal-scroll-inner"
+                        id="tax-fixed-scroll"
+                    >
+
+                        <div
+                            class="fixed-horizontal-scroll-content"
+                            id="tax-fixed-scroll-content"
+                        >
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </body>
+
+            </html>
+
+        `;
+
+
+        /*
+        ==================================================
+        WRITE NEW TAB
+        ==================================================
+        */
+
+        previewWindow.document.open();
+
+        previewWindow.document.write(
+            html
+        );
+
+        previewWindow.document.close();
+
+
+        /*
+        ==================================================
+        TAB TITLE
+        ==================================================
+        */
+
+        previewWindow.document.title =
+            "Tax Master - Preview";
+
+
+        /*
+        ==================================================
+        SETUP FIXED BOTTOM SCROLLBAR
+        ==================================================
+        */
+
+        const setupScrollSync = () => {
+
+            const doc =
+                previewWindow.document;
+
+
+            /*
+            ==============================================
+            ELEMENTS
+            ==============================================
+            */
+
+            const tableScroll =
+                doc.getElementById(
+                    "tax-table-scroll"
+                );
+
+
+            const table =
+                doc.getElementById(
+                    "tax-preview-table"
+                );
+
+
+            const fixedScrollContainer =
+                doc.getElementById(
+                    "tax-fixed-scroll-container"
+                );
+
+
+            const fixedScroll =
+                doc.getElementById(
+                    "tax-fixed-scroll"
+                );
+
+
+            const fixedScrollContent =
+                doc.getElementById(
+                    "tax-fixed-scroll-content"
+                );
+
+
+            /*
+            ==============================================
+            VALIDATE
+            ==============================================
+            */
+
+            if (
+                !tableScroll
+                ||
+                !table
+                ||
+                !fixedScrollContainer
+                ||
+                !fixedScroll
+                ||
+                !fixedScrollContent
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+            ==============================================
+            UPDATE SCROLL WIDTH
+            ==============================================
+            */
+
+            const updateScrollWidth = () => {
+
+                const tableWidth =
+                    Math.max(
+                        table.scrollWidth,
+                        table.offsetWidth
+                    );
+
+
+                fixedScrollContent.style.width =
+                    `${tableWidth}px`;
+
+
+                /*
+                ==========================================
+                SHOW SCROLLBAR ONLY IF REQUIRED
+                ==========================================
+                */
+
+                if (
+                    tableWidth <=
+                    tableScroll.clientWidth
+                ) {
+
+                    fixedScrollContainer.style.display =
+                        "none";
+
+                }
+
+                else {
+
+                    fixedScrollContainer.style.display =
+                        "block";
+
+                }
+
+            };
+
+
+            /*
+            ==============================================
+            SYNC STATE
+            ==============================================
+            */
+
+            let syncingFixed =
+                false;
+
+            let syncingTable =
+                false;
+
+
+            /*
+            ==============================================
+            FIXED SCROLL -> TABLE
+            ==============================================
+            */
+
+            fixedScroll.addEventListener(
+                "scroll",
+                () => {
+
+                    if (
+                        syncingTable
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    syncingFixed =
+                        true;
+
+
+                    tableScroll.scrollLeft =
+                        fixedScroll.scrollLeft;
+
+
+                    requestAnimationFrame(
+                        () => {
+
+                            syncingFixed =
+                                false;
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /*
+            ==============================================
+            TABLE -> FIXED SCROLL
+            ==============================================
+            */
+
+            tableScroll.addEventListener(
+                "scroll",
+                () => {
+
+                    if (
+                        syncingFixed
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    syncingTable =
+                        true;
+
+
+                    fixedScroll.scrollLeft =
+                        tableScroll.scrollLeft;
+
+
+                    requestAnimationFrame(
+                        () => {
+
+                            syncingTable =
+                                false;
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /*
+            ==============================================
+            INITIAL WIDTH
+            ==============================================
+            */
+
+            updateScrollWidth();
+
+
+            requestAnimationFrame(
+                () => {
+
+                    updateScrollWidth();
+
+                }
+            );
+
+
+            /*
+            ==============================================
+            WINDOW RESIZE
+            ==============================================
+            */
+
+            previewWindow.addEventListener(
+                "resize",
+                updateScrollWidth
+            );
+
+
+            /*
+            ==============================================
+            RESIZE OBSERVER
+            ==============================================
+            */
+
+            if (
+                typeof previewWindow.ResizeObserver
+                !==
+                "undefined"
+            ) {
+
+                const resizeObserver =
+                    new previewWindow.ResizeObserver(
+                        () => {
+
+                            updateScrollWidth();
+
+                        }
+                    );
+
+
+                resizeObserver.observe(
+                    table
+                );
+
+
+                resizeObserver.observe(
+                    tableScroll
+                );
+
+            }
+
+        };
+
+
+        /*
+        ==================================================
+        RUN SCROLL SETUP
+        ==================================================
+        */
+
+        if (
+            previewWindow.document.readyState ===
+            "complete"
+        ) {
+
+            setupScrollSync();
+
+        }
+
+        else {
+
+            previewWindow.addEventListener(
+                "load",
+                setupScrollSync,
+                {
+                    once:
+                        true
+                }
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        FOCUS
+        ==================================================
+        */
+
+        previewWindow.focus();
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Tax.preview:",
+            error
+        );
+
+
+        this.showError(
+            error?.message
+            ||
+            "Preview Tax Master failed."
+        );
+
+    }
+
+}
+/*
+======================================================
+EXPORT EXCEL
+======================================================
+*/
+
+exportExcel() {
+
+    try {
+
+        const taxes =
+            this.getFilteredData();
+
+
+        if (!taxes.length) {
+
+            this.showError(
+                "No data available to export."
+            );
+
+            return;
+
+        }
+
+
+        const data =
+            taxes.map(
+                tax => ({
+
+                    "Tax Code":
+                        tax.tax_code || "",
+
+                    "Tax Name":
+                        tax.tax_name || "",
+
+                    "Tax Type":
+                        tax.tax_type || "",
+
+                    "Tax Rate (%)":
+                        Number(
+                            tax.rate || 0
+                        ),
+
+                    "Tax Account":
+                        tax.tax_account
+                            ? `${tax.tax_account.account_code} - ${tax.tax_account.account_name}`
+                            : "",
+
+                    "Offset Account":
+                        tax.offset_account
+                            ? `${tax.offset_account.account_code} - ${tax.offset_account.account_name}`
+                            : "",
+
+                    "Description":
+                        tax.description || "",
+
+                    "Status":
+                        tax.is_active
+                            ? "Active"
+                            : "Inactive"
+
+                })
+            );
+
+
+        ExcelExportService.export(
+
+            data,
+
+            "Tax Master",
+
+            "Tax Master"
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Tax.exportExcel:",
+            error
+        );
+
+        this.showError(
+            "Export Excel failed."
+        );
+
+    }
+
+}
+
+    /*
+    ==================================================
+    OPEN ADD MODAL
+    ==================================================
+    */
+
+    openAddModal() {
+
+        this.currentMode =
+            "add";
+
+
+        this.currentTaxId =
+            null;
+
+
+        this.currentTax =
+            null;
+
+
+        this.resetForm();
+
+
+        if (this.modalTitle) {
+
+            this.modalTitle.textContent =
+                "Add Tax";
+
+        }
+
+
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                this.taxModal
+            );
+
+
+        modal.show();
+
+    }
+
+
+    /*
+    ==================================================
+    OPEN EDIT MODAL
+    ==================================================
+    */
+
+    async openEditModal(id) {
+
+        try {
+
+            const tax =
+                await this.service.getById(
+                    id
+                );
+
+
+            if (!tax) {
+
+                throw new Error(
+                    "Tax not found."
+                );
+
+            }
+
+
+            this.currentMode =
+                "edit";
+
+
+            this.currentTaxId =
+                id;
+
+
+            this.currentTax =
+                tax;
+
+
+            this.fillForm(
+                tax
+            );
+
+
+            if (this.modalTitle) {
+
+                this.modalTitle.textContent =
+                    "Edit Tax";
+
+            }
+
+
+            const modal =
+                bootstrap.Modal.getOrCreateInstance(
+                    this.taxModal
+                );
+
+
+            modal.show();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Tax.openEditModal:",
+                error
+            );
+
+            this.showError(
+                error.message
+                ||
+                "Failed to open Tax."
+            );
+
+        }
+
+    }
+
+
+    /*
+    ==================================================
+    FILL FORM
+    ==================================================
+    */
+
+    fillForm(
+        tax
+    ) {
+
+        if (this.taxId) {
+
+            this.taxId.value =
+                tax.id
+                || "";
+
+        }
+
+
+        if (this.taxCode) {
+
+            this.taxCode.value =
+                tax.tax_code
+                || "";
+
+        }
+
+
+        if (this.taxName) {
+
+            this.taxName.value =
+                tax.tax_name
+                || "";
+
+        }
+
+
+        if (this.taxTypeInput) {
+
+            this.taxTypeInput.value =
+                tax.tax_type
+                || "";
+
+        }
+
+
+        if (this.taxRate) {
+
+            this.taxRate.value =
+                tax.rate
+                ?? "";
+
+        }
+
+
+        if (this.taxAccount) {
+
+            this.taxAccount.value =
+                tax.tax_account_id
+                || "";
+
+        }
+
+
+        if (this.offsetAccount) {
+
+            this.offsetAccount.value =
+                tax.offset_account_id
+                || "";
+
+        }
+
+        this.syncCOASearchDisplay();
+
+
+        if (this.description) {
+
+            this.description.value =
+                tax.description
+                || "";
+
+        }
+
+
+        if (this.statusInput) {
+
+            this.statusInput.checked =
+                Boolean(
+                    tax.is_active
+                );
+
+        }
+
+    }
+
+
+    /*
+    ==================================================
+    RESET FORM
+    ==================================================
+    */
+
+    resetForm() {
+
+        this.taxForm?.reset();
+
+
+        if (this.taxId) {
+
+            this.taxId.value =
+                "";
+
+        }
+
+
+        if (this.statusInput) {
+
+            this.statusInput.checked =
+                true;
+
+        }
+
+        if (this.taxAccount) this.taxAccount.value = "";
+        if (this.offsetAccount) this.offsetAccount.value = "";
+        if (this.taxAccountSearch) this.taxAccountSearch.value = "";
+        if (this.offsetAccountSearch) this.offsetAccountSearch.value = "";
+        this.hideCOAResults();
+
+    }
+
+
+   /*
+======================================================
+SAVE TAX
+======================================================
+*/
+
+async save() {
+
+    try {
+
+        /*
+        ==================================================
+        CHECK AUTH SESSION
+        ==================================================
+        */
+
+        const {
+            data: {
+                session
+            },
+            error: sessionError
+        } =
+            await supabase.auth.getSession();
+
+
+        if (sessionError) {
+
+            throw sessionError;
+
+        }
+
+
+        if (
+            !session
+            ||
+            !session.user
+        ) {
+
+            throw new Error(
+                "User session not found. Please login again."
+            );
+
+        }
+
+
+        console.log(
+            "TAX AUTH USER:",
+            session.user
+        );
+
+
+        console.log(
+            "TAX AUTH ROLE:",
+            session.user.role
+            || "authenticated"
+        );
+
+
+        /*
+        ==================================================
+        TAX TYPE
+        ==================================================
+        */
+
+        const taxType =
+            String(
+                this.taxTypeInput?.value
+                || ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        /*
+        ==================================================
+        TAX CODE
+        ==================================================
+        */
+
+        const taxCode =
+            String(
+                this.taxCode?.value
+                || ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        if (!taxCode) {
+
+            throw new Error(
+                "Tax Code is required."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        TAX NAME
+        ==================================================
+        */
+
+        const taxName =
+            String(
+                this.taxName?.value
+                || ""
+            )
+            .trim();
+
+
+        if (!taxName) {
+
+            throw new Error(
+                "Tax Name is required."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        TAX TYPE VALIDATION
+        ==================================================
+        */
+
+        if (
+            ![
+                "PLUS",
+                "MINUS"
+            ].includes(
+                taxType
+            )
+        ) {
+
+            throw new Error(
+                "Please select Tax Type PLUS or MINUS."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        TAX RATE
+        ==================================================
+        */
+
+        const taxRate =
+            Number(
+                this.taxRate?.value
+                || 0
+            );
+
+
+        if (
+            Number.isNaN(
+                taxRate
+            )
+            ||
+            taxRate < 0
+            ||
+            taxRate > 100
+        ) {
+
+            throw new Error(
+                "Tax Rate must be between 0 and 100."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        TAX ACCOUNT
+        REQUIRED
+        ==================================================
+        */
+
+        const taxAccountId =
+            String(
+                this.taxAccount?.value
+                || ""
+            )
+            .trim();
+
+
+        if (!taxAccountId) {
+
+            throw new Error(
+                "Tax Account is required."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        OFFSET ACCOUNT
+        OPTIONAL
+        ==================================================
+        */
+
+        const offsetAccountId =
+            String(
+                this.offsetAccount?.value
+                || ""
+            )
+            .trim();
+
+
+        /*
+        ==================================================
+        DESCRIPTION
+        ==================================================
+        */
+
+        const description =
+            String(
+                this.description?.value
+                || ""
+            )
+            .trim();
+
+
+        /*
+        ==================================================
+        PAYLOAD
+        ==================================================
+        */
+
+        const payload = {
+
+            tax_code:
+                taxCode,
+
+            tax_name:
+                taxName,
+
+            tax_type:
+                taxType,
+
+            rate:
+                taxRate,
+
+            tax_account_id:
+                taxAccountId,
+
+            offset_account_id:
+                offsetAccountId
+                    || null,
+
+            description:
+                description
+                    || null,
+
+            is_active:
+                this.statusInput
+                    ? this.statusInput.checked
+                    : true
+
+        };
+
+
+        /*
+        ==================================================
+        DEBUG
+        ==================================================
+        */
+
+        console.log(
+            "Tax.save payload:",
+            payload
+        );
+
+
+        /*
+        ==================================================
+        UPDATE
+        ==================================================
+        */
+
+        if (
+            this.currentMode
+            ===
+            "edit"
+        ) {
+
+            await this.service.update(
+
+                this.currentTaxId,
+
+                payload
+
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        CREATE
+        ==================================================
+        */
+
+        else {
+
+            await this.service.create(
+                payload
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        CLOSE MODAL
+        ==================================================
+        */
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                this.taxModal
+            );
+
+
+        modal?.hide();
+
+
+        /*
+        ==================================================
+        RELOAD DATA
+        ==================================================
+        */
+
+        await this.loadData(
+            false
+        );
+
+
+        /*
+        ==================================================
+        SUCCESS
+        ==================================================
+        */
+
+        this.showSuccess(
+
+            this.currentMode
+            ===
+            "edit"
+
+                ? "Tax updated successfully."
+
+                : "Tax created successfully."
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Tax.save:",
+            error
+        );
+
+
+        this.showError(
+
+            error.message
+            ||
+            "Failed to save Tax."
+
+        );
+
+    }
+
+}
+
+
+    /*
+======================================================
+HANDLE ACTION
+======================================================
+*/
+
+handleAction(
+    action,
+    id
+) {
+
+    switch (
+        action
+    ) {
+
+        /* ==========================================
+           EDIT
+        ========================================== */
+
+        case "edit":
+
+            this.openEditModal(
+                id
+            );
+
+            break;
+
+
+        /* ==========================================
+           ACTIVE
+        ========================================== */
+
+        case "active":
+
+            this.showTaxActionConfirmation(
+                "active",
+                id
+            );
+
+            break;
+
+
+        /* ==========================================
+           INACTIVE
+        ========================================== */
+
+        case "inactive":
+
+            this.showTaxActionConfirmation(
+                "inactive",
+                id
+            );
+
+            break;
+
+
+        /* ==========================================
+           DELETE
+        ========================================== */
+
+        case "delete":
+
+            this.showTaxActionConfirmation(
+                "delete",
+                id
+            );
+
+            break;
+
+    }
+
+}
+/*
+======================================================
+SHOW TAX ACTION CONFIRMATION
+======================================================
+*/
+
+showTaxActionConfirmation(
+    action,
+    id
+) {
+
+    const tax =
+        this.taxes.find(
+            item =>
+                String(item.id)
+                ===
+                String(id)
+        );
+
+
+    if (
+        !tax
+    ) {
+
+        this.showError(
+            "Tax not found."
+        );
+
+        return;
+
+    }
+
+
+    this.pendingTaxAction =
+        action;
+
+    this.pendingTaxId =
+        id;
+
+
+    /*
+    ==================================================
+    DEFAULT
+    ==================================================
+    */
+
+    let title =
+        "Confirm Action";
+
+    let message =
+        "Are you sure?";
+
+    let detail =
+        "";
+
+    let buttonText =
+        "Confirm";
+
+    let headerIcon =
+        "fa-solid fa-circle-question";
+
+    let largeIcon =
+        "fa-solid fa-circle-question";
+
+    let theme =
+        "text-primary";
+
+    let buttonClass =
+        "btn-primary";
+
+
+    /*
+    ==================================================
+    ACTIVE
+    ==================================================
+    */
+
+    if (
+        action === "active"
+    ) {
+
+        title =
+            "Activate Tax";
+
+        message =
+            "Activate this Tax?";
+
+        detail =
+            `${tax.tax_code || "-"} - ${tax.tax_name || "-"}`;
+
+        buttonText =
+            "Activate";
+
+        headerIcon =
+            "fa-solid fa-circle-check";
+
+        largeIcon =
+            "fa-solid fa-circle-check";
+
+        theme =
+            "text-success";
+
+        buttonClass =
+            "btn-success";
+
+    }
+
+
+    /*
+    ==================================================
+    INACTIVE
+    ==================================================
+    */
+
+    else if (
+        action === "inactive"
+    ) {
+
+        title =
+            "Set Tax Inactive";
+
+        message =
+            "Set this Tax to Inactive?";
+
+        detail =
+            `${tax.tax_code || "-"} - ${tax.tax_name || "-"}`;
+
+        buttonText =
+            "Set Inactive";
+
+        headerIcon =
+            "fa-solid fa-circle-xmark";
+
+        largeIcon =
+            "fa-solid fa-circle-xmark";
+
+        theme =
+            "text-warning";
+
+        buttonClass =
+            "btn-warning";
+
+    }
+
+
+    /*
+    ==================================================
+    DELETE
+    ==================================================
+    */
+
+    else if (
+        action === "delete"
+    ) {
+
+        title =
+            "Delete Tax";
+
+        message =
+            "Delete this Tax?";
+
+        detail =
+            `${tax.tax_code || "-"} - ${tax.tax_name || "-"}`;
+
+        buttonText =
+            "Delete";
+
+        headerIcon =
+            "fa-solid fa-trash";
+
+        largeIcon =
+            "fa-solid fa-trash";
+
+        theme =
+            "text-danger";
+
+        buttonClass =
+            "btn-danger";
+
+    }
+
+
+    /*
+    ==================================================
+    TITLE
+    ==================================================
+    */
+
+    document.getElementById(
+        "taxActionConfirmModalLabel"
+    ).textContent =
+        title;
+
+
+    /*
+    ==================================================
+    MESSAGE
+    ==================================================
+    */
+
+    if (
+        this.taxActionConfirmMessage
+    ) {
+
+        this.taxActionConfirmMessage
+            .textContent =
+            message;
+
+    }
+
+
+    /*
+    ==================================================
+    DETAIL
+    ==================================================
+    */
+
+    if (
+        this.taxActionConfirmDetail
+    ) {
+
+        this.taxActionConfirmDetail
+            .textContent =
+            detail;
+
+    }
+
+
+    /*
+    ==================================================
+    ICON
+    ==================================================
+    */
+
+    if (
+        this.taxActionConfirmIcon
+    ) {
+
+        this.taxActionConfirmIcon.className =
+            `${headerIcon} ${theme} me-2`;
+
+    }
+
+
+    if (
+        this.taxActionConfirmLargeIcon
+    ) {
+
+        this.taxActionConfirmLargeIcon.className =
+            `${largeIcon} ${theme}`;
+
+    }
+
+
+    /*
+    ==================================================
+    BUTTON
+    ==================================================
+    */
+
+    if (
+        this.btnConfirmTaxAction
+    ) {
+
+        this.btnConfirmTaxAction
+            .className =
+            `btn ${buttonClass}`;
+
+        this.btnConfirmTaxAction
+            .innerHTML = `
+
+                <i
+                    class="${largeIcon} me-1">
+                </i>
+
+                ${buttonText}
+
+            `;
+
+    }
+
+
+    /*
+    ==================================================
+    SHOW MODAL
+    ==================================================
+    */
+
+    const modal =
+        bootstrap.Modal.getOrCreateInstance(
+            this.taxActionConfirmModal
+        );
+
+
+    modal.show();
+
+}
+/*
+======================================================
+CHANGE TAX STATUS
+======================================================
+*/
+
+async changeTaxStatus(
+    id,
+    newStatus
+) {
+
+    try {
+
+        /*
+        ==================================================
+        FIND TAX
+        ==================================================
+        */
+
+        const tax =
+            this.taxes.find(
+                item =>
+                    String(
+                        item.id
+                    )
+                    ===
+                    String(
+                        id
+                    )
+            );
+
+
+        if (
+            !tax
+        ) {
+
+            throw new Error(
+                "Tax not found."
+            );
+
+        }
+
+
+        /*
+        ==================================================
+        VALIDATE CURRENT STATUS
+        ==================================================
+        */
+
+        if (
+            Boolean(
+                tax.is_active
+            )
+            ===
+            Boolean(
+                newStatus
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+        ==================================================
+        UPDATE STATUS
+        ==================================================
+        */
+
+        await this.service.update(
+            id,
+            {
+                is_active:
+                    Boolean(
+                        newStatus
+                    )
+            }
+        );
+
+
+        /*
+        ==================================================
+        RELOAD DATA
+        ==================================================
+        */
+
+        await this.loadData(
+            false,
+            false
+        );
+
+
+        /*
+        ==================================================
+        SUCCESS
+        ==================================================
+        */
+
+        this.showSuccess(
+
+            newStatus
+
+                ? "Tax activated successfully."
+
+                : "Tax deactivated successfully."
+
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Tax.changeTaxStatus:",
+            error
+        );
+
+
+        this.showError(
+            error?.message
+            ||
+            "Failed to change Tax status."
+        );
+
+    }
+
+}
+
+
+    /*
+    ==================================================
+    DELETE
+    ==================================================
+    */
+
+    async deleteTax(id) {
+
+        try {
+
+            const tax =
+                this.taxes.find(
+                    item =>
+                        String(
+                            item.id
+                        )
+                        ===
+                        String(id)
+                );
+
+
+            if (!tax) {
+
+                throw new Error(
+                    "Tax not found."
+                );
+
+            }
+
+
+            
+
+
+            await this.service.delete(
+                id
+            );
+
+
+            await this.loadData(false);
+
+
+            this.showSuccess(
+                "Tax deleted successfully."
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Tax.deleteTax:",
+                error
+            );
+
+            this.showError(
+                error.message
+                ||
+                "Failed to delete Tax."
+            );
+
+        }
+
+    }
+
+
+    /*
+    ==================================================
+    LOAD COA
+    ==================================================
+    */
+
+    async loadCOA() {
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabase
+
+                .from(
+                    TABLE.CHART_OF_ACCOUNTS
+                )
+
+                .select(`
+                    id,
+                    account_code,
+                    account_name,
+                    status,
+                    allow_transaction
+                `)
+
+                .eq(
+                    "status",
+                    true
+                )
+
+                .eq(
+                    "allow_transaction",
+                    true
+                )
+
+                .order(
+                    "account_code",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            const accounts =
+                data || [];
+
+
+            this.populateCOA(
+                accounts
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Tax.loadCOA:",
+                error
+            );
+
+            throw error;
+
+        }
+
+    }
+
+
+    /*
+    ==================================================
+    POPULATE COA
+    ==================================================
+    */
+
+    populateCOA(
+        accounts
+    ) {
+
+        this.coaAccounts = Array.isArray(accounts) ? accounts : [];
+        this.syncCOASearchDisplay();
+
+    }
+
+    getCOALabel(account) {
+        if (!account) return "";
+        return `${account.account_code || ""} :: ${account.account_name || ""}`.trim();
+    }
+
+    syncCOASearchDisplay() {
+        const findById = id => this.coaAccounts?.find(account => String(account.id) === String(id));
+
+        if (this.taxAccountSearch) {
+            this.taxAccountSearch.value = this.getCOALabel(findById(this.taxAccount?.value));
+        }
+
+        if (this.offsetAccountSearch) {
+            this.offsetAccountSearch.value = this.getCOALabel(findById(this.offsetAccount?.value));
+        }
+    }
+
+    bindCOASearch(input, hidden, results, required = false) {
+        if (!input || !hidden || !results) return;
+
+        const render = () => {
+            const keyword = String(input.value || "").trim().toLowerCase();
+            const matches = (this.coaAccounts || []).filter(account => {
+                const text = `${account.account_code || ""} ${account.account_name || ""}`.toLowerCase();
+                return !keyword || text.includes(keyword);
+            }).slice(0, 50);
+
+            results.innerHTML = matches.length
+                ? matches.map(account => `
+                    <button type="button" class="list-group-item list-group-item-action"
+                        data-coa-id="${account.id}">
+                        <strong>${this.escapeHTML(account.account_code || "")}</strong>
+                        <span class="text-muted"> :: ${this.escapeHTML(account.account_name || "")}</span>
+                    </button>`).join("")
+                : `<div class="list-group-item text-muted">No account found.</div>`;
+
+            results.classList.remove("d-none");
+        };
+
+        input.addEventListener("focus", render);
+        input.addEventListener("input", () => {
+            hidden.value = "";
+            render();
+        });
+
+        results.addEventListener("click", event => {
+            const item = event.target.closest("[data-coa-id]");
+            if (!item) return;
+            const account = (this.coaAccounts || []).find(row => String(row.id) === String(item.dataset.coaId));
+            if (!account) return;
+            hidden.value = account.id;
+            input.value = this.getCOALabel(account);
+            results.classList.add("d-none");
+        });
+
+        input.addEventListener("blur", () => {
+            setTimeout(() => {
+                results.classList.add("d-none");
+                if (!hidden.value) {
+                    input.value = "";
+                } else {
+                    const account = (this.coaAccounts || []).find(row => String(row.id) === String(hidden.value));
+                    input.value = this.getCOALabel(account);
+                }
+            }, 150);
+        });
+    }
+
+    hideCOAResults() {
+        this.taxAccountResults?.classList.add("d-none");
+        this.offsetAccountResults?.classList.add("d-none");
+    }
+
+    escapeHTML(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+/*
+======================================================
+REFRESH
+WITH LOADING
+SAME AS ACCOUNT PAYABLE
+======================================================
+*/
+
+async refresh() {
+
+    try {
+
+        /*
+        ==================================================
+        RESET FILTER STATE
+        ==================================================
+        */
+
+        this.keyword = "";
+
+        this.taxType = "";
+
+        this.status = "";
+
+        this.currentPage = 1;
+
+
+        /*
+        ==================================================
+        RESET FILTER DOM
+        ==================================================
+        */
+
+        if (
+            this.keywordInput
+        ) {
+
+            this.keywordInput.value =
+                "";
+
+        }
+
+
+        if (
+            this.typeFilter
+        ) {
+
+            this.typeFilter.value =
+                "";
+
+        }
+
+
+        if (
+            this.statusFilter
+        ) {
+
+            this.statusFilter.value =
+                "";
+
+        }
+
+
+        /*
+        ==================================================
+        LOAD DATA
+        REFRESH = WITH TABLE LOADING
+        SAME AS ACCOUNT PAYABLE
+        ==================================================
+        */
+
+        await this.loadData(
+            true,
+            true
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Tax.refresh:",
+            error
+        );
+
+    }
+
+}
+/*
+======================================================
+FORMAT RATE
+======================================================
+*/
+
+formatRate(
+    rate
+) {
+
+    const value =
+        Number(
+            rate || 0
+        );
+
+
+    return `${value}%`;
+
+}
+
+    /*
+==========================================================
+SHOW SUCCESS
+BOOTSTRAP ALERT
+TAX MASTER
+SAME STYLE AS ACCOUNT PAYABLE
+==========================================================
+*/
+
+showSuccess(
+    message
+) {
+
+    /*
+    ==================================================
+    NORMALIZE MESSAGE
+    ==================================================
+    */
+
+    const successMessage =
+        message
+        ||
+        "Action completed successfully.";
+
+
+    /*
+    ==================================================
+    REMOVE EXISTING SUCCESS ALERT
+    ==================================================
+    */
+
+    const existingAlert =
+        document.getElementById(
+            "tax-bootstrap-success-alert"
+        );
+
+
+    if (
+        existingAlert
+    ) {
+
+        existingAlert.remove();
+
+    }
+
+
+    /*
+    ==================================================
+    CREATE BOOTSTRAP ALERT
+    ==================================================
+    */
+
+    const alertElement =
+        document.createElement(
+            "div"
+        );
+
+
+    alertElement.id =
+        "tax-bootstrap-success-alert";
+
+
+    alertElement.className = `
+        alert
+        alert-success
+        alert-dismissible
+        fade
+        show
+        d-flex
+        align-items-center
+        shadow-sm
+        mb-0
+    `;
+
+
+    alertElement.setAttribute(
+        "role",
+        "alert"
+    );
+
+
+    /*
+    ==================================================
+    ESCAPE MESSAGE
+    ==================================================
+    */
+
+    const safeMessage =
+        String(
+            successMessage
+        )
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+
+    /*
+    ==================================================
+    CONTENT
+    ==================================================
+    */
+
+    alertElement.innerHTML = `
+
+        <i
+            class="
+                fa-solid
+                fa-circle-check
+                me-2
+            ">
+        </i>
+
+        <div class="flex-grow-1">
+
+            ${safeMessage}
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close">
+        </button>
+
+    `;
+
+
+    /*
+    ==================================================
+    CHECK ACTIVE TAX MODAL
+    ==================================================
+    */
+
+    const modal =
+        document.getElementById(
+            "taxModal"
+        );
+
+
+    const modalIsVisible =
+        modal
+        &&
+        modal.classList.contains(
+            "show"
+        );
+
+
+    const modalBody =
+        modalIsVisible
+            ? modal.querySelector(
+                ".modal-body"
+            )
+            : null;
+
+
+    /*
+    ==================================================
+    SHOW INSIDE MODAL
+    ==================================================
+    */
+
+    if (
+        modalBody
+    ) {
+
+        modalBody.insertBefore(
+            alertElement,
+            modalBody.firstChild
+        );
+
+    }
+
+    else {
+
+        /*
+        ==============================================
+        PAGE LEVEL ALERT
+        ==============================================
+        */
+
+        alertElement.style.position =
+            "fixed";
+
+        alertElement.style.top =
+            "20px";
+
+        alertElement.style.left =
+            "50%";
+
+        alertElement.style.transform =
+            "translateX(-50%)";
+
+        alertElement.style.zIndex =
+            "99999";
+
+        alertElement.style.width =
+            "auto";
+
+        alertElement.style.minWidth =
+            "380px";
+
+        alertElement.style.maxWidth =
+            "90vw";
+
+
+        document.body.appendChild(
+            alertElement
+        );
+
+    }
+
+
+    /*
+    ==================================================
+    AUTO CLOSE
+    ==================================================
+    */
+
+    setTimeout(
+        () => {
+
+            const currentAlert =
+                document.getElementById(
+                    "tax-bootstrap-success-alert"
+                );
+
+
+            if (
+                !currentAlert
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                window.bootstrap
+                &&
+                bootstrap.Alert
+            ) {
+
+                bootstrap.Alert
+                    .getOrCreateInstance(
+                        currentAlert
+                    )
+                    .close();
+
+            }
+
+            else {
+
+                currentAlert.remove();
+
+            }
+
+        },
+
+        5000
+
+    );
+
+}
+
+
+    /*
+==========================================================
+SHOW ERROR
+BOOTSTRAP ALERT
+TAX MASTER
+SAME STYLE AS ACCOUNT PAYABLE
+==========================================================
+*/
+
+showError(
+    message
+) {
+
+    /*
+    ==================================================
+    NORMALIZE MESSAGE
+    ==================================================
+    */
+
+    const errorMessage =
+        message
+        ||
+        "An unexpected error occurred.";
+
+
+    /*
+    ==================================================
+    REMOVE EXISTING ERROR ALERT
+    ==================================================
+    */
+
+    const existingAlert =
+        document.getElementById(
+            "tax-bootstrap-error-alert"
+        );
+
+
+    if (
+        existingAlert
+    ) {
+
+        existingAlert.remove();
+
+    }
+
+
+    /*
+    ==================================================
+    CREATE BOOTSTRAP ALERT
+    ==================================================
+    */
+
+    const alertElement =
+        document.createElement(
+            "div"
+        );
+
+
+    alertElement.id =
+        "tax-bootstrap-error-alert";
+
+
+    alertElement.className = `
+        alert
+        alert-danger
+        alert-dismissible
+        fade
+        show
+        d-flex
+        align-items-center
+        shadow-sm
+        mb-0
+    `;
+
+
+    alertElement.setAttribute(
+        "role",
+        "alert"
+    );
+
+
+    /*
+    ==================================================
+    ESCAPE MESSAGE
+    ==================================================
+    */
+
+    const safeMessage =
+        String(
+            errorMessage
+        )
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+
+    /*
+    ==================================================
+    CONTENT
+    ==================================================
+    */
+
+    alertElement.innerHTML = `
+
+        <i
+            class="
+                fa-solid
+                fa-circle-exclamation
+                me-2
+            ">
+        </i>
+
+        <div class="flex-grow-1">
+
+            ${safeMessage}
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close">
+        </button>
+
+    `;
+
+
+    /*
+    ==================================================
+    CHECK ACTIVE TAX MODAL
+    ==================================================
+    */
+
+    const modal =
+        document.getElementById(
+            "taxModal"
+        );
+
+
+    const modalIsVisible =
+        modal
+        &&
+        modal.classList.contains(
+            "show"
+        );
+
+
+    const modalBody =
+        modalIsVisible
+            ? modal.querySelector(
+                ".modal-body"
+            )
+            : null;
+
+
+    /*
+    ==================================================
+    SHOW INSIDE ACTIVE MODAL
+    ==================================================
+    */
+
+    if (
+        modalBody
+    ) {
+
+        modalBody.insertBefore(
+            alertElement,
+            modalBody.firstChild
+        );
+
+    }
+
+    else {
+
+        /*
+        ==============================================
+        PAGE LEVEL ALERT
+        ==============================================
+        */
+
+        alertElement.style.position =
+            "fixed";
+
+        alertElement.style.top =
+            "20px";
+
+        alertElement.style.left =
+            "50%";
+
+        alertElement.style.transform =
+            "translateX(-50%)";
+
+        alertElement.style.zIndex =
+            "99999";
+
+        alertElement.style.width =
+            "auto";
+
+        alertElement.style.minWidth =
+            "380px";
+
+        alertElement.style.maxWidth =
+            "90vw";
+
+
+        document.body.appendChild(
+            alertElement
+        );
+
+    }
+
+
+    /*
+    ==================================================
+    AUTO CLOSE
+    ==================================================
+    */
+
+    setTimeout(
+        () => {
+
+            const currentAlert =
+                document.getElementById(
+                    "tax-bootstrap-error-alert"
+                );
+
+
+            if (
+                !currentAlert
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                window.bootstrap
+                &&
+                bootstrap.Alert
+            ) {
+
+                bootstrap.Alert
+                    .getOrCreateInstance(
+                        currentAlert
+                    )
+                    .close();
+
+            }
+
+            else {
+
+                currentAlert.remove();
+
+            }
+
+        },
+
+        5000
+
+    );
+
+}
+}

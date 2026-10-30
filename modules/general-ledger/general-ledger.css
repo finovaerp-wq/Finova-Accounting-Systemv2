@@ -1,0 +1,1140 @@
+/*
+==========================================================
+FINOVA ACCOUNTING SYSTEM
+MODULE : GENERAL LEDGER
+Version : 1.0 Enterprise
+
+VISUAL STANDARD
+- Account Payable
+- Aging Payable
+- General Journal
+==========================================================
+*/
+
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+.general-ledger-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.general-ledger-page
+> .finova-page-header {
+
+    width: 100%;
+
+    margin-bottom: 8px !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+}
+
+
+.general-ledger-page
+> .finova-page-header
+.finova-page-header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+}
+
+
+.general-ledger-page
+> .finova-page-header
+.finova-page-header-right
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    height: 38px;
+
+    min-height: 38px;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   FILTER CARD
+========================================================== */
+
+.general-ledger-page
+> .general-ledger-filter-card {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+}
+
+
+.general-ledger-filter-card
+> .finova-card-body {
+
+    width: 100%;
+
+    padding: 8px 20px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+.general-ledger-filter-card
+> .finova-card-body
+> .row {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box;
+
+    align-items: end !important;
+
+}
+
+
+.general-ledger-filter-card
+> .finova-card-body
+> .row
+> [class*="col-"] {
+
+    min-width: 0;
+
+    margin: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   FILTER LABEL
+========================================================== */
+
+.general-ledger-filter-card
+.form-label {
+
+    display: block;
+
+    margin-top: 0 !important;
+
+    margin-bottom: 6px !important;
+
+    color: #1F2937;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: left;
+
+}
+
+
+/* ==========================================================
+   FILTER CONTROL
+========================================================== */
+
+.general-ledger-filter-card
+.form-control,
+
+.general-ledger-filter-card
+.form-select {
+
+    width: 100%;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/* ==========================================================
+   INPUT GROUP
+========================================================== */
+
+.general-ledger-filter-card
+.input-group {
+
+    display: flex !important;
+
+    flex-wrap: nowrap !important;
+
+    align-items: stretch;
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+}
+
+
+.general-ledger-filter-card
+#general-ledger-keyword {
+
+    flex: 1 1 auto !important;
+
+    width: 1% !important;
+
+    min-width: 0 !important;
+
+    height: 46px !important;
+
+    border-top-right-radius: 0 !important;
+
+    border-bottom-right-radius: 0 !important;
+
+}
+
+
+.general-ledger-filter-card
+#btn-find-general-ledger {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    flex: 0 0 80px !important;
+
+    width: 80px !important;
+
+    min-width: 80px !important;
+
+    height: 46px !important;
+
+    padding: 0 12px !important;
+
+    white-space: nowrap;
+
+    border-top-left-radius: 0 !important;
+
+    border-bottom-left-radius: 0 !important;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.general-ledger-table-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+.general-ledger-table-card
+.finova-card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 0 !important;
+
+    overflow: hidden;
+
+}
+
+
+.general-ledger-table-card
+.finova-table-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE SCROLL
+========================================================== */
+
+.general-ledger-table-card
+.table-responsive {
+
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.general-ledger-table-card
+.finova-table {
+
+    width: 100%;
+
+    min-width: 1500px;
+
+    margin-bottom: 0;
+
+    vertical-align: middle;
+
+}
+
+
+.general-ledger-table-card
+.finova-table
+thead
+th {
+
+    font-weight: 700 !important;
+
+    color: #111827 !important;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+}
+
+
+.general-ledger-table-card
+.finova-table
+tbody
+td {
+
+    font-weight: 400 !important;
+
+    color: #1F2937 !important;
+
+    vertical-align: middle;
+
+}
+
+
+/* ==========================================================
+   TABLE FOOTER
+========================================================== */
+
+.general-ledger-table-card
+tfoot
+th,
+
+.general-ledger-table-card
+tfoot
+td {
+
+    position: sticky;
+
+    bottom: 0;
+
+    z-index: 4;
+
+    background: #F8FAFC;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   COLUMN WIDTH
+========================================================== */
+
+.glr-col-no {
+
+    width: 55px;
+
+    min-width: 55px;
+
+    max-width: 55px;
+
+}
+
+
+.glr-col-date {
+
+    width: 110px;
+
+    min-width: 110px;
+
+}
+
+
+.glr-col-journal {
+
+    width: 170px;
+
+    min-width: 170px;
+
+}
+
+
+.glr-col-account {
+
+    width: 130px;
+
+    min-width: 130px;
+
+}
+
+
+.glr-col-account-name {
+
+    width: 220px;
+
+    min-width: 220px;
+
+}
+
+
+.glr-col-bp {
+
+    width: 220px;
+
+    min-width: 220px;
+
+}
+
+
+.glr-col-description {
+
+    width: 320px;
+
+    min-width: 320px;
+
+}
+
+
+.glr-col-amount {
+
+    width: 130px;
+
+    min-width: 130px;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+.general-ledger-description {
+
+    white-space: normal !important;
+
+    word-break: break-word;
+
+    line-height: 1.45;
+
+}
+
+
+/* ==========================================================
+   AMOUNT
+========================================================== */
+
+.general-ledger-debit,
+
+.general-ledger-credit,
+
+.general-ledger-balance {
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+
+.general-ledger-table-card
+.finova-pagination-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    margin-top: auto;
+
+}
+
+
+.general-ledger-table-card
+.finova-pagination-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.general-ledger-table-card
+.finova-pagination-info {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-left: auto;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 991.98px) {
+
+    .general-ledger-page
+    > .finova-page-header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .general-ledger-page
+    > .finova-page-header
+    .finova-page-header-right {
+
+        flex-wrap: wrap;
+
+        justify-content: flex-start;
+
+    }
+
+
+    .general-ledger-filter-card
+    > .finova-card-body {
+
+        padding: 10px 14px !important;
+
+    }
+
+}
+
+
+@media (max-width: 767.98px) {
+
+    .general-ledger-table-card
+    .finova-pagination-wrapper {
+
+        flex-wrap: wrap;
+
+        gap: 8px;
+
+    }
+
+
+    .general-ledger-table-card
+    .finova-pagination-info {
+
+        width: 100%;
+
+        margin-left: 0;
+
+        justify-content: flex-end;
+
+    }
+
+}
+/* ==========================================================
+   GENERAL LEDGER
+   TOM SELECT COA
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper {
+
+    width: 100%;
+
+    min-width: 0;
+
+}
+
+
+/* ==========================================================
+   CONTROL
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper.single
+.ts-control {
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    padding: 0 38px 0 12px !important;
+
+    background-color: #FFFFFF;
+
+    border: 1px solid #DEE2E6;
+
+    border-radius: 6px;
+
+    box-shadow: none;
+
+    color: #212529;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    cursor: text;
+
+}
+
+
+/* ==========================================================
+   FOCUS
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper.focus
+.ts-control {
+
+    border-color: #86B7FE;
+
+    outline: 0;
+
+    box-shadow:
+        0 0 0 0.25rem
+        rgba(
+            13,
+            110,
+            253,
+            0.25
+        );
+
+}
+
+
+/* ==========================================================
+   SEARCH INPUT
+========================================================== */
+
+.general-ledger-filter-card
+.ts-control
+input {
+
+    width: auto !important;
+
+    min-width: 4px;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    outline: 0 !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+    color: #212529;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================================
+   PLACEHOLDER
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper
+.ts-control
+input::placeholder {
+
+    color: #6C757D;
+
+    opacity: 1;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown {
+
+    z-index: 1060;
+
+    margin-top: 4px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #D8DEE6;
+
+    border-radius: 6px;
+
+    box-shadow:
+        0 8px 20px
+        rgba(
+            15,
+            23,
+            42,
+            0.12
+        );
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN CONTENT
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown-content {
+
+    max-height: 300px;
+
+    overflow-y: auto;
+
+}
+
+
+/* ==========================================================
+   OPTION
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown
+.option {
+
+    padding: 0 !important;
+
+    cursor: pointer;
+
+}
+
+
+/* ==========================================================
+   ACTIVE OPTION
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown
+.option.active {
+
+    background: #F3F6FB;
+
+    color: #111827;
+
+}
+
+
+/* ==========================================================
+   COA OPTION
+========================================================== */
+
+.gl-coa-option {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    width: 100%;
+
+    padding: 9px 12px;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   CODE
+========================================================== */
+
+.gl-coa-code {
+
+    flex: 0 0 auto;
+
+    color: #1F2937;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   SEPARATOR
+========================================================== */
+
+.gl-coa-separator {
+
+    flex: 0 0 auto;
+
+    color: #9CA3AF;
+
+}
+
+
+/* ==========================================================
+   NAME
+========================================================== */
+
+.gl-coa-name {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: #374151;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   SELECTED
+========================================================== */
+
+.gl-coa-selected {
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    color: #212529;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN ARROW
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper.single
+.ts-control::after {
+
+    right: 13px;
+
+}
+/* ==========================================================
+   GENERAL LEDGER
+   TOM SELECT FIX
+========================================================== */
+
+.general-ledger-filter-card {
+
+    overflow: visible !important;
+
+}
+
+
+.general-ledger-filter-card
+.finova-card-body {
+
+    overflow: visible !important;
+
+}
+
+
+.general-ledger-filter-card
+.row {
+
+    overflow: visible !important;
+
+}
+
+
+.general-ledger-filter-card
+[class*="col-"] {
+
+    overflow: visible !important;
+
+}
+
+
+/* ==========================================================
+   TOM SELECT WRAPPER
+========================================================== */
+
+.general-ledger-filter-card
+.ts-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    z-index: 20;
+
+}
+
+
+/* ==========================================================
+   CONTROL
+========================================================== */
+
+.general-ledger-filter-card
+.ts-control {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    height: 46px !important;
+
+    min-height: 46px !important;
+
+    padding: 0 38px 0 12px !important;
+
+    background: #FFFFFF !important;
+
+    border: 1px solid #DEE2E6 !important;
+
+    border-radius: 6px !important;
+
+    box-shadow: none !important;
+
+    font-family: Poppins, sans-serif;
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================================
+   INPUT
+========================================================== */
+
+.general-ledger-filter-card
+.ts-control
+input {
+
+    display: inline-block !important;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+
+    min-width: 30px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    outline: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown {
+
+    position: absolute !important;
+
+    z-index: 99999 !important;
+
+    width: 100% !important;
+
+    margin-top: 4px !important;
+
+    background: #FFFFFF !important;
+
+    border: 1px solid #D7DBE0 !important;
+
+    border-radius: 6px !important;
+
+    box-shadow:
+        0 8px 20px
+        rgba(15, 23, 42, 0.15) !important;
+
+}
+
+
+/* ==========================================================
+   CONTENT
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown-content {
+
+    max-height: 320px !important;
+
+    overflow-x: hidden !important;
+
+    overflow-y: auto !important;
+
+}
+
+
+/* ==========================================================
+   OPTION
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown
+.option {
+
+    display: block !important;
+
+    padding: 9px 12px !important;
+
+    color: #1F2937 !important;
+
+    font-family: Poppins, sans-serif;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================
+   ACTIVE OPTION
+========================================================== */
+
+.general-ledger-filter-card
+.ts-dropdown
+.option.active {
+
+    background: #EEF4FF !important;
+
+    color: #1D4ED8 !important;
+
+}

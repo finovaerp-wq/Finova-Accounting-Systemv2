@@ -1,0 +1,1477 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
+/*
+===========================================
+FINOVA ACCOUNTING SYSTEM
+Sidebar
+Version : 1.0.0
+===========================================
+*/
+
+/* ===========================================
+   SIDEBAR
+=========================================== */
+
+.finova-sidebar {
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 100vh;
+
+    background: var(--sidebar-bg);
+
+    color: var(--sidebar-text);
+
+    border-right: 1px solid var(--border-color);
+
+    overflow: hidden;
+
+}
+
+/* ===========================================
+   SIDEBAR BRAND
+=========================================== */
+
+/* ===========================================
+   SIDEBAR BRAND — supplied FINOVA lockup
+=========================================== */
+.finova-sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 70px;
+    padding: 4px 12px;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-bottom: 1px solid #E5E7EB;
+    background: #FFFFFF;
+}
+
+.finova-sidebar-logo-image {
+    display: block;
+    width: 100%;
+    max-width: 258px;
+    height: 62px;
+    object-fit: contain;
+    object-position: center;
+    flex: 0 1 auto;
+}
+
+/* The supplied artwork already contains both the emblem and FINOVA text. */
+.finova-sidebar-brand {
+    display: none !important;
+}
+
+/* ===========================================
+   MENU
+=========================================== */
+
+.finova-sidebar-menu {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: var(--space-md) 0;
+
+}
+
+/* Scrollbar */
+
+.finova-sidebar-menu::-webkit-scrollbar{
+
+    width:5px;
+
+}
+
+.finova-sidebar-menu::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+.finova-sidebar-menu::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.10);
+
+    border-radius:999px;
+
+    transition:background .20s ease;
+
+}
+
+.finova-sidebar-menu::-webkit-scrollbar-thumb:hover{
+
+    background:rgba(255,255,255,.22);
+
+}
+
+/* ===========================================
+   MENU HEADER
+=========================================== */
+
+.finova-menu-header {
+
+    padding:
+
+        var(--space-md)
+
+        var(--space-lg)
+
+        var(--space-sm);
+
+    color: var(--sidebar-header);
+
+    font-size: 11px;
+
+    font-weight: var(--font-weight-semibold);
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+}
+
+.finova-menu-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    min-height:42px;
+
+    padding:0 18px;
+
+    margin:2px 8px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    color:var(--sidebar-text);
+
+    font-weight:500;
+
+    transition:
+        background .20s ease,
+        color .20s ease,
+        transform .18s ease;
+
+}
+
+/* Icon */
+
+.finova-menu-item i {
+
+    width: 20px;
+
+    text-align: center;
+
+    font-size: 15px;
+
+}
+
+/* Text */
+
+.finova-menu-item span {
+
+    flex: 1;
+
+    font-size: var(--font-size-md);
+
+}
+
+/* Hover */
+
+.finova-menu-item:hover{
+
+    background:var(--sidebar-hover);
+
+    color:#FFFFFF;
+
+}
+
+/* Active */
+
+.finova-menu-item.active{
+
+    position:relative;
+
+    background:var(--sidebar-active);
+
+    color:#FFFFFF;
+
+    font-weight:600;
+
+}
+
+.finova-menu-item.active i{
+
+    color:#FFFFFF;
+
+}
+
+.finova-menu-item.active span{
+
+    color:#FFFFFF;
+
+}
+/* ===========================================
+   MENU GROUP
+=========================================== */
+
+.finova-menu-group{
+
+    width:100%;
+
+}
+
+/* ===========================================
+   GROUP HEADER
+=========================================== */
+
+.finova-menu-group-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    min-height:42px;
+
+    padding:0 18px;
+
+    margin:2px 8px;
+
+    border-radius:10px;
+
+    color:var(--sidebar-text);
+
+    font-weight:500;
+
+    cursor:pointer;
+
+    transition:
+        background .20s ease,
+        color .20s ease,
+        transform .18s ease;
+
+}
+
+.finova-menu-group-header:hover{
+
+    background:var(--sidebar-hover);
+
+    color:#FFFFFF;
+
+}
+/* ===========================================
+   GROUP ACTIVE
+=========================================== */
+
+.finova-menu-group.open .finova-menu-group-header{
+
+    color:#FFFFFF;
+
+    font-weight:600;
+
+}
+
+/* ===========================================
+   GROUP LEFT
+=========================================== */
+
+.finova-menu-group-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.finova-menu-group-left i{
+
+    width:20px;
+
+    text-align:center;
+
+    font-size:15px;
+
+}
+
+.finova-menu-group-left span{
+
+    font-size:var(--font-size-md);
+
+}
+
+/* ===========================================
+   GROUP ARROW
+=========================================== */
+
+.finova-menu-arrow{
+
+    font-size:12px;
+
+    transition:transform .25s ease;
+
+}
+
+/* ===========================================
+   GROUP OPEN
+=========================================== */
+
+.finova-menu-group.open
+.finova-menu-arrow{
+
+    transform:rotate(90deg);
+
+}
+
+/* ===========================================
+   SUBMENU
+=========================================== */
+
+.finova-submenu{
+
+    position:relative;
+
+    max-height:0;
+
+    opacity:0;
+
+    overflow:hidden;
+
+    margin-left:18px;
+
+    transition:
+        max-height .30s ease,
+        opacity .25s ease;
+
+}
+
+/* ===========================================
+   SUBMENU GUIDE LINE
+=========================================== */
+
+.finova-submenu::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:24px;
+
+    top:8px;
+
+    bottom:8px;
+
+    width:1px;
+
+    background:rgba(255,255,255,.12);
+
+    border-radius:999px;
+
+}
+
+/* ===========================================
+   SUBMENU OPEN
+=========================================== */
+
+.finova-submenu.open{
+
+    max-height:500px;
+
+    opacity:1;
+
+}
+
+/* ===========================================
+   SUBMENU ITEM
+=========================================== */
+
+.finova-submenu-item{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    min-height:40px;
+
+    padding:0 18px 0 42px;
+
+    margin:2px 8px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    color:#FFFFFF;
+
+    transition:
+        background .20s ease,
+        color .20s ease,
+        transform .18s ease;
+
+}
+.finova-submenu-item i{
+
+    width:16px;
+
+    font-size:13px;
+
+    color:#FFFFFF;
+
+}
+
+.finova-submenu-item span{
+
+    flex:1;
+
+    font-size:13px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.finova-submenu-item:hover{
+
+    background:var(--sidebar-hover);
+
+    color:#FFFFFF;
+
+    transform:translateX(3px);
+
+}
+/* ===========================================
+   SUBMENU ACTIVE
+=========================================== */
+
+.finova-submenu-item.active{
+
+    position:relative;
+
+    background:var(--sidebar-active);
+
+    color:#FFFFFF;
+
+    font-weight:600;
+
+}
+
+.finova-submenu-item.active i{
+
+    color:#FFFFFF;
+
+}
+
+.finova-submenu-item.active span{
+
+    color:#FFFFFF;
+
+}
+
+.finova-submenu-item.active::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:6px;
+
+    bottom:6px;
+
+    width:4px;
+
+    border-radius:0 6px 6px 0;
+
+    background:#FFFFFF;
+
+}
+
+
+/* ==========================================================
+   COMPANY CONTEXT LOCK
+   SUPER ADMIN ONLY
+========================================================== */
+
+.finova-accounting-menu-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+}
+
+
+/* ==========================================================
+   LOCKED ACCOUNTING AREA
+========================================================== */
+
+.finova-accounting-menu-wrapper.finova-company-context-locked{
+
+    position:relative;
+
+}
+
+
+/* ==========================================================
+   LOCKED MAIN MENU
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-item,
+
+.finova-company-context-locked
+.finova-menu-group-header{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .38
+    );
+
+    cursor:not-allowed;
+
+}
+
+
+/* ==========================================================
+   LOCKED MAIN MENU ICON
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-item > i,
+
+.finova-company-context-locked
+.finova-menu-group-left > i{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .38
+    );
+
+}
+
+
+/* ==========================================================
+   LOCKED MAIN MENU TEXT
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-item > span,
+
+.finova-company-context-locked
+.finova-menu-group-left > span{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .38
+    );
+
+}
+
+
+/* ==========================================================
+   LOCKED GROUP ARROW
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-arrow{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .28
+    );
+
+}
+
+
+/* ==========================================================
+   DISABLE LOCKED HOVER
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-item:hover,
+
+.finova-company-context-locked
+.finova-menu-group-header:hover{
+
+    background:transparent;
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .38
+    );
+
+    transform:none;
+
+}
+
+
+/* ==========================================================
+   LOCKED SUBMENU
+========================================================== */
+
+.finova-company-context-locked
+.finova-submenu-item{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .32
+    );
+
+    cursor:not-allowed;
+
+}
+
+
+/* ==========================================================
+   LOCKED SUBMENU ICON
+========================================================== */
+
+.finova-company-context-locked
+.finova-submenu-item i{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .32
+    );
+
+}
+
+
+/* ==========================================================
+   LOCKED SUBMENU TEXT
+========================================================== */
+
+.finova-company-context-locked
+.finova-submenu-item span{
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .32
+    );
+
+}
+
+
+/* ==========================================================
+   DISABLE LOCKED SUBMENU HOVER
+========================================================== */
+
+.finova-company-context-locked
+.finova-submenu-item:hover{
+
+    background:transparent;
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .32
+    );
+
+    transform:none;
+
+}
+
+
+/* ==========================================================
+   LOCK ICON
+========================================================== */
+
+.finova-company-context-lock-icon{
+
+    position:absolute;
+
+    top:50%;
+
+    right:20px;
+
+    transform:translateY(-50%);
+
+    width:18px;
+
+    text-align:center;
+
+    font-size:11px;
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .42
+    );
+
+    pointer-events:none;
+
+    z-index:2;
+
+}
+
+
+/* ==========================================================
+   LOCK ICON
+   MENU GROUP
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-group-header{
+
+    padding-right:44px;
+
+}
+
+
+/* ==========================================================
+   LOCK ICON
+   DASHBOARD
+========================================================== */
+
+.finova-company-context-locked
+> .finova-menu-item{
+
+    padding-right:44px;
+
+}
+
+
+/* ==========================================================
+   LOCKED ACTIVE STATE RESET
+========================================================== */
+
+.finova-company-context-locked
+.finova-menu-item.active,
+
+.finova-company-context-locked
+.finova-submenu-item.active{
+
+    background:transparent;
+
+    color:rgba(
+        255,
+        255,
+        255,
+        .38
+    );
+
+    font-weight:500;
+
+}
+
+
+.finova-company-context-locked
+.finova-submenu-item.active::before{
+
+    display:none;
+
+}
+
+
+/* ===========================================
+   FOOTER
+=========================================== */
+
+.finova-sidebar-footer {
+
+    padding: var(--space-md);
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+.finova-sidebar-version {
+
+    text-align: center;
+
+    color: var(--sidebar-header);
+
+    font-size: var(--font-size-xs);
+
+}
+
+/* ===========================================
+   COLLAPSE
+=========================================== */
+
+.finova-sidebar.collapsed {
+
+    width: var(--sidebar-collapse-width);
+
+}
+
+.finova-sidebar.collapsed
+.finova-sidebar-brand{
+
+    display:none;
+
+}
+
+.finova-sidebar.collapsed
+.finova-sidebar-logo{
+
+    justify-content:center;
+
+    padding:0;
+
+}
+
+
+
+/* ==========================================================
+   MOBILE SIDEBAR
+========================================================== */
+
+.finova-sidebar-backdrop {
+
+    display: none;
+
+}
+
+
+@media (max-width: 991.98px) {
+
+    /*
+    ======================================================
+    SIDEBAR HOST
+    ======================================================
+    */
+
+    #finova-sidebar {
+
+        position: fixed !important;
+
+        top: 0;
+
+        left: 0;
+
+        bottom: 0;
+
+        width: 260px;
+
+        height: 100vh;
+
+        z-index: 1051;
+
+        transform: translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        visibility: visible !important;
+
+        display: block !important;
+
+    }
+
+
+    /*
+    ======================================================
+    OPEN
+    ======================================================
+    */
+
+    #finova-sidebar.mobile-open {
+
+        transform: translateX(0);
+
+    }
+
+
+    /*
+    ======================================================
+    INNER SIDEBAR
+    ======================================================
+    */
+
+    #finova-sidebar
+    .finova-sidebar {
+
+        width: 260px;
+
+        height: 100%;
+
+    }
+
+
+    /*
+    ======================================================
+    BACKDROP
+    ======================================================
+    */
+
+    .finova-sidebar-backdrop {
+
+        display: block;
+
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 1050;
+
+        background:
+            rgba(
+                15,
+                23,
+                42,
+                0.45
+            );
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+
+        transition:
+            opacity 0.25s ease,
+            visibility 0.25s ease;
+
+    }
+
+
+    .finova-sidebar-backdrop.show {
+
+        opacity: 1;
+
+        visibility: visible;
+
+        pointer-events: auto;
+
+    }
+
+
+    /*
+    ======================================================
+    BODY
+    ======================================================
+    */
+
+    body.finova-sidebar-open {
+
+        overflow: hidden;
+
+    }
+
+
+    /*
+    ======================================================
+    MAIN CONTENT
+    ======================================================
+    */
+
+    .finova-main {
+
+        margin-left: 0 !important;
+
+        width: 100% !important;
+
+    }
+
+}
+/* ==========================================================
+   FINOVA SIDEBAR — PREMIUM OUTLINE + ACCENT
+   Version : 2.0.0
+   Design  : Outline + Accent / Enterprise Financial UI
+   Scope   : Visual only. Menu structure and routing unchanged.
+========================================================== */
+
+.finova-sidebar{
+    background:
+        linear-gradient(
+            180deg,
+            #07172F 0%,
+            #081A34 48%,
+            #07172F 100%
+        );
+    border-right:1px solid rgba(148,163,184,.14);
+    color:#E8EEF8;
+}
+
+/* Brand stays inside the navy sidebar */
+.finova-sidebar-logo{
+    height:76px;
+    padding:0 16px;
+    gap:10px;
+    background:transparent;
+    border-bottom:1px solid rgba(148,163,184,.12);
+}
+
+.finova-sidebar-logo-image{
+    width:62px;
+    height:66px;
+    filter:drop-shadow(0 3px 10px rgba(37,99,235,.18));
+}
+
+.finova-sidebar-title{
+    color:#F8FAFC;
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.finova-sidebar-subtitle{
+    color:#8FB7EE;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:1.15px;
+    text-transform:uppercase;
+}
+
+.finova-sidebar-menu{
+    padding:12px 0 18px;
+}
+
+/* Main item / group geometry */
+.finova-menu-item,
+.finova-menu-group-header{
+    min-height:42px;
+    margin:2px 8px;
+    padding:0 14px;
+    border:1px solid transparent;
+    border-radius:9px;
+    color:#E7EDF7;
+    background:transparent;
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.finova-menu-item > i,
+.finova-menu-group-left > i{
+    width:22px;
+    font-size:16px;
+    color:#38A8F8;
+    opacity:.96;
+    filter:none;
+}
+
+.finova-menu-item span,
+.finova-menu-group-left span{
+    color:inherit;
+    font-size:13px;
+    font-weight:550;
+}
+
+.finova-menu-group-header:hover,
+.finova-menu-item:hover{
+    color:#FFFFFF;
+    background:rgba(30,64,105,.34);
+    border-color:rgba(96,165,250,.12);
+    transform:none;
+}
+
+/* Dashboard / standalone active module */
+.finova-menu-item.active{
+    color:#FFFFFF;
+    background:linear-gradient(90deg,#1559B7 0%,#124A91 100%);
+    border-color:rgba(96,165,250,.22);
+    box-shadow:0 7px 18px rgba(2,12,27,.16);
+    font-weight:600;
+}
+
+.finova-menu-item.active::before{
+    content:"";
+    position:absolute;
+    left:-9px;
+    top:7px;
+    bottom:7px;
+    width:3px;
+    border-radius:999px;
+    background:#38A8F8;
+}
+
+.finova-menu-item.active > i{
+    color:#DDF2FF;
+}
+
+/* Group headings: premium accent, no colored cards */
+.finova-menu-group.open .finova-menu-group-header{
+    color:#FFFFFF;
+    background:transparent;
+    border-color:transparent;
+}
+
+.finova-menu-arrow{
+    color:#9EB2CC;
+    font-size:10px;
+}
+
+/* Submenu rail */
+.finova-submenu{
+    margin-left:18px;
+}
+
+.finova-submenu::before{
+    left:24px;
+    top:7px;
+    bottom:7px;
+    background:linear-gradient(
+        180deg,
+        rgba(56,168,248,.42),
+        rgba(148,163,184,.10)
+    );
+}
+
+.finova-submenu-item{
+    min-height:39px;
+    padding:0 14px 0 42px;
+    margin:1px 8px;
+    border:1px solid transparent;
+    border-radius:8px;
+    color:#D8E2F0;
+    background:transparent;
+}
+
+.finova-submenu-item i{
+    width:17px;
+    font-size:13px;
+    color:#B8CAE2;
+    opacity:.98;
+}
+
+.finova-submenu-item span{
+    font-size:12.5px;
+    font-weight:450;
+}
+
+.finova-submenu-item:hover{
+    color:#FFFFFF;
+    background:rgba(30,64,105,.28);
+    border-color:rgba(96,165,250,.10);
+    transform:translateX(2px);
+}
+
+.finova-submenu-item:hover i{
+    color:#7CC8FF;
+}
+
+/* Active submenu: restrained accent instead of a bright block */
+.finova-submenu-item.active{
+    color:#FFFFFF;
+    background:rgba(24,82,151,.34);
+    border-color:rgba(96,165,250,.12);
+    font-weight:600;
+}
+
+.finova-submenu-item.active::before{
+    left:0;
+    top:8px;
+    bottom:8px;
+    width:3px;
+    border-radius:0 999px 999px 0;
+    background:#38A8F8;
+}
+
+.finova-submenu-item.active i{
+    color:#5EBBFF;
+}
+
+/* Section accents — muted, consistent and easy on the eyes */
+.finova-menu-group[data-group="master-data"] .finova-menu-group-left > i{
+    color:#38A8F8;
+}
+
+.finova-menu-group[data-group="finance"] .finova-menu-group-left > i{
+    color:#4FB7E8;
+}
+
+.finova-menu-group[data-group="accounting"] .finova-menu-group-left > i{
+    color:#6C9DFF;
+}
+
+.finova-menu-group[data-group="report"] .finova-menu-group-left > i{
+    color:#35BCE8;
+}
+
+/* Small module-specific accents; icons remain mostly outline-like/soft */
+.finova-submenu-item[data-module="user-management"] i,
+.finova-submenu-item[data-module="business-partner"] i{
+    color:#9CC8F3;
+}
+
+.finova-submenu-item[data-module="chart-of-accounts"] i,
+.finova-submenu-item[data-module="accounting-period"] i{
+    color:#B8CAE2;
+}
+
+.finova-submenu-item[data-module="tax"] i{
+    color:#D5B56A;
+}
+
+.finova-submenu-item[data-module="account-payable"] i{
+    color:#D59A9A;
+}
+
+.finova-submenu-item[data-module="account-receivable"] i{
+    color:#86C6B4;
+}
+
+.finova-submenu-item[data-module="aging-payable"] i,
+.finova-submenu-item[data-module="aging-receivable"] i{
+    color:#B8CAE2;
+}
+
+.finova-submenu-item[data-module="gl-journal"] i{
+    color:#9DBAF5;
+}
+
+.finova-submenu-item[data-module="fixed-asset"] i{
+    color:#D8B579;
+}
+
+.finova-submenu-item[data-module="general-ledger"] i,
+.finova-submenu-item[data-module="financial-statement"] i{
+    color:#8FC5EE;
+}
+
+.finova-submenu-item[data-module="trial-balance-year"] i{
+    color:#B7A4E8;
+}
+
+.finova-submenu-item[data-module="balance-sheet"] i{
+    color:#8DC5A6;
+}
+
+.finova-submenu-item[data-module="profit-loss"] i{
+    color:#D6B075;
+}
+
+.finova-submenu-item[data-module="cash-flow-forecast"] i{
+    color:#68C5C8;
+}
+
+/* Headers: FINOVA ADMIN / SETTINGS */
+.finova-menu-header{
+    padding:16px 18px 6px;
+    color:#7893B5;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:1.25px;
+}
+
+.finova-menu-item[data-module="production"] > i{
+    color:#69B995;
+}
+
+.finova-menu-item[data-module="change-password"] > i{
+    color:#D5B56A;
+}
+
+.finova-menu-item[data-module="logout"] > i{
+    color:#D9838C;
+}
+
+/* Footer */
+.finova-sidebar-footer{
+    padding:10px 14px;
+    border-top:1px solid rgba(148,163,184,.10);
+    background:rgba(2,12,27,.08);
+}
+
+.finova-sidebar-version{
+    color:#607A9A;
+    font-size:9px;
+    letter-spacing:.4px;
+}
+
+/* Keep company-context lock stronger than accent colors */
+.finova-company-context-locked .finova-menu-item > i,
+.finova-company-context-locked .finova-menu-group-left > i,
+.finova-company-context-locked .finova-submenu-item i{
+    color:rgba(255,255,255,.30) !important;
+}
+
+/* Mobile keeps the same premium visual language */
+@media (max-width:991.98px){
+    .finova-sidebar-logo{
+        height:70px;
+    }
+
+    .finova-menu-item,
+    .finova-menu-group-header{
+        min-height:44px;
+    }
+
+    .finova-submenu-item{
+        min-height:41px;
+    }
+}
+
+
+/* ==========================================================
+   FINOVA SIDEBAR — WHITE BRAND HEADER FINAL
+   Only the logo/header block becomes white.
+   Navigation below remains navy.
+========================================================== */
+
+.finova-sidebar-logo{
+    background:#FFFFFF !important;
+    border-bottom:1px solid #E5E7EB !important;
+}
+
+.finova-sidebar-title{
+    color:#0B1F3A !important;
+}
+
+.finova-sidebar-subtitle{
+    color:#5F83B5 !important;
+}
+
+.finova-sidebar-logo-image{
+    background:transparent !important;
+    filter:drop-shadow(0 3px 8px rgba(37,99,235,.16));
+}
+
+/* Collapsed/mobile brand area stays white as well */
+.finova-sidebar.collapsed .finova-sidebar-logo{
+    background:#FFFFFF !important;
+}
+
+@media (max-width:991.98px){
+    .finova-sidebar-logo{
+        background:#FFFFFF !important;
+    }
+}
+
+
+/* ==========================================================
+   FINOVA SIDEBAR — REMOVE BRAND/TOPBAR DIVIDER
+========================================================== */
+
+.finova-sidebar-logo{
+    border-right:0 !important;
+    border-bottom:0 !important;
+    box-shadow:none !important;
+}
+
+.finova-sidebar,
+.finova-sidebar-header,
+.finova-sidebar-brand{
+    border-right:0 !important;
+}
+
+
+
+/* ==========================================================
+   FINOVA SIDEBAR — HEADER BOTTOM LINE ALIGNMENT FINAL
+   Make the line below FINOVA logo level with Dashboard topbar
+========================================================== */
+
+/* Keep brand/header exactly the same height as FINOVA topbar */
+.finova-sidebar-logo{
+    height:70px !important;
+    min-height:70px !important;
+    box-sizing:border-box !important;
+    border-bottom:1px solid #E5E7EB !important;
+}
+
+/* No vertical divider */
+.finova-sidebar,
+.finova-sidebar-logo,
+.finova-sidebar-header,
+.finova-sidebar-brand{
+    border-right:0 !important;
+}
+
+/* Ensure the first navigation row begins after the aligned header */
+.finova-sidebar-nav{
+    margin-top:0 !important;
+}
+
+
+
+/* ==========================================================
+   FINOVA BRAND WORDMARK — GEOMETRIC FONT + BLUE GRADIENT
+   Target: actual sidebar/header brand title, not menu/page titles.
+   ========================================================== */
+
+.finova-sidebar-title {
+    font-family: 'Montserrat', 'Arial', sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em !important;
+    line-height: 1.05 !important;
+    background: linear-gradient(100deg, #07143F 0%, #0B2F91 36%, #0868F5 68%, #00B8F0 100%);
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    display: inline-block;
+}
+
+.finova-sidebar-subtitle {
+    font-family: 'Montserrat', 'Arial', sans-serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.14em !important;
+}
+
+
+/* Keep the full lockup contained when the sidebar is collapsed. */
+.finova-sidebar.collapsed .finova-sidebar-logo {
+    padding: 4px;
+}
+.finova-sidebar.collapsed .finova-sidebar-logo-image {
+    width: 48px;
+    height: 52px;
+}
+
+
+/* ==========================================================
+   FINOVA LOGO SIZE FIX — full lockup must remain readable
+   Override earlier 62px icon-only sizing for the supplied
+   horizontal logo artwork.
+========================================================== */
+.finova-sidebar-logo {
+    justify-content: center !important;
+    padding: 4px 12px !important;
+}
+.finova-sidebar-logo-image {
+    width: min(100%, 230px) !important;
+    max-width: 230px !important;
+    height: 62px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    flex: 0 1 auto !important;
+}
+.finova-sidebar.collapsed .finova-sidebar-logo-image {
+    width: 48px !important;
+    height: 52px !important;
+    max-width: 48px !important;
+}
